@@ -270,7 +270,7 @@ function App() {
                           value={formData.ldwDate}
                           onValueChange={(value: LDWDate) => setFormData({ ...formData, ldwDate: value })}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="w-[120px]">
                             <SelectValue placeholder="Select LDW date" />
                           </SelectTrigger>
                           <SelectContent>
@@ -278,7 +278,7 @@ function App() {
                             <SelectItem value="Before">Before</SelectItem>
                           </SelectContent>
                         </Select>
-                        <div className="text-sm text-muted-foreground whitespace-nowrap">
+                        <div className="text-sm text-foreground whitespace-nowrap">
                           period end date
                         </div>
                       </div>
