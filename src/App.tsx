@@ -257,35 +257,34 @@ function App() {
                   </div>
                 )}
 
-                {/* LDW Date */}
+                {/* LDW Date and Time Frame Row */}
                 {formData.definitionMatch === 'Matches definition' && (
-                  <div className="col-span-2 flex items-center gap-4">
-                    <div className="space-y-2 flex-1">
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* LDW Date */}
+                    <div className="space-y-2">
                       <label htmlFor="ldwDate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         LDW Date
                       </label>
-                      <Select
-                        value={formData.ldwDate}
-                        onValueChange={(value: LDWDate) => setFormData({ ...formData, ldwDate: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select LDW date" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="After">After</SelectItem>
-                          <SelectItem value="Before">Before</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="flex items-center gap-4">
+                        <Select
+                          value={formData.ldwDate}
+                          onValueChange={(value: LDWDate) => setFormData({ ...formData, ldwDate: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select LDW date" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="After">After</SelectItem>
+                            <SelectItem value="Before">Before</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <div className="text-sm text-muted-foreground whitespace-nowrap">
+                          period end date
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-end h-10 text-sm text-muted-foreground">
-                      period end date
-                    </div>
-                  </div>
-                )}
 
-                {/* Time Frame */}
-                {formData.definitionMatch === 'Matches definition' && (
-                  <div className="col-span-2">
+                    {/* Time Frame */}
                     <div className="space-y-2">
                       <label htmlFor="elevenMonthsPassed" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         Time Frame
