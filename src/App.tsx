@@ -215,9 +215,10 @@ function App() {
             {/* Settled-specific fields */}
             {formData.status === 'Settled' && (
               <>
-                {/* Class/PAGA and Period End Date */}
+                {/* Class/PAGA, Period End Date, and LDW Date Row */}
                 {formData.definitionMatch === 'Matches definition' && (
-                  <div className="col-span-2 grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
+                    {/* Class/PAGA */}
                     <div className="space-y-2">
                       <label htmlFor="classType" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         Class/PAGA
@@ -241,6 +242,8 @@ function App() {
                         </div>
                       </RadioGroup>
                     </div>
+
+                    {/* Period End Date */}
                     <div className="space-y-2">
                       <label htmlFor="periodEndDate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         Period End Date
@@ -254,12 +257,7 @@ function App() {
                         onChange={(e) => setFormData({ ...formData, periodEndDate: e.target.value })}
                       />
                     </div>
-                  </div>
-                )}
 
-                {/* LDW Date and Time Frame Row */}
-                {formData.definitionMatch === 'Matches definition' && (
-                  <div className="grid grid-cols-2 gap-4">
                     {/* LDW Date */}
                     <div className="space-y-2">
                       <label htmlFor="ldwDate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -278,30 +276,32 @@ function App() {
                             <SelectItem value="Before">Before</SelectItem>
                           </SelectContent>
                         </Select>
-                        <div className="text-sm text-foreground whitespace-nowrap">
-                          period end date
+                        <div className="text-sm text-foreground whitespace-nowrap ml-[-10px]">
+                          period end <br/> date
                         </div>
                       </div>
                     </div>
+                  </div>
+                )}
 
-                    {/* Time Frame */}
-                    <div className="space-y-2">
-                      <label htmlFor="elevenMonthsPassed" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Time Frame
-                      </label>
-                      <Select
-                        value={formData.elevenMonthsPassed}
-                        onValueChange={(value: ElevenMonthsStatus) => setFormData({ ...formData, elevenMonthsPassed: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="11 months has passed">11 months has passed</SelectItem>
-                          <SelectItem value="11 months HAS NOT passed">11 months HAS NOT passed</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                {/* Time Frame */}
+                {formData.definitionMatch === 'Matches definition' && (
+                  <div className="space-y-2">
+                    <label htmlFor="elevenMonthsPassed" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Time Frame
+                    </label>
+                    <Select
+                      value={formData.elevenMonthsPassed}
+                      onValueChange={(value: ElevenMonthsStatus) => setFormData({ ...formData, elevenMonthsPassed: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="11 months has passed">11 months has passed</SelectItem>
+                        <SelectItem value="11 months HAS NOT passed">11 months HAS NOT passed</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 )}
 
