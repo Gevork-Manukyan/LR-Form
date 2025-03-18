@@ -1,6 +1,6 @@
 import './App.css'
 import { Form } from './components/ui/form'
-import { FormData, Status, TimeFrame, DefinitionMatch, ClassType, LDWDate, ElevenMonthsStatus } from './types/form'
+import { FormData, Status, TimeFrame, DefinitionMatch, ClassType, LDWDate } from './types/form'
 import { useState } from 'react'
 import {
   Select,
@@ -290,18 +290,33 @@ function App() {
                     <label htmlFor="elevenMonthsPassed" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                       Time Frame
                     </label>
-                    <Select
-                      value={formData.elevenMonthsPassed}
-                      onValueChange={(value: ElevenMonthsStatus) => setFormData({ ...formData, elevenMonthsPassed: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="11 months has passed">11 months has passed</SelectItem>
-                        <SelectItem value="11 months HAS NOT passed">11 months HAS NOT passed</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="flex flex-col gap-1">
+                      {(() => {
+                        if (!formData.periodEndDate) {
+                          return <div className="text-sm text-muted-foreground">Enter Period End Date to calculate</div>;
+                        }
+
+                        const periodEnd = new Date(formData.periodEndDate);
+                        const elevenMonthsLater = new Date(periodEnd);
+                        elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+                        const today = new Date();
+                        const daysUntil = Math.ceil((elevenMonthsLater.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                        const hasPassed = today >= elevenMonthsLater;
+
+                        return (
+                          <>
+                            <div className={`text-sm font-medium ${hasPassed ? 'text-green-600' : 'text-red-600'}`}>
+                              {hasPassed ? '11 months has passed' : '11 months has NOT passed'}
+                            </div>
+                            {!hasPassed && (
+                              <div className="text-sm text-muted-foreground">
+                                ({daysUntil} days until 11 months passes)
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
+                    </div>
                   </div>
                 )}
 
