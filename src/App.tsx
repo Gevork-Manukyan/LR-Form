@@ -306,24 +306,28 @@ function App() {
                 )}
 
                 {/* Liability Calc */}
-                <div className="col-span-2">
-                  <div className="space-y-2">
-                    <label htmlFor="liabilityCalc" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                      Liability Calc
-                    </label>
-                    <div className="flex items-center">
-                      <span className="mr-2">$</span>
-                      <input
-                        type="number"
-                        name="liabilityCalc"
-                        id="liabilityCalc"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        value={formData.liabilityCalc}
-                        onChange={(e) => setFormData({ ...formData, liabilityCalc: e.target.value })}
-                      />
+                {formData.definitionMatch === 'Matches definition' && 
+                 formData.ldwDate === 'After' && 
+                 formData.elevenMonthsPassed === '11 months has passed' && (
+                  <div className="col-span-2">
+                    <div className="space-y-2">
+                      <label htmlFor="liabilityCalc" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        Liability Calc
+                      </label>
+                      <div className="flex items-center">
+                        <span className="mr-2">$</span>
+                        <input
+                          type="number"
+                          name="liabilityCalc"
+                          id="liabilityCalc"
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          value={formData.liabilityCalc}
+                          onChange={(e) => setFormData({ ...formData, liabilityCalc: e.target.value })}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </>
             )}
 
