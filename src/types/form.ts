@@ -3,7 +3,6 @@ export type TimeFrame = '12 months' | '12-36 months' | '36 months'
 export type DefinitionMatch = 'Matches definition' | 'Does NOT match definition'
 export type ClassType = 'Class' | 'PAGA'
 export type LDWDate = string
-export type ElevenMonthsStatus = '11 months has passed' | '11 months HAS NOT passed'
 
 export interface FormData {
   status: Status
@@ -22,7 +21,7 @@ export interface FormData {
   classType: ClassType
   periodEndDate: string
   ldwDate: LDWDate
-  elevenMonthsPassed: ElevenMonthsStatus
+  isLDWAfterPeriodEnd: boolean
   liabilityCalc: string
   hasDescription: boolean
 } 

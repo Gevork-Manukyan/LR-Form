@@ -30,13 +30,23 @@ function App() {
     classType: 'Class',
     periodEndDate: '',
     ldwDate: '',
-    elevenMonthsPassed: '11 months has passed',
+    isLDWAfterPeriodEnd: false,
     liabilityCalc: '',
     hasDescription: false
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [showValidation, setShowValidation] = useState(false)
+
+  // Calculate isLDWAfterPeriodEnd whenever periodEndDate or ldwDate changes
+  useEffect(() => {
+    if (formData.periodEndDate && formData.ldwDate) {
+      const periodEnd = new Date(formData.periodEndDate);
+      const ldwDate = new Date(formData.ldwDate);
+      const isLDWAfterPeriodEnd = ldwDate > periodEnd;
+      setFormData(prev => ({ ...prev, isLDWAfterPeriodEnd }));
+    }
+  }, [formData.periodEndDate, formData.ldwDate]);
 
   // Load form data from localStorage on component mount
   useEffect(() => {
@@ -63,7 +73,7 @@ function App() {
           classType: parsedData.classType || 'Class',
           periodEndDate: parsedData.periodEndDate || '',
           ldwDate: parsedData.ldwDate || '',
-          elevenMonthsPassed: parsedData.elevenMonthsPassed || '11 months has passed',
+          isLDWAfterPeriodEnd: parsedData.isLDWAfterPeriodEnd || false,
           liabilityCalc: parsedData.liabilityCalc || '',
           hasDescription: parsedData.hasDescription || false
         }
@@ -134,7 +144,6 @@ function App() {
       classType: 'Class',
       periodEndDate: '',
       ldwDate: '',
-      elevenMonthsPassed: '11 months has passed',
       liabilityCalc: '',
       hasDescription: false
     })
@@ -470,45 +479,18 @@ function App() {
                   </div>
                 )}
 
-                {/* Time Frame and Liability Calc Row */}
-                {formData.definitionMatch === 'Matches definition' && (
-                  <div className="grid grid-cols-2 gap-4">
-                    {/* Time Frame */}
-                    <div className="space-y-2">
-                      <label htmlFor="elevenMonthsPassed" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Time Frame
-                      </label>
-                      <div className="flex flex-col gap-1">
-                        {(() => {
-                          if (!formData.periodEndDate) {
-                            return <div className="text-sm text-muted-foreground">Enter Period End Date to calculate</div>;
-                          }
+                {/* Liability Calc */}
+                {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
+                  const periodEnd = new Date(formData.periodEndDate);
+                  const elevenMonthsLater = new Date(periodEnd);
+                  elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+                  const today = new Date();
+                  const hasPassed = today >= elevenMonthsLater;
+                  const ldwDate = new Date(formData.ldwDate);
+                  const isLDWAfterPeriodEnd = ldwDate > periodEnd;
 
-                          const periodEnd = new Date(formData.periodEndDate);
-                          const elevenMonthsLater = new Date(periodEnd);
-                          elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
-                          const today = new Date();
-                          const daysUntil = Math.ceil((elevenMonthsLater.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-                          const hasPassed = today >= elevenMonthsLater;
-
-                          return (
-                            <>
-                              <div className={`text-base font-medium ${hasPassed ? 'text-green-600' : 'text-red-600'}`}>
-                                {hasPassed ? '11 months has passed' : '11 months has NOT passed'}
-                              </div>
-                              {!hasPassed && (
-                                <div className="text-sm text-muted-foreground">
-                                  ({daysUntil} days until 11 months passes)
-                                </div>
-                              )}
-                            </>
-                          );
-                        })()}
-                      </div>
-                    </div>
-
-                    {/* Liability Calc */}
-                    {formData.ldwDate === 'After' && (
+                  if (hasPassed && isLDWAfterPeriodEnd) {
+                    return (
                       <div className="space-y-2">
                         <label htmlFor="liabilityCalc" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                           Liability Calc
@@ -525,9 +507,10 @@ function App() {
                           />
                         </div>
                       </div>
-                    )}
-                  </div>
-                )}
+                    );
+                  }
+                  return null;
+                })()}
               </>
             )}
 
@@ -671,7 +654,20 @@ function App() {
                         })()
                       )}
                       {formData.defendantNames.length > 0 && `\n  • Released Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
-                      {formData.ldwDate === 'After' && formData.liabilityCalc && `\n  • Liability Calc: $${formData.liabilityCalc}`}
+                      {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
+                        const periodEnd = new Date(formData.periodEndDate);
+                        const elevenMonthsLater = new Date(periodEnd);
+                        elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+                        const today = new Date();
+                        const hasPassed = today >= elevenMonthsLater;
+                        const ldwDate = new Date(formData.ldwDate);
+                        const isLDWAfterPeriodEnd = ldwDate > periodEnd;
+
+                        if (hasPassed && isLDWAfterPeriodEnd && formData.liabilityCalc) {
+                          return `\n  • Liability Calc: $${formData.liabilityCalc}`;
+                        }
+                        return '';
+                      })()}
                     </>
                   )}
                 </div>
