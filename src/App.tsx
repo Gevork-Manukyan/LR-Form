@@ -34,6 +34,7 @@ function App() {
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
+  const [showValidation, setShowValidation] = useState(false)
 
   // Load form data from localStorage on component mount
   useEffect(() => {
@@ -94,7 +95,19 @@ function App() {
   }
 
   const handleSubmit = () => {
-    setShowOutput(!showOutput);
+    setShowValidation(true);
+    
+    // Check if all required fields are filled
+    const requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
+    if (formData.status === 'Settled') {
+      requiredFields.push('paDate', 'faDate', 'periodEndDate', 'ldwDate');
+    }
+
+    const allFieldsFilled = requiredFields.every(field => formData[field as keyof FormData]);
+
+    if (allFieldsFilled) {
+      setShowOutput(!showOutput);
+    }
   }
 
   const handleClear = () => {
@@ -119,6 +132,31 @@ function App() {
     })
     localStorage.removeItem('formData')
     setShowOutput(false)
+    setShowValidation(false)
+  }
+
+  const isFieldRequired = (field: keyof FormData) => {
+    const requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
+    if (formData.status === 'Settled') {
+      requiredFields.push('paDate', 'faDate', 'periodEndDate', 'ldwDate');
+    }
+    return requiredFields.includes(field);
+  }
+
+  const getInputClassName = (field: keyof FormData) => {
+    const baseClasses = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+    if (showValidation && isFieldRequired(field) && !formData[field]) {
+      return `${baseClasses} border-red-500 focus-visible:ring-red-500`;
+    }
+    return baseClasses;
+  }
+
+  const getLabelClassName = (field: keyof FormData) => {
+    const baseClasses = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70";
+    if (showValidation && isFieldRequired(field) && !formData[field]) {
+      return `${baseClasses} text-red-500`;
+    }
+    return baseClasses;
   }
 
   return (
@@ -131,7 +169,7 @@ function App() {
             <div className="grid grid-cols-2 gap-4">
               {/* Status Dropdown */}
               <div className="space-y-2">
-                <label htmlFor="status" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                <label htmlFor="status" className={getLabelClassName('status')}>
                   Status
                 </label>
                 <Select
@@ -145,7 +183,7 @@ function App() {
                     }
                   }}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={showValidation && isFieldRequired('status') && !formData.status ? "border-red-500" : ""}>
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -157,14 +195,14 @@ function App() {
 
               {/* Case Number */}
               <div className="space-y-2">
-                <label htmlFor="caseNumber" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Case Number
+                <label htmlFor="caseNumber" className={getLabelClassName('caseNumber')}>
+                  Case Number {isFieldRequired('caseNumber') && <span className="text-red-500">*</span>}
                 </label>
                 <input
                   type="text"
                   name="caseNumber"
                   id="caseNumber"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className={getInputClassName('caseNumber')}
                   value={formData.caseNumber}
                   onChange={(e) => setFormData({ ...formData, caseNumber: e.target.value })}
                 />
@@ -175,14 +213,14 @@ function App() {
             <div className="grid grid-cols-2 gap-4">
               {/* Filed On */}
               <div className="space-y-2">
-                <label htmlFor="date" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Filed On
+                <label htmlFor="date" className={getLabelClassName('date')}>
+                  Filed On {isFieldRequired('date') && <span className="text-red-500">*</span>}
                 </label>
                 <input
                   type="date"
                   name="date"
                   id="date"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className={getInputClassName('date')}
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                 />
@@ -190,14 +228,14 @@ function App() {
 
               {/* Law Firm */}
               <div className="space-y-2">
-                <label htmlFor="lawFirm" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Law Firm
+                <label htmlFor="lawFirm" className={getLabelClassName('lawFirm')}>
+                  Law Firm {isFieldRequired('lawFirm') && <span className="text-red-500">*</span>}
                 </label>
                 <input
                   type="text"
                   name="lawFirm"
                   id="lawFirm"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className={getInputClassName('lawFirm')}
                   value={formData.lawFirm}
                   onChange={(e) => setFormData({ ...formData, lawFirm: e.target.value })}
                 />
@@ -246,14 +284,14 @@ function App() {
 
                 {/* Definition Match Dropdown */}
                 <div className="space-y-2">
-                  <label htmlFor="definitionMatch" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    Definition Match
+                  <label htmlFor="definitionMatch" className={getLabelClassName('definitionMatch')}>
+                    Definition Match {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
                   </label>
                   <Select
                     value={formData.definitionMatch}
                     onValueChange={(value: DefinitionMatch) => setFormData({ ...formData, definitionMatch: value })}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className={showValidation && isFieldRequired('definitionMatch') && !formData.definitionMatch ? "border-red-500" : ""}>
                       <SelectValue placeholder="Select definition match" />
                     </SelectTrigger>
                     <SelectContent>
@@ -270,14 +308,14 @@ function App() {
               <div className="grid grid-cols-3 gap-4">
                 {/* Definition Match Dropdown */}
                 <div className="space-y-2">
-                  <label htmlFor="definitionMatch" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    Definition Match
+                  <label htmlFor="definitionMatch" className={getLabelClassName('definitionMatch')}>
+                    Definition Match {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
                   </label>
                   <Select
                     value={formData.definitionMatch}
                     onValueChange={(value: DefinitionMatch) => setFormData({ ...formData, definitionMatch: value })}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className={showValidation && isFieldRequired('definitionMatch') && !formData.definitionMatch ? "border-red-500" : ""}>
                       <SelectValue placeholder="Select definition match" />
                     </SelectTrigger>
                     <SelectContent>
@@ -289,14 +327,14 @@ function App() {
 
                 {/* PA Date */}
                 <div className="space-y-2">
-                  <label htmlFor="paDate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    PA Date
+                  <label htmlFor="paDate" className={getLabelClassName('paDate')}>
+                    PA Date {isFieldRequired('paDate') && <span className="text-red-500">*</span>}
                   </label>
                   <input
                     type="date"
                     name="paDate"
                     id="paDate"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className={getInputClassName('paDate')}
                     value={formData.paDate}
                     onChange={(e) => setFormData({ ...formData, paDate: e.target.value })}
                   />
@@ -304,14 +342,14 @@ function App() {
 
                 {/* FA Date */}
                 <div className="space-y-2">
-                  <label htmlFor="faDate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    FA Date
+                  <label htmlFor="faDate" className={getLabelClassName('faDate')}>
+                    FA Date {isFieldRequired('faDate') && <span className="text-red-500">*</span>}
                   </label>
                   <input
                     type="date"
                     name="faDate"
                     id="faDate"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className={getInputClassName('faDate')}
                     value={formData.faDate}
                     onChange={(e) => setFormData({ ...formData, faDate: e.target.value })}
                   />
@@ -352,14 +390,14 @@ function App() {
 
                     {/* Period End Date */}
                     <div className="space-y-2">
-                      <label htmlFor="periodEndDate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Period End Date
+                      <label htmlFor="periodEndDate" className={getLabelClassName('periodEndDate')}>
+                        Period End Date {isFieldRequired('periodEndDate') && <span className="text-red-500">*</span>}
                       </label>
                       <input
                         type="date"
                         name="periodEndDate"
                         id="periodEndDate"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        className={getInputClassName('periodEndDate')}
                         value={formData.periodEndDate}
                         onChange={(e) => setFormData({ ...formData, periodEndDate: e.target.value })}
                       />
@@ -367,14 +405,14 @@ function App() {
 
                     {/* LDW Date */}
                     <div className="space-y-2">
-                      <label htmlFor="ldwDate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        LDW Date
+                      <label htmlFor="ldwDate" className={getLabelClassName('ldwDate')}>
+                        LDW Date {isFieldRequired('ldwDate') && <span className="text-red-500">*</span>}
                       </label>
                       <input
                         type="date"
                         name="ldwDate"
                         id="ldwDate"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        className={getInputClassName('ldwDate')}
                         value={formData.ldwDate}
                         onChange={(e) => setFormData({ ...formData, ldwDate: e.target.value })}
                       />
