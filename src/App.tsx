@@ -118,7 +118,7 @@ function App() {
     // Check if all required fields are filled
     const requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
     if (formData.status === 'Settled') {
-      if (!formData.noPADate) requiredFields.push('paDate');
+      if (formData.classType === 'Class' && !formData.noPADate) requiredFields.push('paDate');
       if (!formData.noFADate) requiredFields.push('faDate');
       requiredFields.push('periodEndDate', 'ldwDate');
     }
@@ -161,7 +161,7 @@ function App() {
   const isFieldRequired = (field: keyof FormData) => {
     const requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
     if (formData.status === 'Settled') {
-      if (!formData.noPADate) requiredFields.push('paDate');
+      if (formData.classType === 'Class' && !formData.noPADate) requiredFields.push('paDate');
       if (!formData.noFADate) requiredFields.push('faDate');
       requiredFields.push('periodEndDate', 'ldwDate');
     }
