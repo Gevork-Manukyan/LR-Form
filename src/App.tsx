@@ -40,6 +40,13 @@ function App() {
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [showValidation, setShowValidation] = useState(false)
 
+  // Hide output when form data changes
+  useEffect(() => {
+    if (!isInitialLoad) {
+      setShowOutput(false)
+    }
+  }, [formData, isInitialLoad])
+
   // Calculate isLDWAfterPeriodEnd whenever periodEndDate or ldwDate changes
   useEffect(() => {
     if (formData.periodEndDate && formData.ldwDate) {
