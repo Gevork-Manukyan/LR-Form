@@ -29,7 +29,8 @@ function App() {
     periodEndDate: '',
     ldwDate: '',
     elevenMonthsPassed: '11 months has passed',
-    liabilityCalc: ''
+    liabilityCalc: '',
+    hasDescription: false
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -58,7 +59,8 @@ function App() {
           periodEndDate: parsedData.periodEndDate || '',
           ldwDate: parsedData.ldwDate || '',
           elevenMonthsPassed: parsedData.elevenMonthsPassed || '11 months has passed',
-          liabilityCalc: parsedData.liabilityCalc || ''
+          liabilityCalc: parsedData.liabilityCalc || '',
+          hasDescription: parsedData.hasDescription || false
         }
 
         setFormData(completeData)
@@ -112,7 +114,8 @@ function App() {
       periodEndDate: '',
       ldwDate: '',
       elevenMonthsPassed: '11 months has passed',
-      liabilityCalc: ''
+      liabilityCalc: '',
+      hasDescription: false
     })
     localStorage.removeItem('formData')
     setShowOutput(false)
@@ -440,8 +443,25 @@ function App() {
               </>
             )}
 
-            {/* Description Text Area - Only for Pending */}
-            {formData.status === 'Pending' && (
+            {/* Description Toggle - Only for Settled */}
+            {formData.status === 'Settled' && (
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="hasDescription"
+                  checked={formData.hasDescription}
+                  onCheckedChange={(checked) => setFormData({ ...formData, hasDescription: checked as boolean })}
+                />
+                <label
+                  htmlFor="hasDescription"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Add description?
+                </label>
+              </div>
+            )}
+
+            {/* Description Text Area - Only for Pending or Settled with toggle */}
+            {(formData.status === 'Pending' || (formData.status === 'Settled' && formData.hasDescription)) && (
               <div className="space-y-2">
                 <label htmlFor="description" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Description

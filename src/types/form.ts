@@ -22,4 +22,5 @@ export interface FormData {
   ldwDate: LDWDate
   elevenMonthsPassed: ElevenMonthsStatus
   liabilityCalc: string
+  hasDescription: boolean
 } 
