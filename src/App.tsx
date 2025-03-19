@@ -32,6 +32,7 @@ function App() {
     elevenMonthsPassed: '11 months has passed',
     liabilityCalc: ''
   })
+  const [showOutput, setShowOutput] = useState(false)
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
@@ -40,8 +41,7 @@ function App() {
   }
 
   const handleSubmit = (data: Record<string, string>) => {
-    console.log('Form submitted:', data)
-    // Here we'll add the formatting logic later
+    setShowOutput(true)
   }
 
   return (
@@ -424,11 +424,11 @@ function App() {
               type="submit"
               className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
             >
-              Submit
+              Print
             </button>
 
             {/* Formatted Display Section */}
-            {formData.status === 'Pending' && (
+            {formData.status === 'Pending' && showOutput && (
               <div className="mt-8 p-4 bg-gray-50 rounded-lg">
                 <h2 className="text-lg font-semibold mb-4">Formatted Output</h2>
                 <div className="font-mono text-sm whitespace-pre-wrap">
@@ -443,7 +443,7 @@ function App() {
                     if (monthsDiff > 12) return 'within 12-36 months';
                     return 'within 12 months';
                   })()} on {formatDate(formData.date)} with {formData.lawFirm}. PNC {formData.definitionMatch === 'Matches definition' ? 'does' : 'does NOT'} match the definition.
-                  {formData.description && formData.description.split('\n').map((line, index) => line.trim() && `\n  • ${line.trim()}`).join('')}
+                  {formData.description && formData.description.split('\n').map(line => line.trim() && `\n  • ${line.trim()}`).join('')}
                   {formData.defendantNames.length > 0 && `\n  • Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
                 </div>
               </div>
