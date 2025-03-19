@@ -32,7 +32,9 @@ function App() {
     ldwDate: '',
     isLDWAfterPeriodEnd: false,
     liabilityCalc: '',
-    hasDescription: false
+    hasDescription: false,
+    scheduledMPA: false,
+    scheduledMFA: false
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -75,7 +77,9 @@ function App() {
           ldwDate: parsedData.ldwDate || '',
           isLDWAfterPeriodEnd: parsedData.isLDWAfterPeriodEnd || false,
           liabilityCalc: parsedData.liabilityCalc || '',
-          hasDescription: parsedData.hasDescription || false
+          hasDescription: parsedData.hasDescription || false,
+          scheduledMPA: Boolean(parsedData.scheduledMPA),
+          scheduledMFA: Boolean(parsedData.scheduledMFA)
         }
 
         setFormData(completeData)
@@ -160,7 +164,9 @@ function App() {
       periodEndDate: '',
       ldwDate: '',
       liabilityCalc: '',
-      hasDescription: false
+      hasDescription: false,
+      scheduledMPA: false,
+      scheduledMFA: false
     })
     localStorage.removeItem('formData')
     setShowOutput(false)
@@ -370,7 +376,139 @@ function App() {
             {/* Definition Match, PA Date, and FA Date Row - Only for Settled */}
             {formData.status === 'Settled' && (
               <div className="grid grid-cols-3 gap-4">
-                {/* Definition Match Dropdown */}
+                {/* Class/PAGA */}
+                <div className="space-y-2">
+                  <label htmlFor="classType" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Class/PAGA
+                  </label>
+                  <RadioGroup
+                    value={formData.classType}
+                    onValueChange={(value: ClassType) => setFormData({ ...formData, classType: value })}
+                    className="flex flex-row space-x-4"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Class" id="class" />
+                      <label htmlFor="class" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        Class
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="PAGA" id="paga" />
+                      <label htmlFor="paga" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        PAGA
+                      </label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                {/* PA Date and Toggle - Only show for Class */}
+                {formData.classType === 'Class' && (
+                  <div className="space-y-2">
+                    <label htmlFor="paDate" className={getLabelClassName('paDate')}>
+                      PA Date {isFieldRequired('paDate') && <span className="text-red-500">*</span>}
+                    </label>
+                    <input
+                      type="date"
+                      name="paDate"
+                      id="paDate"
+                      className={`${getInputClassName('paDate')} ${formData.noPADate ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      value={formData.paDate}
+                      onChange={(e) => setFormData({ ...formData, paDate: e.target.value })}
+                      disabled={formData.noPADate}
+                    />
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="scheduledMPA"
+                          checked={formData.scheduledMPA}
+                          onCheckedChange={(checked) => setFormData({ ...formData, scheduledMPA: checked as boolean })}
+                        />
+                        <label
+                          htmlFor="scheduledMPA"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          Scheduled MPA
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="noPADate"
+                          checked={formData.noPADate}
+                          onCheckedChange={(checked) => {
+                            setFormData({ 
+                              ...formData, 
+                              noPADate: checked as boolean,
+                              paDate: checked ? '' : formData.paDate
+                            });
+                          }}
+                        />
+                        <label
+                          htmlFor="noPADate"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          No PA Date
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* FA Date and Toggle */}
+                <div className="space-y-2">
+                  <label htmlFor="faDate" className={getLabelClassName('faDate')}>
+                    FA Date {isFieldRequired('faDate') && <span className="text-red-500">*</span>}
+                  </label>
+                  <input
+                    type="date"
+                    name="faDate"
+                    id="faDate"
+                    className={`${getInputClassName('faDate')} ${formData.noFADate ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    value={formData.faDate}
+                    onChange={(e) => setFormData({ ...formData, faDate: e.target.value })}
+                    disabled={formData.noFADate}
+                  />
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="scheduledMFA"
+                        checked={formData.scheduledMFA}
+                        onCheckedChange={(checked) => setFormData({ ...formData, scheduledMFA: checked as boolean })}
+                      />
+                      <label
+                        htmlFor="scheduledMFA"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Scheduled MFA
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="noFADate"
+                        checked={formData.noFADate}
+                        onCheckedChange={(checked) => {
+                          setFormData({ 
+                            ...formData, 
+                            noFADate: checked as boolean,
+                            faDate: checked ? '' : formData.faDate
+                          });
+                        }}
+                      />
+                      <label
+                        htmlFor="noFADate"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        No FA Date
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Definition Match, Period End Date, and LDW Date Row - Only for Settled */}
+            {formData.status === 'Settled' && (
+              <div className="grid grid-cols-3 gap-4">
+                {/* Definition Match */}
                 <div className="space-y-2">
                   <label htmlFor="definitionMatch" className={getLabelClassName('definitionMatch')}>
                     Definition Match {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
@@ -389,176 +527,71 @@ function App() {
                   </Select>
                 </div>
 
-                {/* PA Date and Toggle */}
+                {/* Period End Date */}
                 <div className="space-y-2">
-                  <label htmlFor="paDate" className={getLabelClassName('paDate')}>
-                    PA Date {isFieldRequired('paDate') && <span className="text-red-500">*</span>}
+                  <label htmlFor="periodEndDate" className={getLabelClassName('periodEndDate')}>
+                    Period End Date {isFieldRequired('periodEndDate') && <span className="text-red-500">*</span>}
                   </label>
                   <input
                     type="date"
-                    name="paDate"
-                    id="paDate"
-                    className={`${getInputClassName('paDate')} ${formData.noPADate ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    value={formData.paDate}
-                    onChange={(e) => setFormData({ ...formData, paDate: e.target.value })}
-                    disabled={formData.noPADate}
+                    name="periodEndDate"
+                    id="periodEndDate"
+                    className={getInputClassName('periodEndDate')}
+                    value={formData.periodEndDate}
+                    onChange={(e) => setFormData({ ...formData, periodEndDate: e.target.value })}
                   />
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="noPADate"
-                      checked={formData.noPADate}
-                      onCheckedChange={(checked) => {
-                        setFormData({ 
-                          ...formData, 
-                          noPADate: checked as boolean,
-                          paDate: checked ? '' : formData.paDate
-                        });
-                      }}
-                    />
-                    <label
-                      htmlFor="noPADate"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      No PA Date
-                    </label>
-                  </div>
                 </div>
 
-                {/* FA Date and Toggle */}
+                {/* LDW Date */}
                 <div className="space-y-2">
-                  <label htmlFor="faDate" className={getLabelClassName('faDate')}>
-                    FA Date {isFieldRequired('faDate') && <span className="text-red-500">*</span>}
+                  <label htmlFor="ldwDate" className={getLabelClassName('ldwDate')}>
+                    LDW Date {isFieldRequired('ldwDate') && <span className="text-red-500">*</span>}
                   </label>
                   <input
                     type="date"
-                    name="faDate"
-                    id="faDate"
-                    className={`${getInputClassName('faDate')} ${formData.noFADate ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    value={formData.faDate}
-                    onChange={(e) => setFormData({ ...formData, faDate: e.target.value })}
-                    disabled={formData.noFADate}
+                    name="ldwDate"
+                    id="ldwDate"
+                    className={getInputClassName('ldwDate')}
+                    value={formData.ldwDate}
+                    onChange={(e) => setFormData({ ...formData, ldwDate: e.target.value })}
                   />
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="noFADate"
-                      checked={formData.noFADate}
-                      onCheckedChange={(checked) => {
-                        setFormData({ 
-                          ...formData, 
-                          noFADate: checked as boolean,
-                          faDate: checked ? '' : formData.faDate
-                        });
-                      }}
-                    />
-                    <label
-                      htmlFor="noFADate"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      No FA Date
-                    </label>
-                  </div>
                 </div>
               </div>
             )}
 
-            {/* Settled-specific fields */}
-            {formData.status === 'Settled' && (
-              <>
-                {/* Class/PAGA, Period End Date, and LDW Date Row */}
-                {formData.definitionMatch === 'Matches definition' && (
-                  <div className="grid grid-cols-3 gap-4">
-                    {/* Class/PAGA */}
-                    <div className="space-y-2">
-                      <label htmlFor="classType" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Class/PAGA
-                      </label>
-                      <RadioGroup
-                        value={formData.classType}
-                        onValueChange={(value: ClassType) => setFormData({ ...formData, classType: value })}
-                        className="flex flex-row space-x-4"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="Class" id="class" />
-                          <label htmlFor="class" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Class
-                          </label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="PAGA" id="paga" />
-                          <label htmlFor="paga" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            PAGA
-                          </label>
-                        </div>
-                      </RadioGroup>
-                    </div>
+            {/* Liability Calc */}
+            {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
+              const periodEnd = new Date(formData.periodEndDate);
+              const elevenMonthsLater = new Date(periodEnd);
+              elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+              const today = new Date();
+              const hasPassed = today >= elevenMonthsLater;
+              const ldwDate = new Date(formData.ldwDate);
+              const isLDWAfterPeriodEnd = ldwDate > periodEnd;
 
-                    {/* Period End Date */}
-                    <div className="space-y-2">
-                      <label htmlFor="periodEndDate" className={getLabelClassName('periodEndDate')}>
-                        Period End Date {isFieldRequired('periodEndDate') && <span className="text-red-500">*</span>}
-                      </label>
+              if (hasPassed && isLDWAfterPeriodEnd) {
+                return (
+                  <div className="space-y-2">
+                    <label htmlFor="liabilityCalc" className={getLabelClassName('liabilityCalc')}>
+                      Liability Calc {isFieldRequired('liabilityCalc') && <span className="text-red-500">*</span>}
+                    </label>
+                    <div className="flex items-center">
+                      <span className="mr-2">$</span>
                       <input
-                        type="date"
-                        name="periodEndDate"
-                        id="periodEndDate"
-                        className={getInputClassName('periodEndDate')}
-                        value={formData.periodEndDate}
-                        onChange={(e) => setFormData({ ...formData, periodEndDate: e.target.value })}
-                      />
-                    </div>
-
-                    {/* LDW Date */}
-                    <div className="space-y-2">
-                      <label htmlFor="ldwDate" className={getLabelClassName('ldwDate')}>
-                        LDW Date {isFieldRequired('ldwDate') && <span className="text-red-500">*</span>}
-                      </label>
-                      <input
-                        type="date"
-                        name="ldwDate"
-                        id="ldwDate"
-                        className={getInputClassName('ldwDate')}
-                        value={formData.ldwDate}
-                        onChange={(e) => setFormData({ ...formData, ldwDate: e.target.value })}
+                        type="text"
+                        name="liabilityCalc"
+                        id="liabilityCalc"
+                        className={getInputClassName('liabilityCalc')}
+                        value={formData.liabilityCalc}
+                        onChange={handleLiabilityCalcChange}
+                        placeholder="0.00"
                       />
                     </div>
                   </div>
-                )}
-
-                {/* Liability Calc */}
-                {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
-                  const periodEnd = new Date(formData.periodEndDate);
-                  const elevenMonthsLater = new Date(periodEnd);
-                  elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
-                  const today = new Date();
-                  const hasPassed = today >= elevenMonthsLater;
-                  const ldwDate = new Date(formData.ldwDate);
-                  const isLDWAfterPeriodEnd = ldwDate > periodEnd;
-
-                  if (hasPassed && isLDWAfterPeriodEnd) {
-                    return (
-                      <div className="space-y-2">
-                        <label htmlFor="liabilityCalc" className={getLabelClassName('liabilityCalc')}>
-                          Liability Calc {isFieldRequired('liabilityCalc') && <span className="text-red-500">*</span>}
-                        </label>
-                        <div className="flex items-center">
-                          <span className="mr-2">$</span>
-                          <input
-                            type="text"
-                            name="liabilityCalc"
-                            id="liabilityCalc"
-                            className={getInputClassName('liabilityCalc')}
-                            value={formData.liabilityCalc}
-                            onChange={handleLiabilityCalcChange}
-                            placeholder="0.00"
-                          />
-                        </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                })()}
-              </>
-            )}
+                );
+              }
+              return null;
+            })()}
 
             {/* Description Toggle - Only for Settled */}
             {formData.status === 'Settled' && (

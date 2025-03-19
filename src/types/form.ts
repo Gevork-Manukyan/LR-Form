@@ -24,4 +24,6 @@ export interface FormData {
   isLDWAfterPeriodEnd: boolean
   liabilityCalc: string
   hasDescription: boolean
+  scheduledMPA: boolean
+  scheduledMFA: boolean
 } 
