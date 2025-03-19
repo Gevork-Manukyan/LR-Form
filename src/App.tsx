@@ -1,6 +1,6 @@
 import './App.css'
 import { Form } from './components/ui/form'
-import { FormData, Status, TimeFrame, DefinitionMatch, ClassType, LDWDate } from './types/form'
+import { FormData, Status, DefinitionMatch, ClassType, LDWDate } from './types/form'
 import { useState } from 'react'
 import {
   Select,
@@ -117,24 +117,41 @@ function App() {
             {/* Time Frame and Definition Match Row - Only for Pending */}
             {formData.status === 'Pending' && (
               <div className="grid grid-cols-2 gap-4">
-                {/* Time Frame Dropdown */}
+                {/* Time Frame */}
                 <div className="space-y-2">
                   <label htmlFor="timeFrame" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Time Frame
                   </label>
-                  <Select
-                    value={formData.timeFrame}
-                    onValueChange={(value: TimeFrame) => setFormData({ ...formData, timeFrame: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select time frame" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="12 months">12 months</SelectItem>
-                      <SelectItem value="12-36 months">12-36 months</SelectItem>
-                      <SelectItem value="36 months">36 months</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex flex-col gap-1">
+                    {(() => {
+                      if (!formData.date) {
+                        return <div className="text-sm text-muted-foreground">Enter Filed On date to calculate</div>;
+                      }
+
+                      const filedDate = new Date(formData.date);
+                      const today = new Date();
+                      const monthsDiff = (today.getFullYear() - filedDate.getFullYear()) * 12 + 
+                        (today.getMonth() - filedDate.getMonth());
+
+                      let timeFrame;
+                      let isRed = false;
+
+                      if (monthsDiff > 36) {
+                        timeFrame = 'More than 36 months ago';
+                        isRed = true;
+                      } else if (monthsDiff > 12) {
+                        timeFrame = 'Between 12-36 months';
+                      } else {
+                        timeFrame = 'Within 12 months';
+                      }
+
+                      return (
+                        <div className={`text-base font-medium ${isRed ? 'text-red-600' : 'text-green-600'}`}>
+                          {timeFrame}
+                        </div>
+                      );
+                    })()}
+                  </div>
                 </div>
 
                 {/* Definition Match Dropdown */}
@@ -284,63 +301,62 @@ function App() {
                   </div>
                 )}
 
-                {/* Time Frame */}
+                {/* Time Frame and Liability Calc Row */}
                 {formData.definitionMatch === 'Matches definition' && (
-                  <div className="space-y-2">
-                    <label htmlFor="elevenMonthsPassed" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                      Time Frame
-                    </label>
-                    <div className="flex flex-col gap-1">
-                      {(() => {
-                        if (!formData.periodEndDate) {
-                          return <div className="text-sm text-muted-foreground">Enter Period End Date to calculate</div>;
-                        }
-
-                        const periodEnd = new Date(formData.periodEndDate);
-                        const elevenMonthsLater = new Date(periodEnd);
-                        elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
-                        const today = new Date();
-                        const daysUntil = Math.ceil((elevenMonthsLater.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-                        const hasPassed = today >= elevenMonthsLater;
-
-                        return (
-                          <>
-                            <div className={`text-sm font-medium ${hasPassed ? 'text-green-600' : 'text-red-600'}`}>
-                              {hasPassed ? '11 months has passed' : '11 months has NOT passed'}
-                            </div>
-                            {!hasPassed && (
-                              <div className="text-sm text-muted-foreground">
-                                ({daysUntil} days until 11 months passes)
-                              </div>
-                            )}
-                          </>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                )}
-
-                {/* Liability Calc */}
-                {formData.definitionMatch === 'Matches definition' && 
-                 formData.ldwDate === 'After' && 
-                 formData.elevenMonthsPassed === '11 months has passed' && (
-                  <div className="col-span-2">
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Time Frame */}
                     <div className="space-y-2">
-                      <label htmlFor="liabilityCalc" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Liability Calc
+                      <label htmlFor="elevenMonthsPassed" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        Time Frame
                       </label>
-                      <div className="flex items-center">
-                        <span className="mr-2">$</span>
-                        <input
-                          type="number"
-                          name="liabilityCalc"
-                          id="liabilityCalc"
-                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                          value={formData.liabilityCalc}
-                          onChange={(e) => setFormData({ ...formData, liabilityCalc: e.target.value })}
-                        />
+                      <div className="flex flex-col gap-1">
+                        {(() => {
+                          if (!formData.periodEndDate) {
+                            return <div className="text-sm text-muted-foreground">Enter Period End Date to calculate</div>;
+                          }
+
+                          const periodEnd = new Date(formData.periodEndDate);
+                          const elevenMonthsLater = new Date(periodEnd);
+                          elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+                          const today = new Date();
+                          const daysUntil = Math.ceil((elevenMonthsLater.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                          const hasPassed = today >= elevenMonthsLater;
+
+                          return (
+                            <>
+                              <div className={`text-base font-medium ${hasPassed ? 'text-green-600' : 'text-red-600'}`}>
+                                {hasPassed ? '11 months has passed' : '11 months has NOT passed'}
+                              </div>
+                              {!hasPassed && (
+                                <div className="text-sm text-muted-foreground">
+                                  ({daysUntil} days until 11 months passes)
+                                </div>
+                              )}
+                            </>
+                          );
+                        })()}
                       </div>
                     </div>
+
+                    {/* Liability Calc */}
+                    {formData.ldwDate === 'After' && (
+                      <div className="space-y-2">
+                        <label htmlFor="liabilityCalc" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                          Liability Calc
+                        </label>
+                        <div className="flex items-center">
+                          <span className="mr-2">$</span>
+                          <input
+                            type="number"
+                            name="liabilityCalc"
+                            id="liabilityCalc"
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            value={formData.liabilityCalc}
+                            onChange={(e) => setFormData({ ...formData, liabilityCalc: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </>
