@@ -421,7 +421,13 @@ function App() {
                         <Checkbox
                           id="scheduledMPA"
                           checked={formData.scheduledMPA}
-                          onCheckedChange={(checked) => setFormData({ ...formData, scheduledMPA: checked as boolean })}
+                          onCheckedChange={(checked) => {
+                            setFormData({ 
+                              ...formData, 
+                              scheduledMPA: checked as boolean,
+                              noPADate: checked ? false : formData.noPADate
+                            });
+                          }}
                         />
                         <label
                           htmlFor="scheduledMPA"
@@ -438,6 +444,7 @@ function App() {
                             setFormData({ 
                               ...formData, 
                               noPADate: checked as boolean,
+                              scheduledMPA: checked ? false : formData.scheduledMPA,
                               paDate: checked ? '' : formData.paDate
                             });
                           }}
@@ -472,7 +479,13 @@ function App() {
                       <Checkbox
                         id="scheduledMFA"
                         checked={formData.scheduledMFA}
-                        onCheckedChange={(checked) => setFormData({ ...formData, scheduledMFA: checked as boolean })}
+                        onCheckedChange={(checked) => {
+                          setFormData({ 
+                            ...formData, 
+                            scheduledMFA: checked as boolean,
+                            noFADate: checked ? false : formData.noFADate
+                          });
+                        }}
                       />
                       <label
                         htmlFor="scheduledMFA"
@@ -489,6 +502,7 @@ function App() {
                           setFormData({ 
                             ...formData, 
                             noFADate: checked as boolean,
+                            scheduledMFA: checked ? false : formData.scheduledMFA,
                             faDate: checked ? '' : formData.faDate
                           });
                         }}
