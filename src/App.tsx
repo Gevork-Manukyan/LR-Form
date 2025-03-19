@@ -1,6 +1,6 @@
 import './App.css'
 import { Form } from './components/ui/form'
-import { FormData, Status, DefinitionMatch, ClassType, LDWDate } from './types/form'
+import { FormData, Status, DefinitionMatch, ClassType } from './types/form'
 import { useState, useEffect } from 'react'
 import {
   Select,
@@ -27,7 +27,7 @@ function App() {
     faDate: '',
     classType: 'Class',
     periodEndDate: '',
-    ldwDate: 'After',
+    ldwDate: '',
     elevenMonthsPassed: '11 months has passed',
     liabilityCalc: ''
   })
@@ -56,7 +56,7 @@ function App() {
           faDate: parsedData.faDate || '',
           classType: parsedData.classType || 'Class',
           periodEndDate: parsedData.periodEndDate || '',
-          ldwDate: parsedData.ldwDate || 'After',
+          ldwDate: parsedData.ldwDate || '',
           elevenMonthsPassed: parsedData.elevenMonthsPassed || '11 months has passed',
           liabilityCalc: parsedData.liabilityCalc || ''
         }
@@ -87,7 +87,7 @@ function App() {
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
-    const date = new Date(dateString);
+    const date = new Date(dateString + 'T00:00:00');
     return `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}/${date.getFullYear()}`;
   }
 
@@ -110,7 +110,7 @@ function App() {
       faDate: '',
       classType: 'Class',
       periodEndDate: '',
-      ldwDate: 'After',
+      ldwDate: '',
       elevenMonthsPassed: '11 months has passed',
       liabilityCalc: ''
     })
@@ -367,23 +367,14 @@ function App() {
                       <label htmlFor="ldwDate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         LDW Date
                       </label>
-                      <div className="flex items-center gap-4">
-                        <Select
-                          value={formData.ldwDate}
-                          onValueChange={(value: LDWDate) => setFormData({ ...formData, ldwDate: value })}
-                        >
-                          <SelectTrigger className="w-[120px]">
-                            <SelectValue placeholder="Select LDW date" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="After">After</SelectItem>
-                            <SelectItem value="Before">Before</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <div className="text-sm text-foreground whitespace-nowrap ml-[-10px]">
-                          period end <br/> date
-                        </div>
-                      </div>
+                      <input
+                        type="date"
+                        name="ldwDate"
+                        id="ldwDate"
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        value={formData.ldwDate}
+                        onChange={(e) => setFormData({ ...formData, ldwDate: e.target.value })}
+                      />
                     </div>
                   </div>
                 )}
@@ -551,23 +542,19 @@ function App() {
                           const today = new Date();
                           const hasPassed = today >= elevenMonthsLater;
 
-                          if (formData.ldwDate === 'After') {
-                            return `\n  • PNC matches the definition, but their LDW (${formData.ldwDate}) falls after the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months have passed.`;
-                          } else if (formData.ldwDate === 'Before') {
-                            return `\n  • PNC matches the definition and their LDW (${formData.ldwDate}) falls within the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months ${hasPassed ? 'have' : 'have not'} passed. Lawsuit Problem.`;
-                          }
-                        })()
-                      )}
-                      {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate === 'After' && (
-                        (() => {
-                          const periodEnd = new Date(formData.periodEndDate);
-                          const elevenMonthsLater = new Date(periodEnd);
-                          elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
-                          const today = new Date();
-                          const hasPassed = today >= elevenMonthsLater;
+                          if (formData.ldwDate) {
+                            const ldwDate = new Date(formData.ldwDate);
+                            const isLDWAfterPeriodEnd = ldwDate > periodEnd;
 
-                          if (!hasPassed) {
-                            return `\n  • PNC matches the definition and their LDW (${formData.ldwDate}) falls after the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). However, 11 months have not passed since the period end date. Lawsuit Problem.`;
+                            if (isLDWAfterPeriodEnd) {
+                              if (!hasPassed) {
+                                return `\n  • PNC matches the definition and their LDW (${formatDate(formData.ldwDate)}) falls after the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). However, 11 months have not passed since the period end date. Lawsuit Problem.`;
+                              } else {
+                                return `\n  • PNC matches the definition, but their LDW (${formatDate(formData.ldwDate)}) falls after the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months have passed.`;
+                              }
+                            } else {
+                              return `\n  • PNC matches the definition and their LDW (${formatDate(formData.ldwDate)}) falls within the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months ${hasPassed ? 'have' : 'have not'} passed. Lawsuit Problem.`;
+                            }
                           }
                           return '';
                         })()
