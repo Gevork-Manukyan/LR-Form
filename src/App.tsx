@@ -40,8 +40,9 @@ function App() {
     if (savedFormData) {
       try {
         const parsedData = JSON.parse(savedFormData)
+
         // Ensure all required fields are present
-        const completeData = {
+        const completeData: FormData = {
           status: parsedData.status || 'Pending',
           caseNumber: parsedData.caseNumber || '',
           timeFrame: parsedData.timeFrame || '12 months',
@@ -59,6 +60,7 @@ function App() {
           elevenMonthsPassed: parsedData.elevenMonthsPassed || '11 months has passed',
           liabilityCalc: parsedData.liabilityCalc || ''
         }
+
         setFormData(completeData)
       } catch (error) {
         console.error('Error loading form data:', error)
