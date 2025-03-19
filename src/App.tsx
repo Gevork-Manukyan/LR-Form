@@ -40,8 +40,8 @@ function App() {
     return `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}/${date.getFullYear()}`;
   }
 
-  const handleSubmit = (data: Record<string, string>) => {
-    setShowOutput(true)
+  const handleSubmit = () => {
+    setShowOutput(!showOutput);
   }
 
   return (
@@ -424,27 +424,68 @@ function App() {
               type="submit"
               className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
             >
-              Print
+              {showOutput ? 'Hide' : 'Show'}
             </button>
 
             {/* Formatted Display Section */}
-            {formData.status === 'Pending' && showOutput && (
+            {showOutput && (
               <div className="mt-8 p-4 bg-gray-50 rounded-lg">
                 <h2 className="text-lg font-semibold mb-4">Formatted Output</h2>
                 <div className="font-mono text-sm whitespace-pre-wrap">
-                  • Pending case {formData.caseNumber} filed {(() => {
-                    if (!formData.date) return '';
-                    const filedDate = new Date(formData.date);
-                    const today = new Date();
-                    const monthsDiff = (today.getFullYear() - filedDate.getFullYear()) * 12 + 
-                      (today.getMonth() - filedDate.getMonth());
-                    
-                    if (monthsDiff > 36) return 'over 36 months ago';
-                    if (monthsDiff > 12) return 'within 12-36 months';
-                    return 'within 12 months';
-                  })()} on {formatDate(formData.date)} with {formData.lawFirm}. PNC {formData.definitionMatch === 'Matches definition' ? 'does' : 'does NOT'} match the definition.
-                  {formData.description && formData.description.split('\n').map(line => line.trim() && `\n  • ${line.trim()}`).join('')}
-                  {formData.defendantNames.length > 0 && `\n  • Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
+                  {formData.status === 'Pending' ? (
+                    // Pending form output
+                    <>
+                      • Pending case {formData.caseNumber} filed {(() => {
+                        if (!formData.date) return '';
+                        const filedDate = new Date(formData.date);
+                        const today = new Date();
+                        const monthsDiff = (today.getFullYear() - filedDate.getFullYear()) * 12 + 
+                          (today.getMonth() - filedDate.getMonth());
+                        
+                        if (monthsDiff > 36) return 'over 36 months ago';
+                        if (monthsDiff > 12) return 'within 12-36 months';
+                        return 'within 12 months';
+                      })()} on {formatDate(formData.date)} with {formData.lawFirm}. PNC {formData.definitionMatch === 'Matches definition' ? 'does' : 'does NOT'} match the definition.
+                      {formData.description && formData.description.split('\n').map(line => line.trim() && `\n  • ${line.trim()}`).join('')}
+                      {formData.defendantNames.length > 0 && `\n  • Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
+                    </>
+                  ) : (
+                    // Settled form output
+                    <>
+                      • Settled case {formData.caseNumber} filed on {formatDate(formData.date)} with {formData.lawFirm}. PA on {formatDate(formData.paDate)}; FA on {formatDate(formData.faDate)}. PNC {formData.definitionMatch === 'Matches definition' ? 'does' : 'does NOT'} match the definition.
+                      {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && (
+                        (() => {
+                          const periodEnd = new Date(formData.periodEndDate);
+                          const elevenMonthsLater = new Date(periodEnd);
+                          elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+                          const today = new Date();
+                          const hasPassed = today >= elevenMonthsLater;
+
+                          if (formData.ldwDate === 'After') {
+                            return `\n  • PNC matches the definition, but their LDW (${formData.ldwDate}) falls after the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months have passed.`;
+                          } else if (formData.ldwDate === 'Before') {
+                            return `\n  • PNC matches the definition and their LDW (${formData.ldwDate}) falls within the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months ${hasPassed ? 'have' : 'have not'} passed. Lawsuit Problem.`;
+                          }
+                        })()
+                      )}
+                      {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate === 'After' && (
+                        (() => {
+                          const periodEnd = new Date(formData.periodEndDate);
+                          const elevenMonthsLater = new Date(periodEnd);
+                          elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+                          const today = new Date();
+                          const hasPassed = today >= elevenMonthsLater;
+
+                          if (!hasPassed) {
+                            return `\n  • PNC matches the definition and their LDW (${formData.ldwDate}) falls after the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). However, 11 months have not passed since the period end date. Lawsuit Problem.`;
+                          }
+                          return '';
+                        })()
+                      )}
+                      {formData.defendantNames.length > 0 && `\n  • Released Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
+                      {formData.ldwDate === 'After' && formData.liabilityCalc && `\n  • Liability Calc: $${formData.liabilityCalc}`}
+                    </>
+                  )}
                 </div>
               </div>
             )}
