@@ -26,4 +26,5 @@ export interface FormData {
   hasDescription: boolean
   scheduledMPA: boolean
   scheduledMFA: boolean
+  noPeriodEndDate: boolean
 } 

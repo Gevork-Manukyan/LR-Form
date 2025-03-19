@@ -34,7 +34,8 @@ function App() {
     liabilityCalc: '',
     hasDescription: false,
     scheduledMPA: false,
-    scheduledMFA: false
+    scheduledMFA: false,
+    noPeriodEndDate: false
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -86,7 +87,8 @@ function App() {
           liabilityCalc: parsedData.liabilityCalc || '',
           hasDescription: parsedData.hasDescription || false,
           scheduledMPA: Boolean(parsedData.scheduledMPA),
-          scheduledMFA: Boolean(parsedData.scheduledMFA)
+          scheduledMFA: Boolean(parsedData.scheduledMFA),
+          noPeriodEndDate: parsedData.noPeriodEndDate || false
         }
 
         setFormData(completeData)
@@ -127,7 +129,8 @@ function App() {
     if (formData.status === 'Settled') {
       if (formData.classType === 'Class' && !formData.noPADate) requiredFields.push('paDate');
       if (!formData.noFADate) requiredFields.push('faDate');
-      requiredFields.push('periodEndDate', 'ldwDate');
+      if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
+      requiredFields.push('ldwDate');
     }
 
     const allFieldsFilled = requiredFields.every(field => formData[field as keyof FormData]);
@@ -158,7 +161,8 @@ function App() {
       liabilityCalc: '',
       hasDescription: false,
       scheduledMPA: false,
-      scheduledMFA: false
+      scheduledMFA: false,
+      noPeriodEndDate: false
     })
     localStorage.removeItem('formData')
     setShowOutput(false)
@@ -170,7 +174,8 @@ function App() {
     if (formData.status === 'Settled') {
       if (formData.classType === 'Class' && !formData.noPADate) requiredFields.push('paDate');
       if (!formData.noFADate) requiredFields.push('faDate');
-      requiredFields.push('periodEndDate', 'ldwDate');
+      if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
+      requiredFields.push('ldwDate');
     }
     return requiredFields.includes(field);
   }
@@ -527,10 +532,30 @@ function App() {
                     type="date"
                     name="periodEndDate"
                     id="periodEndDate"
-                    className={getInputClassName('periodEndDate')}
+                    className={`${getInputClassName('periodEndDate')} ${formData.noPeriodEndDate ? 'opacity-50 cursor-not-allowed' : ''}`}
                     value={formData.periodEndDate}
                     onChange={(e) => setFormData({ ...formData, periodEndDate: e.target.value })}
+                    disabled={formData.noPeriodEndDate}
                   />
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="noPeriodEndDate"
+                      checked={formData.noPeriodEndDate}
+                      onCheckedChange={(checked) => {
+                        setFormData({ 
+                          ...formData, 
+                          noPeriodEndDate: checked as boolean,
+                          periodEndDate: checked ? '' : formData.periodEndDate
+                        });
+                      }}
+                    />
+                    <label
+                      htmlFor="noPeriodEndDate"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      No End Date
+                    </label>
+                  </div>
                 </div>
 
                 {/* LDW Date */}
