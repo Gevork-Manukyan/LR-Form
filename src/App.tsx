@@ -43,7 +43,7 @@ function App() {
 
         // Ensure all required fields are present
         const completeData: FormData = {
-          status: parsedData.status || 'Pending',
+          status: parsedData.status === 'Pending' || parsedData.status === 'Settled' ? parsedData.status : 'Pending',
           caseNumber: parsedData.caseNumber || '',
           timeFrame: parsedData.timeFrame || '12 months',
           date: parsedData.date || '',
@@ -73,7 +73,12 @@ function App() {
   useEffect(() => {
     if (!isInitialLoad) {
       try {
-        localStorage.setItem('formData', JSON.stringify(formData))
+        // Ensure status is valid before saving
+        const dataToSave = {
+          ...formData,
+          status: formData.status === 'Pending' || formData.status === 'Settled' ? formData.status : 'Pending'
+        }
+        localStorage.setItem('formData', JSON.stringify(dataToSave))
       } catch (error) {
         console.error('Error saving form data:', error)
       }
@@ -127,8 +132,15 @@ function App() {
                   Status
                 </label>
                 <Select
-                  value={formData.status}
-                  onValueChange={(value: Status) => setFormData({ ...formData, status: value })}
+                  value={formData.status || 'Pending'}
+                  onValueChange={(value: Status) => {
+                    if (value === 'Pending' || value === 'Settled') {
+                      setFormData(prevData => ({
+                        ...prevData,
+                        status: value
+                      }));
+                    }
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />
