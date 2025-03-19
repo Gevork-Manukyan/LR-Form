@@ -335,8 +335,8 @@ function App() {
                       <SelectValue placeholder="Select definition match" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Matches definition">Matches definition</SelectItem>
-                      <SelectItem value="Does NOT match definition">Does NOT match definition</SelectItem>
+                      <SelectItem value="Matches definition">Matches</SelectItem>
+                      <SelectItem value="Does NOT match definition">Does not match</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -505,8 +505,8 @@ function App() {
                       <SelectValue placeholder="Select definition match" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Matches definition">Matches definition</SelectItem>
-                      <SelectItem value="Does NOT match definition">Does NOT match definition</SelectItem>
+                      <SelectItem value="Matches definition">Matches</SelectItem>
+                      <SelectItem value="Does NOT match definition">Does not match</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -544,7 +544,7 @@ function App() {
             )}
 
             {/* Liability Calc */}
-            {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
+            {formData.status === 'Settled' && formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
               const periodEnd = new Date(formData.periodEndDate);
               const elevenMonthsLater = new Date(periodEnd);
               elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
@@ -680,7 +680,7 @@ function App() {
                         if (monthsDiff > 36) return 'over 36 months ago';
                         if (monthsDiff > 12) return 'within 12-36 months';
                         return 'within 12 months';
-                      })()} on {formatDate(formData.date)} with {formData.lawFirm}. PNC {formData.definitionMatch === 'Matches definition' ? 'does' : 'does NOT'} match the definition.
+                      })()} on {formatDate(formData.date)} with {formData.lawFirm}. PNC {formData.definitionMatch === 'Matches definition' ? 'matches' : 'does not match'} the definition.
                       {formData.description && formData.description.split('\n').map(line => line.trim() && `\n  • ${line.trim()}`).join('')}
                       {formData.defendantNames.length > 0 && `\n  • Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
                     </>
@@ -690,7 +690,7 @@ function App() {
                       • Settled case {`(${formData.caseNumber})`} filed on {formatDate(formData.date)} with {formData.lawFirm}.
                       {formData.classType === 'Class' && !formData.noPADate ? ` ${formData.scheduledMPA ? 'MPA scheduled on' : 'PA on'} ${formatDate(formData.paDate)}` : ''}
                       {!formData.noFADate ? `${formData.classType === 'Class' && !formData.noPADate ? '; ' : ' '}${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}` : ''}{formData.noPADate && formData.noFADate ? ' ' : '. '}
-                      PNC {formData.definitionMatch === 'Matches definition' ? 'does' : 'does NOT'} match the definition.
+                      PNC {formData.definitionMatch === 'Matches definition' ? 'matches' : 'does not match'} the definition.
                       {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && (
                         (() => {
                           const periodEnd = new Date(formData.periodEndDate);
@@ -705,12 +705,12 @@ function App() {
 
                             if (isLDWAfterPeriodEnd) {
                               if (!hasPassed) {
-                                return `\n  • PNC matches the definition and their LDW (${formatDate(formData.ldwDate)}) falls <i><b>after</b></i> the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). However, 11 months <i><b>have not</b></i> passed since the period end date. Lawsuit Problem.`;
+                                return `\n  • PNC matches the definition and their LDW (${formatDate(formData.ldwDate)}) falls after the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). However, 11 months have not passed since the period end date. Lawsuit Problem.`;
                               } else {
-                                return `\n  • PNC matches the definition, but their LDW (${formatDate(formData.ldwDate)}) falls <i><b>after</b></i> the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months have passed.`;
+                                return `\n  • PNC matches the definition, but their LDW (${formatDate(formData.ldwDate)}) falls after the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months have passed.`;
                               }
                             } else {
-                              return `\n  • PNC matches the definition <i><b>and</b></i> their LDW (${formatDate(formData.ldwDate)}) falls within the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months ${hasPassed ? 'have' : 'have not'} passed. Lawsuit Problem.`;
+                              return `\n  • PNC matches the definition and their LDW (${formatDate(formData.ldwDate)}) falls within the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months ${hasPassed ? 'have' : 'have not'} passed. Lawsuit Problem.`;
                             }
                           }
                           return '';
