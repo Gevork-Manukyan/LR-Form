@@ -1,7 +1,7 @@
 import './App.css'
 import { Form } from './components/ui/form'
 import { FormData, Status, DefinitionMatch, ClassType, LDWDate } from './types/form'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Select,
   SelectContent,
@@ -23,7 +23,6 @@ function App() {
     description: '',
     hasMultipleDefendants: false,
     defendantNames: [],
-    // New fields for Settled status
     paDate: '',
     faDate: '',
     classType: 'Class',
@@ -33,6 +32,51 @@ function App() {
     liabilityCalc: ''
   })
   const [showOutput, setShowOutput] = useState(false)
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
+
+  // Load form data from localStorage on component mount
+  useEffect(() => {
+    const savedFormData = localStorage.getItem('formData')
+    if (savedFormData) {
+      try {
+        const parsedData = JSON.parse(savedFormData)
+        // Ensure all required fields are present
+        const completeData = {
+          status: parsedData.status || 'Pending',
+          caseNumber: parsedData.caseNumber || '',
+          timeFrame: parsedData.timeFrame || '12 months',
+          date: parsedData.date || '',
+          lawFirm: parsedData.lawFirm || '',
+          definitionMatch: parsedData.definitionMatch || 'Matches definition',
+          description: parsedData.description || '',
+          hasMultipleDefendants: parsedData.hasMultipleDefendants || false,
+          defendantNames: parsedData.defendantNames || [],
+          paDate: parsedData.paDate || '',
+          faDate: parsedData.faDate || '',
+          classType: parsedData.classType || 'Class',
+          periodEndDate: parsedData.periodEndDate || '',
+          ldwDate: parsedData.ldwDate || 'After',
+          elevenMonthsPassed: parsedData.elevenMonthsPassed || '11 months has passed',
+          liabilityCalc: parsedData.liabilityCalc || ''
+        }
+        setFormData(completeData)
+      } catch (error) {
+        console.error('Error loading form data:', error)
+      }
+    }
+    setIsInitialLoad(false)
+  }, [])
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    if (!isInitialLoad) {
+      try {
+        localStorage.setItem('formData', JSON.stringify(formData))
+      } catch (error) {
+        console.error('Error saving form data:', error)
+      }
+    }
+  }, [formData, isInitialLoad])
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
@@ -42,6 +86,29 @@ function App() {
 
   const handleSubmit = () => {
     setShowOutput(!showOutput);
+  }
+
+  const handleClear = () => {
+    setFormData({
+      status: 'Pending',
+      caseNumber: '',
+      timeFrame: '12 months',
+      date: '',
+      lawFirm: '',
+      definitionMatch: 'Matches definition',
+      description: '',
+      hasMultipleDefendants: false,
+      defendantNames: [],
+      paDate: '',
+      faDate: '',
+      classType: 'Class',
+      periodEndDate: '',
+      ldwDate: 'After',
+      elevenMonthsPassed: '11 months has passed',
+      liabilityCalc: ''
+    })
+    localStorage.removeItem('formData')
+    setShowOutput(false)
   }
 
   return (
@@ -420,12 +487,21 @@ function App() {
               </div>
             )}
 
-            <button
-              type="submit"
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
-            >
-              {showOutput ? 'Hide' : 'Show'}
-            </button>
+            <div className="flex gap-4">
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 flex-1"
+              >
+                {showOutput ? 'Hide' : 'Show'}
+              </button>
+              <button
+                type="button"
+                onClick={handleClear}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2"
+              >
+                Clear
+              </button>
+            </div>
 
             {/* Formatted Display Section */}
             {showOutput && (
