@@ -121,21 +121,6 @@ function App() {
       if (!formData.noPADate) requiredFields.push('paDate');
       if (!formData.noFADate) requiredFields.push('faDate');
       requiredFields.push('periodEndDate', 'ldwDate');
-
-      // Add liability calc to required fields if it should be visible
-      if (formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate) {
-        const periodEnd = new Date(formData.periodEndDate);
-        const elevenMonthsLater = new Date(periodEnd);
-        elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
-        const today = new Date();
-        const hasPassed = today >= elevenMonthsLater;
-        const ldwDate = new Date(formData.ldwDate);
-        const isLDWAfterPeriodEnd = ldwDate > periodEnd;
-
-        if (hasPassed && isLDWAfterPeriodEnd) {
-          requiredFields.push('liabilityCalc');
-        }
-      }
     }
 
     const allFieldsFilled = requiredFields.every(field => formData[field as keyof FormData]);
@@ -179,21 +164,6 @@ function App() {
       if (!formData.noPADate) requiredFields.push('paDate');
       if (!formData.noFADate) requiredFields.push('faDate');
       requiredFields.push('periodEndDate', 'ldwDate');
-
-      // Add liability calc to required fields if it should be visible
-      if (formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate) {
-        const periodEnd = new Date(formData.periodEndDate);
-        const elevenMonthsLater = new Date(periodEnd);
-        elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
-        const today = new Date();
-        const hasPassed = today >= elevenMonthsLater;
-        const ldwDate = new Date(formData.ldwDate);
-        const isLDWAfterPeriodEnd = ldwDate > periodEnd;
-
-        if (hasPassed && isLDWAfterPeriodEnd) {
-          requiredFields.push('liabilityCalc');
-        }
-      }
     }
     return requiredFields.includes(field);
   }
