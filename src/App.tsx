@@ -682,7 +682,7 @@ function App() {
                         return 'within 12 months';
                       })()} on {formatDate(formData.date)} with {formData.lawFirm}. PNC {formData.definitionMatch === 'Matches definition' ? 'matches' : 'does not match'} the definition.
                       {formData.description && formData.description.split('\n').map(line => line.trim() && `\n  • ${line.trim()}`).join('')}
-                      {formData.defendantNames.length > 0 && `\n  • Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
+                      {formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '') && `\n  • Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
                     </>
                   ) : (
                     // Settled form output
@@ -716,7 +716,7 @@ function App() {
                           return '';
                         })()
                       )}
-                      {formData.defendantNames.length > 0 && `\n  • Released Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
+                      {formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '') && `\n  • Released Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
                       {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
                         const periodEnd = new Date(formData.periodEndDate);
                         const elevenMonthsLater = new Date(periodEnd);
@@ -731,6 +731,7 @@ function App() {
                         }
                         return '';
                       })()}
+                      {formData.hasDescription && formData.description && formData.description.split('\n').map(line => line.trim() && `\n  • ${line.trim()}`).join('')}
                     </>
                   )}
                 </div>
