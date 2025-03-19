@@ -17,6 +17,8 @@ export interface FormData {
   defendantNames: string[]
   paDate: string
   faDate: string
+  noPADate: boolean
+  noFADate: boolean
   classType: ClassType
   periodEndDate: string
   ldwDate: LDWDate

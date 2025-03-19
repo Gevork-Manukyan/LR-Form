@@ -25,6 +25,8 @@ function App() {
     defendantNames: [],
     paDate: '',
     faDate: '',
+    noPADate: false,
+    noFADate: false,
     classType: 'Class',
     periodEndDate: '',
     ldwDate: '',
@@ -56,6 +58,8 @@ function App() {
           defendantNames: parsedData.defendantNames || [],
           paDate: parsedData.paDate || '',
           faDate: parsedData.faDate || '',
+          noPADate: parsedData.noPADate || false,
+          noFADate: parsedData.noFADate || false,
           classType: parsedData.classType || 'Class',
           periodEndDate: parsedData.periodEndDate || '',
           ldwDate: parsedData.ldwDate || '',
@@ -100,7 +104,9 @@ function App() {
     // Check if all required fields are filled
     const requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
     if (formData.status === 'Settled') {
-      requiredFields.push('paDate', 'faDate', 'periodEndDate', 'ldwDate');
+      if (!formData.noPADate) requiredFields.push('paDate');
+      if (!formData.noFADate) requiredFields.push('faDate');
+      requiredFields.push('periodEndDate', 'ldwDate');
     }
 
     const allFieldsFilled = requiredFields.every(field => formData[field as keyof FormData]);
@@ -123,6 +129,8 @@ function App() {
       defendantNames: [],
       paDate: '',
       faDate: '',
+      noPADate: false,
+      noFADate: false,
       classType: 'Class',
       periodEndDate: '',
       ldwDate: '',
@@ -138,7 +146,9 @@ function App() {
   const isFieldRequired = (field: keyof FormData) => {
     const requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
     if (formData.status === 'Settled') {
-      requiredFields.push('paDate', 'faDate', 'periodEndDate', 'ldwDate');
+      if (!formData.noPADate) requiredFields.push('paDate');
+      if (!formData.noFADate) requiredFields.push('faDate');
+      requiredFields.push('periodEndDate', 'ldwDate');
     }
     return requiredFields.includes(field);
   }
@@ -325,7 +335,7 @@ function App() {
                   </Select>
                 </div>
 
-                {/* PA Date */}
+                {/* PA Date and Toggle */}
                 <div className="space-y-2">
                   <label htmlFor="paDate" className={getLabelClassName('paDate')}>
                     PA Date {isFieldRequired('paDate') && <span className="text-red-500">*</span>}
@@ -334,13 +344,33 @@ function App() {
                     type="date"
                     name="paDate"
                     id="paDate"
-                    className={getInputClassName('paDate')}
+                    className={`${getInputClassName('paDate')} ${formData.noPADate ? 'opacity-50 cursor-not-allowed' : ''}`}
                     value={formData.paDate}
                     onChange={(e) => setFormData({ ...formData, paDate: e.target.value })}
+                    disabled={formData.noPADate}
                   />
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="noPADate"
+                      checked={formData.noPADate}
+                      onCheckedChange={(checked) => {
+                        setFormData({ 
+                          ...formData, 
+                          noPADate: checked as boolean,
+                          paDate: checked ? '' : formData.paDate
+                        });
+                      }}
+                    />
+                    <label
+                      htmlFor="noPADate"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      No PA Date
+                    </label>
+                  </div>
                 </div>
 
-                {/* FA Date */}
+                {/* FA Date and Toggle */}
                 <div className="space-y-2">
                   <label htmlFor="faDate" className={getLabelClassName('faDate')}>
                     FA Date {isFieldRequired('faDate') && <span className="text-red-500">*</span>}
@@ -349,10 +379,30 @@ function App() {
                     type="date"
                     name="faDate"
                     id="faDate"
-                    className={getInputClassName('faDate')}
+                    className={`${getInputClassName('faDate')} ${formData.noFADate ? 'opacity-50 cursor-not-allowed' : ''}`}
                     value={formData.faDate}
                     onChange={(e) => setFormData({ ...formData, faDate: e.target.value })}
+                    disabled={formData.noFADate}
                   />
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="noFADate"
+                      checked={formData.noFADate}
+                      onCheckedChange={(checked) => {
+                        setFormData({ 
+                          ...formData, 
+                          noFADate: checked as boolean,
+                          faDate: checked ? '' : formData.faDate
+                        });
+                      }}
+                    />
+                    <label
+                      htmlFor="noFADate"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      No FA Date
+                    </label>
+                  </div>
                 </div>
               </div>
             )}
@@ -591,7 +641,10 @@ function App() {
                   ) : (
                     // Settled form output
                     <>
-                      • Settled case {formData.caseNumber} filed on {formatDate(formData.date)} with {formData.lawFirm}. PA on {formatDate(formData.paDate)}; FA on {formatDate(formData.faDate)}. PNC {formData.definitionMatch === 'Matches definition' ? 'does' : 'does NOT'} match the definition.
+                      • Settled case {formData.caseNumber} filed on {formatDate(formData.date)} with {formData.lawFirm}.
+                      {!formData.noPADate ? ` PA on ${formatDate(formData.paDate)}` : ''}
+                      {!formData.noFADate ? `${!formData.noPADate ? '; ' : ' '}FA on ${formatDate(formData.faDate)}` : ''}{formData.noPADate && formData.noFADate ? ' ' : '. '}
+                      PNC {formData.definitionMatch === 'Matches definition' ? 'does' : 'does NOT'} match the definition.
                       {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && (
                         (() => {
                           const periodEnd = new Date(formData.periodEndDate);
