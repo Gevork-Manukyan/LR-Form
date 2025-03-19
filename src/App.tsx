@@ -208,6 +208,21 @@ function App() {
     return baseClasses;
   }
 
+  const handleLiabilityCalcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Allow empty string or numbers with up to 2 decimal places
+    if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+      setFormData({ ...formData, liabilityCalc: value });
+    }
+  };
+
+  const formatLiabilityCalc = (value: string) => {
+    if (!value) return '';
+    const num = parseFloat(value);
+    if (isNaN(num)) return '';
+    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   return (
     <div className="app min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
@@ -528,13 +543,13 @@ function App() {
                         <div className="flex items-center">
                           <span className="mr-2">$</span>
                           <input
-                            type="number"
+                            type="text"
                             name="liabilityCalc"
                             id="liabilityCalc"
-                            min="0"
                             className={getInputClassName('liabilityCalc')}
                             value={formData.liabilityCalc}
-                            onChange={(e) => setFormData({ ...formData, liabilityCalc: e.target.value })}
+                            onChange={handleLiabilityCalcChange}
+                            placeholder="0.00"
                           />
                         </div>
                       </div>
@@ -695,7 +710,7 @@ function App() {
                         const isLDWAfterPeriodEnd = ldwDate > periodEnd;
 
                         if (hasPassed && isLDWAfterPeriodEnd && formData.liabilityCalc) {
-                          return `\n  • Liability Calc: $${Number(formData.liabilityCalc).toLocaleString('en-US')}`;
+                          return `\n  • Liability Calc: $${formatLiabilityCalc(formData.liabilityCalc)}`;
                         }
                         return '';
                       })()}
