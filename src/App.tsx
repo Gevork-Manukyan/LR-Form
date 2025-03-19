@@ -117,6 +117,21 @@ function App() {
       if (!formData.noPADate) requiredFields.push('paDate');
       if (!formData.noFADate) requiredFields.push('faDate');
       requiredFields.push('periodEndDate', 'ldwDate');
+
+      // Add liability calc to required fields if it should be visible
+      if (formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate) {
+        const periodEnd = new Date(formData.periodEndDate);
+        const elevenMonthsLater = new Date(periodEnd);
+        elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+        const today = new Date();
+        const hasPassed = today >= elevenMonthsLater;
+        const ldwDate = new Date(formData.ldwDate);
+        const isLDWAfterPeriodEnd = ldwDate > periodEnd;
+
+        if (hasPassed && isLDWAfterPeriodEnd) {
+          requiredFields.push('liabilityCalc');
+        }
+      }
     }
 
     const allFieldsFilled = requiredFields.every(field => formData[field as keyof FormData]);
@@ -158,6 +173,21 @@ function App() {
       if (!formData.noPADate) requiredFields.push('paDate');
       if (!formData.noFADate) requiredFields.push('faDate');
       requiredFields.push('periodEndDate', 'ldwDate');
+
+      // Add liability calc to required fields if it should be visible
+      if (formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate) {
+        const periodEnd = new Date(formData.periodEndDate);
+        const elevenMonthsLater = new Date(periodEnd);
+        elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+        const today = new Date();
+        const hasPassed = today >= elevenMonthsLater;
+        const ldwDate = new Date(formData.ldwDate);
+        const isLDWAfterPeriodEnd = ldwDate > periodEnd;
+
+        if (hasPassed && isLDWAfterPeriodEnd) {
+          requiredFields.push('liabilityCalc');
+        }
+      }
     }
     return requiredFields.includes(field);
   }
@@ -492,8 +522,8 @@ function App() {
                   if (hasPassed && isLDWAfterPeriodEnd) {
                     return (
                       <div className="space-y-2">
-                        <label htmlFor="liabilityCalc" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                          Liability Calc
+                        <label htmlFor="liabilityCalc" className={getLabelClassName('liabilityCalc')}>
+                          Liability Calc {isFieldRequired('liabilityCalc') && <span className="text-red-500">*</span>}
                         </label>
                         <div className="flex items-center">
                           <span className="mr-2">$</span>
@@ -501,7 +531,8 @@ function App() {
                             type="number"
                             name="liabilityCalc"
                             id="liabilityCalc"
-                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            min="0"
+                            className={getInputClassName('liabilityCalc')}
                             value={formData.liabilityCalc}
                             onChange={(e) => setFormData({ ...formData, liabilityCalc: e.target.value })}
                           />
@@ -664,7 +695,7 @@ function App() {
                         const isLDWAfterPeriodEnd = ldwDate > periodEnd;
 
                         if (hasPassed && isLDWAfterPeriodEnd && formData.liabilityCalc) {
-                          return `\n  • Liability Calc: $${formData.liabilityCalc}`;
+                          return `\n  • Liability Calc: $${Number(formData.liabilityCalc).toLocaleString('en-US')}`;
                         }
                         return '';
                       })()}
