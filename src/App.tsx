@@ -688,8 +688,8 @@ function App() {
                     // Settled form output
                     <>
                       • Settled case {formData.caseNumber} filed on {formatDate(formData.date)} with {formData.lawFirm}.
-                      {!formData.noPADate ? ` ${formData.scheduledMPA ? 'MPA scheduled on' : 'PA on'} ${formatDate(formData.paDate)}` : ''}
-                      {!formData.noFADate ? `${!formData.noPADate ? '; ' : ' '}${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}` : ''}{formData.noPADate && formData.noFADate ? ' ' : '. '}
+                      {formData.classType === 'Class' && !formData.noPADate ? ` ${formData.scheduledMPA ? 'MPA scheduled on' : 'PA on'} ${formatDate(formData.paDate)}` : ''}
+                      {!formData.noFADate ? `${formData.classType === 'Class' && !formData.noPADate ? '; ' : ' '}${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}` : ''}{formData.noPADate && formData.noFADate ? ' ' : '. '}
                       PNC {formData.definitionMatch === 'Matches definition' ? 'does' : 'does NOT'} match the definition.
                       {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && (
                         (() => {
