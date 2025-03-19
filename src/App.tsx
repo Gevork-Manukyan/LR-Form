@@ -414,7 +414,7 @@ function App() {
                   value={formData.defendantNames.join('\n')}
                   onChange={(e) => setFormData({ 
                     ...formData, 
-                    defendantNames: e.target.value.split('\n').filter(name => name.trim() !== '')
+                    defendantNames: e.target.value.split('\n')
                   })}
                 />
               </div>
@@ -443,8 +443,8 @@ function App() {
                     if (monthsDiff > 12) return 'within 12-36 months';
                     return 'within 12 months';
                   })()} on {formatDate(formData.date)} with {formData.lawFirm}. PNC {formData.definitionMatch === 'Matches definition' ? 'does' : 'does NOT'} match the definition.
-                  {formData.description && `\n  • ${formData.description}`}
-                  {formData.defendantNames.length > 0 && `\n  • Defendants: ${formData.defendantNames.join('; ')}`}
+                  {formData.description && formData.description.split('\n').map((line, index) => line.trim() && `\n  • ${line.trim()}`).join('')}
+                  {formData.defendantNames.length > 0 && `\n  • Defendants: ${formData.defendantNames.filter(name => name.trim() !== '').join('; ')}`}
                 </div>
               </div>
             )}
