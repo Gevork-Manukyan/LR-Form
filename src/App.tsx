@@ -670,7 +670,7 @@ function App() {
                   {formData.status === 'Pending' ? (
                     // Pending form output
                     <>
-                      • Pending case {formData.caseNumber} filed {(() => {
+                      • Pending case {`(${formData.caseNumber})`} filed {(() => {
                         if (!formData.date) return '';
                         const filedDate = new Date(formData.date);
                         const today = new Date();
@@ -705,12 +705,12 @@ function App() {
 
                             if (isLDWAfterPeriodEnd) {
                               if (!hasPassed) {
-                                return `\n  • PNC matches the definition and their LDW (${formatDate(formData.ldwDate)}) falls after the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). However, 11 months have not passed since the period end date. Lawsuit Problem.`;
+                                return `\n  • PNC matches the definition and their LDW (${formatDate(formData.ldwDate)}) falls <i><b>after</b></i> the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). However, 11 months <i><b>have not</b></i> passed since the period end date. Lawsuit Problem.`;
                               } else {
-                                return `\n  • PNC matches the definition, but their LDW (${formatDate(formData.ldwDate)}) falls after the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months have passed.`;
+                                return `\n  • PNC matches the definition, but their LDW (${formatDate(formData.ldwDate)}) falls <i><b>after</b></i> the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months have passed.`;
                               }
                             } else {
-                              return `\n  • PNC matches the definition and their LDW (${formatDate(formData.ldwDate)}) falls within the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months ${hasPassed ? 'have' : 'have not'} passed. Lawsuit Problem.`;
+                              return `\n  • PNC matches the definition <i><b>and</b></i> their LDW (${formatDate(formData.ldwDate)}) falls within the ${formData.classType} period end date (${formatDate(formData.periodEndDate)}). 11 months ${hasPassed ? 'have' : 'have not'} passed. Lawsuit Problem.`;
                             }
                           }
                           return '';
