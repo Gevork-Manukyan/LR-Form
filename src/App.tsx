@@ -97,7 +97,7 @@ function App() {
 
   const handleClear = () => {
     setFormData({
-      status: 'Pending',
+      ...formData,
       caseNumber: '',
       timeFrame: '12 months',
       date: '',
