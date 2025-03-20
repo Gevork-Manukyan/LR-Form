@@ -763,6 +763,13 @@ function App() {
                           {formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '') && (
                             <li>Released Defendants: {formData.defendantNames.filter(name => name.trim() !== '').join('; ')}</li>
                           )}
+                          {formData.hasDescription && formData.description && formData.description.split('\n').some(line => line.trim()) && (
+                            <>
+                              {formData.description.split('\n').map((line, index) => 
+                                line.trim() && <li key={index}>{line.trim()}</li>
+                              )}
+                            </>
+                          )}
                           {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
                             const periodEnd = new Date(formData.periodEndDate);
                             const elevenMonthsLater = new Date(periodEnd);
@@ -777,13 +784,6 @@ function App() {
                             }
                             return null;
                           })()}
-                          {formData.hasDescription && formData.description && formData.description.split('\n').some(line => line.trim()) && (
-                            <>
-                              {formData.description.split('\n').map((line, index) => 
-                                line.trim() && <li key={index}>{line.trim()}</li>
-                              )}
-                            </>
-                          )}
                         </ul>
                       </li>
                     </ul>
