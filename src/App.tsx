@@ -731,7 +731,7 @@ function App() {
                     <ul className="list-disc pl-4">
                       <li>Settled case {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on {formatDate(formData.date)} with {formData.lawFirm}.
                         {formData.classType === 'Class' && !formData.noPADate ? ` ${formData.scheduledMPA ? 'MPA scheduled on' : 'PA on'} ${formatDate(formData.paDate)};` : formData.classType === 'Class' ? ' No PA scheduled;' : ''}
-                        {!formData.noFADate ? `${formData.classType === 'Class' ? ' ' : ''}${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}` : `${formData.classType === 'Class' ? ' ' : ''}No FA scheduled`}{formData.noPADate && formData.noFADate ? ' ' : '. '}
+                        {!formData.noFADate ? ` ${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}` : `${formData.classType === 'Class' ? ' ' : ''}No FA scheduled`}{formData.noPADate && formData.noFADate ? ' ' : '. '}
                         PNC {formData.definitionMatch === 'Matches definition' ? 'matches' : 'does not match'} the definition.</li>
                       <li className="!list-none">
                         <ul className="list-disc pl-4">
