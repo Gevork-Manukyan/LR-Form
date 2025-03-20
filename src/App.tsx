@@ -728,62 +728,64 @@ function App() {
                     </ul>
                   ) : (
                     // Settled form output
-                    <ul className="list-disc pl-4 [&>li]:list-disc [&>li]:pl-4 [&>li>ul]:list-disc [&>li>ul]:pl-4">
+                    <ul className="list-disc pl-4">
                       <li>Settled case {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on {formatDate(formData.date)} with {formData.lawFirm}.
                         {formData.classType === 'Class' && !formData.noPADate ? ` ${formData.scheduledMPA ? 'MPA scheduled on' : 'PA on'} ${formatDate(formData.paDate)};` : formData.classType === 'Class' ? ' No PA scheduled;' : ''}
                         {!formData.noFADate ? `${formData.classType === 'Class' ? ' ' : ''}${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}` : `${formData.classType === 'Class' ? ' ' : ''}No FA scheduled`}{formData.noPADate && formData.noFADate ? ' ' : '. '}
                         PNC {formData.definitionMatch === 'Matches definition' ? 'matches' : 'does not match'} the definition.</li>
-                      {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && (
-                        (() => {
-                          const periodEnd = new Date(formData.periodEndDate);
-                          const elevenMonthsLater = new Date(periodEnd);
-                          elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
-                          const today = new Date();
-                          const hasPassed = today >= elevenMonthsLater;
+                      <li className="!list-none">
+                        <ul className="list-disc pl-4">
+                          {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && (
+                            (() => {
+                              const periodEnd = new Date(formData.periodEndDate);
+                              const elevenMonthsLater = new Date(periodEnd);
+                              elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+                              const today = new Date();
+                              const hasPassed = today >= elevenMonthsLater;
 
-                          if (formData.ldwDate) {
+                              if (formData.ldwDate) {
+                                const ldwDate = new Date(formData.ldwDate);
+                                const isLDWAfterPeriodEnd = ldwDate > periodEnd;
+
+                                if (isLDWAfterPeriodEnd) {
+                                  if (!hasPassed) {
+                                    return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls after the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). However, 11 months have not passed since the period end date. Lawsuit Problem.</li>;
+                                  } else {
+                                    return <li>PNC matches the definition, but their LDW ({formatDate(formData.ldwDate)}) falls after the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months have passed.</li>;
+                                  }
+                                } else {
+                                  return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls within the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months {hasPassed ? 'have' : 'have not'} passed. Lawsuit Problem.</li>;
+                                }
+                              }
+                              return null;
+                            })()
+                          )}
+                          {formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '') && (
+                            <li>Released Defendants: {formData.defendantNames.filter(name => name.trim() !== '').join('; ')}</li>
+                          )}
+                          {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
+                            const periodEnd = new Date(formData.periodEndDate);
+                            const elevenMonthsLater = new Date(periodEnd);
+                            elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+                            const today = new Date();
+                            const hasPassed = today >= elevenMonthsLater;
                             const ldwDate = new Date(formData.ldwDate);
                             const isLDWAfterPeriodEnd = ldwDate > periodEnd;
 
-                            if (isLDWAfterPeriodEnd) {
-                              if (!hasPassed) {
-                                return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls after the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). However, 11 months have not passed since the period end date. Lawsuit Problem.</li>;
-                              } else {
-                                return <li>PNC matches the definition, but their LDW ({formatDate(formData.ldwDate)}) falls after the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months have passed.</li>;
-                              }
-                            } else {
-                              return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls within the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months {hasPassed ? 'have' : 'have not'} passed. Lawsuit Problem.</li>;
+                            if (hasPassed && isLDWAfterPeriodEnd && formData.liabilityCalc) {
+                              return <li>Liability Calc: ${formatLiabilityCalc(formData.liabilityCalc)}</li>;
                             }
-                          }
-                          return null;
-                        })()
-                      )}
-                      {formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '') && (
-                        <li>Released Defendants: {formData.defendantNames.filter(name => name.trim() !== '').join('; ')}</li>
-                      )}
-                      {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
-                        const periodEnd = new Date(formData.periodEndDate);
-                        const elevenMonthsLater = new Date(periodEnd);
-                        elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
-                        const today = new Date();
-                        const hasPassed = today >= elevenMonthsLater;
-                        const ldwDate = new Date(formData.ldwDate);
-                        const isLDWAfterPeriodEnd = ldwDate > periodEnd;
-
-                        if (hasPassed && isLDWAfterPeriodEnd && formData.liabilityCalc) {
-                          return <li>Liability Calc: ${formatLiabilityCalc(formData.liabilityCalc)}</li>;
-                        }
-                        return null;
-                      })()}
-                      {formData.hasDescription && formData.description && formData.description.split('\n').some(line => line.trim()) && (
-                        <li className="list-none">
-                          <ul className="list-disc pl-4">
-                            {formData.description.split('\n').map((line, index) => 
-                              line.trim() && <li key={index}>{line.trim()}</li>
-                            )}
-                          </ul>
-                        </li>
-                      )}
+                            return null;
+                          })()}
+                          {formData.hasDescription && formData.description && formData.description.split('\n').some(line => line.trim()) && (
+                            <>
+                              {formData.description.split('\n').map((line, index) => 
+                                line.trim() && <li key={index}>{line.trim()}</li>
+                              )}
+                            </>
+                          )}
+                        </ul>
+                      </li>
                     </ul>
                   )}
                 </div>
