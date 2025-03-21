@@ -782,7 +782,7 @@ function App() {
                 <div className="font-mono text-sm whitespace-pre-wrap">
                   {formData.status === 'Pending' ? (
                     // Pending form output
-                    <ul className="list-disc pl-4 [&>li]:list-disc [&>li]:pl-4 [&>li>ul]:list-disc [&>li>ul]:pl-4">
+                    <ul className="list-disc pl-4">
                       <li>Pending case {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed {(() => {
                         if (!formData.date) return '';
                         const filedDate = new Date(formData.date);
@@ -794,18 +794,22 @@ function App() {
                         if (monthsDiff > 12) return 'within 12-36 months';
                         return 'within 12 months';
                       })()} on {formatDate(formData.date)} with {formData.lawFirm}. {formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : `PNC does not match the definition, as the definition is for ${formData.definitionMismatchReason} whereas our PNC was a ${formData.pncJobTitle}.`}</li>
-                      {formData.description && formData.description.split('\n').some(line => line.trim()) && (
+                      {(formData.description && formData.description.split('\n').some(line => line.trim())) || (formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '')) ? (
                         <li className="!list-none">
                           <ul className="list-disc pl-4">
-                            {formData.description.split('\n').map((line, index) => 
-                              line.trim() && <li key={index}>{line.trim()}</li>
+                            {formData.description && formData.description.split('\n').some(line => line.trim()) && (
+                              <>
+                                {formData.description.split('\n').map((line, index) => 
+                                  line.trim() && <li key={index}>{line.trim()}</li>
+                                )}
+                              </>
+                            )}
+                            {formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '') && (
+                              <li>Defendants: {formData.defendantNames.filter(name => name.trim() !== '').join('; ')}</li>
                             )}
                           </ul>
                         </li>
-                      )}
-                      {formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '') && (
-                        <li>Defendants: {formData.defendantNames.filter(name => name.trim() !== '').join('; ')}</li>
-                      )}
+                      ) : null}
                     </ul>
                   ) : (
                     // Settled form output
