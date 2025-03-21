@@ -133,20 +133,27 @@ function App() {
     setShowValidation(true);
     
     // Check if all required fields are filled
-    const requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
-    if (formData.status === 'Settled') {
-      if (formData.classType === 'Class' && !formData.noPADate) requiredFields.push('paDate');
-      if (!formData.noFADate) requiredFields.push('faDate');
-      if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
-      requiredFields.push('ldwDate');
+    let requiredFields: (keyof FormData)[] = [];
+    
+    if (formData.status === 'LWDA') {
+      requiredFields = ['caseNumber', 'date', 'lawFirm', 'attorney', 'notFiledDate'];
+    } else {
+      requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
+      
+      if (formData.status === 'Settled') {
+        if (formData.classType === 'Class' && !formData.noPADate) requiredFields.push('paDate');
+        if (!formData.noFADate) requiredFields.push('faDate');
+        if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
+        requiredFields.push('ldwDate');
+      }
+
+      // Add definition mismatch fields as required when "Does not match" is selected
+      if (formData.definitionMatch === 'Does NOT match definition') {
+        requiredFields.push('definitionMismatchReason', 'pncJobTitle');
+      }
     }
 
-    // Add definition mismatch fields as required when "Does not match" is selected
-    if (formData.definitionMatch === 'Does NOT match definition') {
-      requiredFields.push('definitionMismatchReason', 'pncJobTitle');
-    }
-
-    const allFieldsFilled = requiredFields.every(field => formData[field as keyof FormData]);
+    const allFieldsFilled = requiredFields.every(field => formData[field]);
 
     if (allFieldsFilled) {
       setShowOutput(!showOutput);
@@ -188,6 +195,11 @@ function App() {
 
   const isFieldRequired = (field: keyof FormData) => {
     const requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
+    
+    if (formData.status === 'LWDA') {
+      return ['caseNumber', 'date', 'lawFirm', 'attorney', 'notFiledDate'].includes(field);
+    }
+
     if (formData.status === 'Settled') {
       if (formData.classType === 'Class' && !formData.noPADate) requiredFields.push('paDate');
       if (!formData.noFADate) requiredFields.push('faDate');
@@ -233,6 +245,15 @@ function App() {
     if (isNaN(num)) return '';
     return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
+
+  // Add this after the handleLiabilityCalcChange function
+  useEffect(() => {
+    if (formData.status === 'LWDA' && !formData.notFiledDate) {
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0];
+      setFormData(prev => ({ ...prev, notFiledDate: formattedDate }));
+    }
+  }, [formData.status]);
 
   return (
     <div className="app min-h-screen bg-gray-50 py-8">
@@ -355,38 +376,40 @@ function App() {
               </div>
             )}
 
-            {/* Two Column Grid - Common Fields */}
-            <div className="grid grid-cols-2 gap-4">
-              {/* Filed On */}
-              <div className="space-y-2">
-                <label htmlFor="date" className={getLabelClassName('date')}>
-                  Filed On {isFieldRequired('date') && <span className="text-red-500">*</span>}
-                </label>
-                <input
-                  type="date"
-                  name="date"
-                  id="date"
-                  className={getInputClassName('date')}
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                />
-              </div>
+            {/* Two Column Grid - Common Fields - Only for Pending and Settled */}
+            {(formData.status === 'Pending' || formData.status === 'Settled') && (
+              <div className="grid grid-cols-2 gap-4">
+                {/* Filed On */}
+                <div className="space-y-2">
+                  <label htmlFor="date" className={getLabelClassName('date')}>
+                    Filed On {isFieldRequired('date') && <span className="text-red-500">*</span>}
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    id="date"
+                    className={getInputClassName('date')}
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  />
+                </div>
 
-              {/* Law Firm */}
-              <div className="space-y-2">
-                <label htmlFor="lawFirm" className={getLabelClassName('lawFirm')}>
-                  Law Firm {isFieldRequired('lawFirm') && <span className="text-red-500">*</span>}
-                </label>
-                <input
-                  type="text"
-                  name="lawFirm"
-                  id="lawFirm"
-                  className={getInputClassName('lawFirm')}
-                  value={formData.lawFirm}
-                  onChange={(e) => setFormData({ ...formData, lawFirm: e.target.value })}
-                />
+                {/* Law Firm */}
+                <div className="space-y-2">
+                  <label htmlFor="lawFirm" className={getLabelClassName('lawFirm')}>
+                    Law Firm {isFieldRequired('lawFirm') && <span className="text-red-500">*</span>}
+                  </label>
+                  <input
+                    type="text"
+                    name="lawFirm"
+                    id="lawFirm"
+                    className={getInputClassName('lawFirm')}
+                    value={formData.lawFirm}
+                    onChange={(e) => setFormData({ ...formData, lawFirm: e.target.value })}
+                  />
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Time Frame and Definition Match Row - Only for Pending */}
             {formData.status === 'Pending' && (
@@ -801,20 +824,22 @@ function App() {
               </div>
             )}
 
-            {/* Multiple Defendants Toggle */}
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="hasMultipleDefendants"
-                checked={formData.hasMultipleDefendants}
-                onCheckedChange={(checked) => setFormData({ ...formData, hasMultipleDefendants: checked as boolean })}
-              />
-              <label
-                htmlFor="hasMultipleDefendants"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                More than searched defendant?
-              </label>
-            </div>
+            {/* Multiple Defendants Toggle - Only show for Pending and Settled */}
+            {(formData.status === 'Pending' || formData.status === 'Settled') && (
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="hasMultipleDefendants"
+                  checked={formData.hasMultipleDefendants}
+                  onCheckedChange={(checked) => setFormData({ ...formData, hasMultipleDefendants: checked as boolean })}
+                />
+                <label
+                  htmlFor="hasMultipleDefendants"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  More than searched defendant?
+                </label>
+              </div>
+            )}
 
             {/* Defendant Names List */}
             {formData.hasMultipleDefendants && (
