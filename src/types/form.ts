@@ -27,4 +27,6 @@ export interface FormData {
   scheduledMPA: boolean
   scheduledMFA: boolean
   noPeriodEndDate: boolean
+  definitionMismatchReason: string
+  pncJobTitle: string
 } 

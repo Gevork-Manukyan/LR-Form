@@ -35,7 +35,9 @@ function App() {
     hasDescription: false,
     scheduledMPA: false,
     scheduledMFA: false,
-    noPeriodEndDate: false
+    noPeriodEndDate: false,
+    definitionMismatchReason: '',
+    pncJobTitle: ''
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -88,7 +90,9 @@ function App() {
           hasDescription: parsedData.hasDescription || false,
           scheduledMPA: Boolean(parsedData.scheduledMPA),
           scheduledMFA: Boolean(parsedData.scheduledMFA),
-          noPeriodEndDate: parsedData.noPeriodEndDate || false
+          noPeriodEndDate: parsedData.noPeriodEndDate || false,
+          definitionMismatchReason: parsedData.definitionMismatchReason || '',
+          pncJobTitle: parsedData.pncJobTitle || ''
         }
 
         setFormData(completeData)
@@ -162,7 +166,9 @@ function App() {
       hasDescription: false,
       scheduledMPA: false,
       scheduledMFA: false,
-      noPeriodEndDate: false
+      noPeriodEndDate: false,
+      definitionMismatchReason: '',
+      pncJobTitle: ''
     })
     localStorage.removeItem('formData')
     setShowOutput(false)
@@ -351,6 +357,38 @@ function App() {
                       <SelectItem value="Does NOT match definition">Does not match</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+            )}
+
+            {/* Definition Mismatch Details - Only show when "Does not match" is selected - For Pending */}
+            {formData.status === 'Pending' && formData.definitionMatch === 'Does NOT match definition' && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="definitionMismatchReason" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    PNC does not match the definition, as the definition is for
+                  </label>
+                  <input
+                    type="text"
+                    name="definitionMismatchReason"
+                    id="definitionMismatchReason"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    value={formData.definitionMismatchReason}
+                    onChange={(e) => setFormData({ ...formData, definitionMismatchReason: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="pncJobTitle" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    whereas our PNC was a
+                  </label>
+                  <input
+                    type="text"
+                    name="pncJobTitle"
+                    id="pncJobTitle"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    value={formData.pncJobTitle}
+                    onChange={(e) => setFormData({ ...formData, pncJobTitle: e.target.value })}
+                  />
                 </div>
               </div>
             )}
@@ -570,6 +608,38 @@ function App() {
                     className={getInputClassName('ldwDate')}
                     value={formData.ldwDate}
                     onChange={(e) => setFormData({ ...formData, ldwDate: e.target.value })}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Definition Mismatch Details - Only show when "Does not match" is selected - For Settled */}
+            {formData.status === 'Settled' && formData.definitionMatch === 'Does NOT match definition' && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="definitionMismatchReason" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    PNC does not match the definition, as the definition is for
+                  </label>
+                  <input
+                    type="text"
+                    name="definitionMismatchReason"
+                    id="definitionMismatchReason"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    value={formData.definitionMismatchReason}
+                    onChange={(e) => setFormData({ ...formData, definitionMismatchReason: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="pncJobTitle" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    whereas our PNC was a
+                  </label>
+                  <input
+                    type="text"
+                    name="pncJobTitle"
+                    id="pncJobTitle"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    value={formData.pncJobTitle}
+                    onChange={(e) => setFormData({ ...formData, pncJobTitle: e.target.value })}
                   />
                 </div>
               </div>
