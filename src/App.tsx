@@ -253,7 +253,7 @@ function App() {
       const formattedDate = today.toISOString().split('T')[0];
       setFormData(prev => ({ ...prev, notFiledDate: formattedDate }));
     }
-  }, [formData.status]);
+  }, [formData.status, formData.notFiledDate]);
 
   return (
     <div className="app min-h-screen bg-gray-50 py-8">
