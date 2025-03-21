@@ -41,7 +41,9 @@ function App() {
     notFiledDate: '',
     attorney: '',
     customPA: false,
-    customFA: false
+    customFA: false,
+    customPAText: '',
+    customFAText: ''
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -100,7 +102,9 @@ function App() {
           notFiledDate: parsedData.notFiledDate || '',
           attorney: parsedData.attorney || '',
           customPA: parsedData.customPA || false,
-          customFA: parsedData.customFA || false
+          customFA: parsedData.customFA || false,
+          customPAText: parsedData.customPAText || '',
+          customFAText: parsedData.customFAText || ''
         }
 
         setFormData(completeData)
@@ -145,8 +149,14 @@ function App() {
       requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
       
       if (formData.status === 'Settled') {
-        if (formData.classType === 'Class' && !formData.noPADate) requiredFields.push('paDate');
-        if (!formData.noFADate) requiredFields.push('faDate');
+        if (formData.classType === 'Class' && !formData.noPADate) {
+          // Only require paDate if not using custom text
+          if (!formData.customPA) requiredFields.push('paDate');
+        }
+        if (!formData.noFADate) {
+          // Only require faDate if not using custom text
+          if (!formData.customFA) requiredFields.push('faDate');
+        }
         if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
         requiredFields.push('ldwDate');
       }
@@ -157,7 +167,16 @@ function App() {
       }
     }
 
-    const allFieldsFilled = requiredFields.every(field => formData[field]);
+    const allFieldsFilled = requiredFields.every(field => {
+      // Special handling for custom text fields
+      if (field === 'paDate' && formData.customPA) {
+        return formData.customPAText.trim() !== '';
+      }
+      if (field === 'faDate' && formData.customFA) {
+        return formData.customFAText.trim() !== '';
+      }
+      return formData[field];
+    });
 
     if (allFieldsFilled) {
       setShowOutput(!showOutput);
@@ -192,7 +211,9 @@ function App() {
       notFiledDate: '',
       attorney: '',
       customPA: false,
-      customFA: false
+      customFA: false,
+      customPAText: '',
+      customFAText: ''
     })
     localStorage.removeItem('formData')
     setShowOutput(false)
@@ -207,8 +228,14 @@ function App() {
     }
 
     if (formData.status === 'Settled') {
-      if (formData.classType === 'Class' && !formData.noPADate) requiredFields.push('paDate');
-      if (!formData.noFADate) requiredFields.push('faDate');
+      if (formData.classType === 'Class' && !formData.noPADate) {
+        // Only require paDate if not using custom text
+        if (!formData.customPA) requiredFields.push('paDate');
+      }
+      if (!formData.noFADate) {
+        // Only require faDate if not using custom text
+        if (!formData.customFA) requiredFields.push('faDate');
+      }
       if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
       requiredFields.push('ldwDate');
     }
@@ -512,8 +539,8 @@ function App() {
 
             {/* Definition Match, PA Date, and FA Date Row - Only for Settled */}
             {formData.status === 'Settled' && (
-              <div className="grid grid-cols-3 gap-4">
-                {/* Class/PAGA */}
+              <>
+                {/* Class/PAGA Radio Buttons - On their own row */}
                 <div className="space-y-2">
                   <label htmlFor="classType" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                     Class/PAGA
@@ -538,78 +565,190 @@ function App() {
                   </RadioGroup>
                 </div>
 
-                {/* PA Date and Toggle - Only show for Class */}
-                {formData.classType === 'Class' && (
+                {/* PA and FA Dates - On the same row */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* PA Date */}
+                  {formData.classType === 'Class' && (
+                    <div className="space-y-2 pr-4 border-r border-gray-200">
+                      <label htmlFor="paDate" className={getLabelClassName('paDate')}>
+                        PA Date {isFieldRequired('paDate') && <span className="text-red-500">*</span>}
+                      </label>
+                      {formData.customPA ? (
+                        <textarea
+                          name="paDate"
+                          id="paDate"
+                          rows={3}
+                          className={`${getInputClassName('paDate')} ${formData.noPADate ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          value={formData.customPAText}
+                          onChange={(e) => setFormData({ ...formData, customPAText: e.target.value })}
+                          disabled={formData.noPADate}
+                          placeholder="Enter custom PA text..."
+                        />
+                      ) : (
+                        <input
+                          type="date"
+                          name="paDate"
+                          id="paDate"
+                          className={`${getInputClassName('paDate')} ${formData.noPADate ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          value={formData.paDate}
+                          onChange={(e) => setFormData({ ...formData, paDate: e.target.value })}
+                          disabled={formData.noPADate}
+                        />
+                      )}
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="scheduledMPA"
+                            checked={formData.scheduledMPA}
+                            onCheckedChange={(checked) => {
+                              setFormData({ 
+                                ...formData, 
+                                scheduledMPA: checked as boolean,
+                                noPADate: checked ? false : formData.noPADate,
+                                customPA: checked ? false : formData.customPA
+                              });
+                            }}
+                          />
+                          <label
+                            htmlFor="scheduledMPA"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            Scheduled MPA
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="noPADate"
+                            checked={formData.noPADate}
+                            onCheckedChange={(checked) => {
+                              setFormData({ 
+                                ...formData, 
+                                noPADate: checked as boolean,
+                                scheduledMPA: checked ? false : formData.scheduledMPA,
+                                customPA: checked ? false : formData.customPA,
+                                paDate: checked ? '' : formData.paDate
+                              });
+                            }}
+                          />
+                          <label
+                            htmlFor="noPADate"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            No PA Date
+                          </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="customPA"
+                            checked={formData.customPA}
+                            onCheckedChange={(checked) => {
+                              setFormData({ 
+                                ...formData, 
+                                customPA: checked as boolean,
+                                scheduledMPA: checked ? false : formData.scheduledMPA,
+                                noPADate: checked ? false : formData.noPADate,
+                                paDate: checked ? '' : formData.paDate,
+                                customPAText: checked ? formData.customPAText : ''
+                              });
+                            }}
+                          />
+                          <label
+                            htmlFor="customPA"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            Custom
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* FA Date */}
                   <div className="space-y-2">
-                    <label htmlFor="paDate" className={getLabelClassName('paDate')}>
-                      PA Date {isFieldRequired('paDate') && <span className="text-red-500">*</span>}
+                    <label htmlFor="faDate" className={getLabelClassName('faDate')}>
+                      FA Date {isFieldRequired('faDate') && <span className="text-red-500">*</span>}
                     </label>
-                    <input
-                      type="date"
-                      name="paDate"
-                      id="paDate"
-                      className={`${getInputClassName('paDate')} ${formData.noPADate ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      value={formData.paDate}
-                      onChange={(e) => setFormData({ ...formData, paDate: e.target.value })}
-                      disabled={formData.noPADate}
-                    />
-                    <div className="space-y-2">
+                    {formData.customFA ? (
+                      <textarea
+                        name="faDate"
+                        id="faDate"
+                        rows={3}
+                        className={`${getInputClassName('faDate')} ${formData.noFADate ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        value={formData.customFAText}
+                        onChange={(e) => setFormData({ ...formData, customFAText: e.target.value })}
+                        disabled={formData.noFADate}
+                        placeholder="Enter custom FA text..."
+                      />
+                    ) : (
+                      <input
+                        type="date"
+                        name="faDate"
+                        id="faDate"
+                        className={`${getInputClassName('faDate')} ${formData.noFADate ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        value={formData.faDate}
+                        onChange={(e) => setFormData({ ...formData, faDate: e.target.value })}
+                        disabled={formData.noFADate}
+                      />
+                    )}
+                    <div className="flex items-center space-x-4">
                       <div className="flex items-center space-x-2">
                         <Checkbox
-                          id="scheduledMPA"
-                          checked={formData.scheduledMPA}
+                          id="scheduledMFA"
+                          checked={formData.scheduledMFA}
                           onCheckedChange={(checked) => {
                             setFormData({ 
                               ...formData, 
-                              scheduledMPA: checked as boolean,
-                              noPADate: checked ? false : formData.noPADate,
-                              customPA: checked ? false : formData.customPA
+                              scheduledMFA: checked as boolean,
+                              noFADate: checked ? false : formData.noFADate,
+                              customFA: checked ? false : formData.customFA
                             });
                           }}
                         />
                         <label
-                          htmlFor="scheduledMPA"
+                          htmlFor="scheduledMFA"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
-                          Scheduled MPA
+                          Scheduled MFA
                         </label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
-                          id="noPADate"
-                          checked={formData.noPADate}
+                          id="noFADate"
+                          checked={formData.noFADate}
                           onCheckedChange={(checked) => {
                             setFormData({ 
                               ...formData, 
-                              noPADate: checked as boolean,
-                              scheduledMPA: checked ? false : formData.scheduledMPA,
-                              customPA: checked ? false : formData.customPA,
-                              paDate: checked ? '' : formData.paDate
+                              noFADate: checked as boolean,
+                              scheduledMFA: checked ? false : formData.scheduledMFA,
+                              customFA: checked ? false : formData.customFA,
+                              faDate: checked ? '' : formData.faDate
                             });
                           }}
                         />
                         <label
-                          htmlFor="noPADate"
+                          htmlFor="noFADate"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
-                          No PA Date
+                          No FA Date
                         </label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
-                          id="customPA"
-                          checked={formData.customPA}
+                          id="customFA"
+                          checked={formData.customFA}
                           onCheckedChange={(checked) => {
                             setFormData({ 
                               ...formData, 
-                              customPA: checked as boolean,
-                              scheduledMPA: checked ? false : formData.scheduledMPA,
-                              noPADate: checked ? false : formData.noPADate
+                              customFA: checked as boolean,
+                              scheduledMFA: checked ? false : formData.scheduledMFA,
+                              noFADate: checked ? false : formData.noFADate,
+                              faDate: checked ? '' : formData.faDate,
+                              customFAText: checked ? formData.customFAText : ''
                             });
                           }}
                         />
                         <label
-                          htmlFor="customPA"
+                          htmlFor="customFA"
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           Custom
@@ -617,87 +756,8 @@ function App() {
                       </div>
                     </div>
                   </div>
-                )}
-
-                {/* FA Date and Toggle */}
-                <div className="space-y-2">
-                  <label htmlFor="faDate" className={getLabelClassName('faDate')}>
-                    FA Date {isFieldRequired('faDate') && <span className="text-red-500">*</span>}
-                  </label>
-                  <input
-                    type="date"
-                    name="faDate"
-                    id="faDate"
-                    className={`${getInputClassName('faDate')} ${formData.noFADate ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    value={formData.faDate}
-                    onChange={(e) => setFormData({ ...formData, faDate: e.target.value })}
-                    disabled={formData.noFADate}
-                  />
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="scheduledMFA"
-                        checked={formData.scheduledMFA}
-                        onCheckedChange={(checked) => {
-                          setFormData({ 
-                            ...formData, 
-                            scheduledMFA: checked as boolean,
-                            noFADate: checked ? false : formData.noFADate,
-                            customFA: checked ? false : formData.customFA
-                          });
-                        }}
-                      />
-                      <label
-                        htmlFor="scheduledMFA"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Scheduled MFA
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="noFADate"
-                        checked={formData.noFADate}
-                        onCheckedChange={(checked) => {
-                          setFormData({ 
-                            ...formData, 
-                            noFADate: checked as boolean,
-                            scheduledMFA: checked ? false : formData.scheduledMFA,
-                            customFA: checked ? false : formData.customFA,
-                            faDate: checked ? '' : formData.faDate
-                          });
-                        }}
-                      />
-                      <label
-                        htmlFor="noFADate"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        No FA Date
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="customFA"
-                        checked={formData.customFA}
-                        onCheckedChange={(checked) => {
-                          setFormData({ 
-                            ...formData, 
-                            customFA: checked as boolean,
-                            scheduledMFA: checked ? false : formData.scheduledMFA,
-                            noFADate: checked ? false : formData.noFADate
-                          });
-                        }}
-                      />
-                      <label
-                        htmlFor="customFA"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Custom
-                      </label>
-                    </div>
-                  </div>
                 </div>
-              </div>
+              </>
             )}
 
             {/* Definition Match, Period End Date, and LDW Date Row - Only for Settled */}
@@ -966,9 +1026,16 @@ function App() {
                   ) : formData.status === 'Settled' ? (
                     // Settled form output
                     <ul className="list-disc pl-4">
-                      <li>Settled case {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on {formatDate(formData.date)} with {formData.lawFirm}.
-                        {formData.classType === 'Class' && !formData.noPADate ? ` ${formData.scheduledMPA ? 'MPA scheduled on' : 'PA on'} ${formatDate(formData.paDate)};` : formData.classType === 'Class' ? ' No PA scheduled;' : ''}
-                        {!formData.noFADate ? ` ${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}` : `${formData.classType === 'Class' ? ' ' : ''}No FA scheduled.`}{formData.noPADate && formData.noFADate ? ' ' : '. '}
+                      <li>
+                        {`Settled case ${formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on ${formatDate(formData.date)} with ${formData.lawFirm}. `}
+                        {formData.classType === 'Class' && !formData.noPADate ? 
+                          formData.customPA ? `${formData.customPAText}; ` : 
+                          `${formData.scheduledMPA ? 'MPA scheduled on' : 'PA on'} ${formatDate(formData.paDate)}; ` : 
+                          formData.classType === 'Class' ? 'No PA scheduled; ' : ''}
+                        {!formData.noFADate ? 
+                          formData.customFA ? `${formData.customFAText}. ` : 
+                          `${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}. ` : 
+                          `No FA scheduled. `}
                         {formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : `PNC does not match the definition, as the definition is for ${formData.definitionMismatchReason} whereas our PNC was a ${formData.pncJobTitle}.`}</li>
                       <li className="!list-none">
                         <ul className="list-disc pl-4">

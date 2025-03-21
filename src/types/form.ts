@@ -33,4 +33,6 @@ export interface FormData {
   attorney: string
   customPA: boolean
   customFA: boolean
+  customPAText: string
+  customFAText: string
 } 
