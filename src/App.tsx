@@ -150,12 +150,20 @@ function App() {
       
       if (formData.status === 'Settled') {
         if (formData.classType === 'Class' && !formData.noPADate) {
-          // Only require paDate if not using custom text
-          if (!formData.customPA) requiredFields.push('paDate');
+          // Require either paDate or customPAText if customPA is checked
+          if (formData.customPA) {
+            requiredFields.push('customPAText');
+          } else {
+            requiredFields.push('paDate');
+          }
         }
         if (!formData.noFADate) {
-          // Only require faDate if not using custom text
-          if (!formData.customFA) requiredFields.push('faDate');
+          // Require either faDate or customFAText if customFA is checked
+          if (formData.customFA) {
+            requiredFields.push('customFAText');
+          } else {
+            requiredFields.push('faDate');
+          }
         }
         if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
         requiredFields.push('ldwDate');
@@ -169,10 +177,10 @@ function App() {
 
     const allFieldsFilled = requiredFields.every(field => {
       // Special handling for custom text fields
-      if (field === 'paDate' && formData.customPA) {
+      if (field === 'customPAText' && formData.customPA) {
         return formData.customPAText.trim() !== '';
       }
-      if (field === 'faDate' && formData.customFA) {
+      if (field === 'customFAText' && formData.customFA) {
         return formData.customFAText.trim() !== '';
       }
       return formData[field];
@@ -229,12 +237,20 @@ function App() {
 
     if (formData.status === 'Settled') {
       if (formData.classType === 'Class' && !formData.noPADate) {
-        // Only require paDate if not using custom text
-        if (!formData.customPA) requiredFields.push('paDate');
+        // Require either paDate or customPAText if customPA is checked
+        if (formData.customPA) {
+          requiredFields.push('customPAText');
+        } else {
+          requiredFields.push('paDate');
+        }
       }
       if (!formData.noFADate) {
-        // Only require faDate if not using custom text
-        if (!formData.customFA) requiredFields.push('faDate');
+        // Require either faDate or customFAText if customFA is checked
+        if (formData.customFA) {
+          requiredFields.push('customFAText');
+        } else {
+          requiredFields.push('faDate');
+        }
       }
       if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
       requiredFields.push('ldwDate');
@@ -570,15 +586,15 @@ function App() {
                   {/* PA Date */}
                   {formData.classType === 'Class' && (
                     <div className="space-y-2 pr-4 border-r border-gray-200">
-                      <label htmlFor="paDate" className={getLabelClassName('paDate')}>
-                        PA Date {isFieldRequired('paDate') && <span className="text-red-500">*</span>}
+                      <label htmlFor="paDate" className={getLabelClassName(formData.customPA ? 'customPAText' : 'paDate')}>
+                        PA Date {isFieldRequired(formData.customPA ? 'customPAText' : 'paDate') && <span className="text-red-500">*</span>}
                       </label>
                       {formData.customPA ? (
                         <textarea
                           name="paDate"
                           id="paDate"
                           rows={3}
-                          className={`${getInputClassName('paDate')} ${formData.noPADate ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          className={`${getInputClassName('customPAText')} ${formData.noPADate ? 'opacity-50 cursor-not-allowed' : ''}`}
                           value={formData.customPAText}
                           onChange={(e) => setFormData({ ...formData, customPAText: e.target.value })}
                           disabled={formData.noPADate}
@@ -665,15 +681,15 @@ function App() {
 
                   {/* FA Date */}
                   <div className="space-y-2">
-                    <label htmlFor="faDate" className={getLabelClassName('faDate')}>
-                      FA Date {isFieldRequired('faDate') && <span className="text-red-500">*</span>}
+                    <label htmlFor="faDate" className={getLabelClassName(formData.customFA ? 'customFAText' : 'faDate')}>
+                      FA Date {isFieldRequired(formData.customFA ? 'customFAText' : 'faDate') && <span className="text-red-500">*</span>}
                     </label>
                     {formData.customFA ? (
                       <textarea
                         name="faDate"
                         id="faDate"
                         rows={3}
-                        className={`${getInputClassName('faDate')} ${formData.noFADate ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`${getInputClassName('customFAText')} ${formData.noFADate ? 'opacity-50 cursor-not-allowed' : ''}`}
                         value={formData.customFAText}
                         onChange={(e) => setFormData({ ...formData, customFAText: e.target.value })}
                         disabled={formData.noFADate}
