@@ -1,4 +1,4 @@
-export type Status = 'Pending' | 'Settled'
+export type Status = 'Pending' | 'Settled' | 'LWDA'
 export type TimeFrame = '12 months' | '12-36 months' | '36 months'
 export type DefinitionMatch = 'Matches definition' | 'Does NOT match definition'
 export type ClassType = 'Class' | 'PAGA'
@@ -20,7 +20,7 @@ export interface FormData {
   noFADate: boolean
   classType: ClassType
   periodEndDate: string
-  ldwDate: LDWDate
+  ldwDate: string
   isLDWAfterPeriodEnd: boolean
   liabilityCalc: string
   hasDescription: boolean
@@ -29,4 +29,6 @@ export interface FormData {
   noPeriodEndDate: boolean
   definitionMismatchReason: string
   pncJobTitle: string
+  notFiledDate: string
+  attorney: string
 } 

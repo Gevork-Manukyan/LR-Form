@@ -37,7 +37,9 @@ function App() {
     scheduledMFA: false,
     noPeriodEndDate: false,
     definitionMismatchReason: '',
-    pncJobTitle: ''
+    pncJobTitle: '',
+    notFiledDate: '',
+    attorney: ''
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -69,7 +71,7 @@ function App() {
 
         // Ensure all required fields are present
         const completeData: FormData = {
-          status: parsedData.status === 'Pending' || parsedData.status === 'Settled' ? parsedData.status : 'Pending',
+          status: parsedData.status === 'Pending' || parsedData.status === 'Settled' || parsedData.status === 'LWDA' ? parsedData.status : 'Pending',
           caseNumber: parsedData.caseNumber || '',
           timeFrame: parsedData.timeFrame || '12 months',
           date: parsedData.date || '',
@@ -92,7 +94,9 @@ function App() {
           scheduledMFA: Boolean(parsedData.scheduledMFA),
           noPeriodEndDate: parsedData.noPeriodEndDate || false,
           definitionMismatchReason: parsedData.definitionMismatchReason || '',
-          pncJobTitle: parsedData.pncJobTitle || ''
+          pncJobTitle: parsedData.pncJobTitle || '',
+          notFiledDate: parsedData.notFiledDate || '',
+          attorney: parsedData.attorney || ''
         }
 
         setFormData(completeData)
@@ -110,7 +114,7 @@ function App() {
         // Ensure status is valid before saving
         const dataToSave = {
           ...formData,
-          status: formData.status === 'Pending' || formData.status === 'Settled' ? formData.status : 'Pending'
+          status: formData.status === 'Pending' || formData.status === 'Settled' || formData.status === 'LWDA' ? formData.status : 'Pending'
         }
         localStorage.setItem('formData', JSON.stringify(dataToSave))
       } catch (error) {
@@ -173,7 +177,9 @@ function App() {
       scheduledMFA: false,
       noPeriodEndDate: false,
       definitionMismatchReason: '',
-      pncJobTitle: ''
+      pncJobTitle: '',
+      notFiledDate: '',
+      attorney: ''
     })
     localStorage.removeItem('formData')
     setShowOutput(false)
@@ -244,7 +250,7 @@ function App() {
                 <Select
                   value={formData.status || 'Pending'}
                   onValueChange={(value: Status) => {
-                    if (value === 'Pending' || value === 'Settled') {
+                    if (value === 'Pending' || value === 'Settled' || value === 'LWDA') {
                       setFormData(prevData => ({
                         ...prevData,
                         status: value
@@ -258,6 +264,7 @@ function App() {
                   <SelectContent>
                     <SelectItem value="Pending">Pending</SelectItem>
                     <SelectItem value="Settled">Settled</SelectItem>
+                    <SelectItem value="LWDA">LWDA</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -277,6 +284,76 @@ function App() {
                 />
               </div>
             </div>
+
+            {/* Date Fields Row - For LWDA */}
+            {formData.status === 'LWDA' && (
+              <div className="grid grid-cols-2 gap-4">
+                {/* Filed On */}
+                <div className="space-y-2">
+                  <label htmlFor="date" className={getLabelClassName('date')}>
+                    Filed On {isFieldRequired('date') && <span className="text-red-500">*</span>}
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    id="date"
+                    className={getInputClassName('date')}
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  />
+                </div>
+
+                {/* Not Filed in Court as of */}
+                <div className="space-y-2">
+                  <label htmlFor="notFiledDate" className={getLabelClassName('notFiledDate')}>
+                    Not filed in Court as of {isFieldRequired('notFiledDate') && <span className="text-red-500">*</span>}
+                  </label>
+                  <input
+                    type="date"
+                    name="notFiledDate"
+                    id="notFiledDate"
+                    className={getInputClassName('notFiledDate')}
+                    value={formData.notFiledDate}
+                    onChange={(e) => setFormData({ ...formData, notFiledDate: e.target.value })}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Attorney and Law Firm Row - For LWDA */}
+            {formData.status === 'LWDA' && (
+              <div className="grid grid-cols-2 gap-4">
+                {/* Attorney */}
+                <div className="space-y-2">
+                  <label htmlFor="attorney" className={getLabelClassName('attorney')}>
+                    Attorney {isFieldRequired('attorney') && <span className="text-red-500">*</span>}
+                  </label>
+                  <input
+                    type="text"
+                    name="attorney"
+                    id="attorney"
+                    className={getInputClassName('attorney')}
+                    value={formData.attorney}
+                    onChange={(e) => setFormData({ ...formData, attorney: e.target.value })}
+                  />
+                </div>
+
+                {/* Law Firm */}
+                <div className="space-y-2">
+                  <label htmlFor="lawFirm" className={getLabelClassName('lawFirm')}>
+                    Law Firm {isFieldRequired('lawFirm') && <span className="text-red-500">*</span>}
+                  </label>
+                  <input
+                    type="text"
+                    name="lawFirm"
+                    id="lawFirm"
+                    className={getInputClassName('lawFirm')}
+                    value={formData.lawFirm}
+                    onChange={(e) => setFormData({ ...formData, lawFirm: e.target.value })}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Two Column Grid - Common Fields */}
             <div className="grid grid-cols-2 gap-4">
@@ -811,7 +888,7 @@ function App() {
                         </li>
                       ) : null}
                     </ul>
-                  ) : (
+                  ) : formData.status === 'Settled' ? (
                     // Settled form output
                     <ul className="list-disc pl-4">
                       <li>Settled case {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on {formatDate(formData.date)} with {formData.lawFirm}.
@@ -871,6 +948,11 @@ function App() {
                           })()}
                         </ul>
                       </li>
+                    </ul>
+                  ) : (
+                    // LWDA form output
+                    <ul className="list-disc pl-4">
+                      <li>LWDA case {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on {formatDate(formData.date)} with {formData.lawFirm}. Attorney: {formData.attorney}. Not filed in Court as of {formatDate(formData.notFiledDate)}.</li>
                     </ul>
                   )}
                 </div>
