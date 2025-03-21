@@ -31,4 +31,6 @@ export interface FormData {
   pncJobTitle: string
   notFiledDate: string
   attorney: string
+  customPA: boolean
+  customFA: boolean
 } 

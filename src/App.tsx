@@ -39,7 +39,9 @@ function App() {
     definitionMismatchReason: '',
     pncJobTitle: '',
     notFiledDate: '',
-    attorney: ''
+    attorney: '',
+    customPA: false,
+    customFA: false
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -96,7 +98,9 @@ function App() {
           definitionMismatchReason: parsedData.definitionMismatchReason || '',
           pncJobTitle: parsedData.pncJobTitle || '',
           notFiledDate: parsedData.notFiledDate || '',
-          attorney: parsedData.attorney || ''
+          attorney: parsedData.attorney || '',
+          customPA: parsedData.customPA || false,
+          customFA: parsedData.customFA || false
         }
 
         setFormData(completeData)
@@ -186,7 +190,9 @@ function App() {
       definitionMismatchReason: '',
       pncJobTitle: '',
       notFiledDate: '',
-      attorney: ''
+      attorney: '',
+      customPA: false,
+      customFA: false
     })
     localStorage.removeItem('formData')
     setShowOutput(false)
@@ -556,7 +562,8 @@ function App() {
                             setFormData({ 
                               ...formData, 
                               scheduledMPA: checked as boolean,
-                              noPADate: checked ? false : formData.noPADate
+                              noPADate: checked ? false : formData.noPADate,
+                              customPA: checked ? false : formData.customPA
                             });
                           }}
                         />
@@ -576,6 +583,7 @@ function App() {
                               ...formData, 
                               noPADate: checked as boolean,
                               scheduledMPA: checked ? false : formData.scheduledMPA,
+                              customPA: checked ? false : formData.customPA,
                               paDate: checked ? '' : formData.paDate
                             });
                           }}
@@ -585,6 +593,26 @@ function App() {
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
                           No PA Date
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="customPA"
+                          checked={formData.customPA}
+                          onCheckedChange={(checked) => {
+                            setFormData({ 
+                              ...formData, 
+                              customPA: checked as boolean,
+                              scheduledMPA: checked ? false : formData.scheduledMPA,
+                              noPADate: checked ? false : formData.noPADate
+                            });
+                          }}
+                        />
+                        <label
+                          htmlFor="customPA"
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          Custom
                         </label>
                       </div>
                     </div>
@@ -614,7 +642,8 @@ function App() {
                           setFormData({ 
                             ...formData, 
                             scheduledMFA: checked as boolean,
-                            noFADate: checked ? false : formData.noFADate
+                            noFADate: checked ? false : formData.noFADate,
+                            customFA: checked ? false : formData.customFA
                           });
                         }}
                       />
@@ -634,6 +663,7 @@ function App() {
                             ...formData, 
                             noFADate: checked as boolean,
                             scheduledMFA: checked ? false : formData.scheduledMFA,
+                            customFA: checked ? false : formData.customFA,
                             faDate: checked ? '' : formData.faDate
                           });
                         }}
@@ -643,6 +673,26 @@ function App() {
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
                         No FA Date
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="customFA"
+                        checked={formData.customFA}
+                        onCheckedChange={(checked) => {
+                          setFormData({ 
+                            ...formData, 
+                            customFA: checked as boolean,
+                            scheduledMFA: checked ? false : formData.scheduledMFA,
+                            noFADate: checked ? false : formData.noFADate
+                          });
+                        }}
+                      />
+                      <label
+                        htmlFor="customFA"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Custom
                       </label>
                     </div>
                   </div>
