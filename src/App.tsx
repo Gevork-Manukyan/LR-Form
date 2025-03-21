@@ -782,7 +782,7 @@ function App() {
                         if (monthsDiff > 36) return 'over 36 months ago';
                         if (monthsDiff > 12) return 'within 12-36 months';
                         return 'within 12 months';
-                      })()} on {formatDate(formData.date)} with {formData.lawFirm}. PNC {formData.definitionMatch === 'Matches definition' ? 'matches' : 'does not match'} the definition.</li>
+                      })()} on {formatDate(formData.date)} with {formData.lawFirm}. {formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : `PNC does not match the definition, as the definition is for ${formData.definitionMismatchReason} whereas our PNC was a ${formData.pncJobTitle}.`}</li>
                       {formData.description && formData.description.split('\n').some(line => line.trim()) && (
                         <li className="!list-none">
                           <ul className="list-disc pl-4">
@@ -801,8 +801,8 @@ function App() {
                     <ul className="list-disc pl-4">
                       <li>Settled case {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on {formatDate(formData.date)} with {formData.lawFirm}.
                         {formData.classType === 'Class' && !formData.noPADate ? ` ${formData.scheduledMPA ? 'MPA scheduled on' : 'PA on'} ${formatDate(formData.paDate)};` : formData.classType === 'Class' ? ' No PA scheduled;' : ''}
-                        {!formData.noFADate ? ` ${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}` : `${formData.classType === 'Class' ? ' ' : ''}No FA scheduled`}{formData.noPADate && formData.noFADate ? ' ' : '. '}
-                        PNC {formData.definitionMatch === 'Matches definition' ? 'matches' : 'does not match'} the definition.</li>
+                        {!formData.noFADate ? ` ${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}` : `${formData.classType === 'Class' ? ' ' : ''}No FA scheduled.`}{formData.noPADate && formData.noFADate ? ' ' : '. '}
+                        {formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : `PNC does not match the definition, as the definition is for ${formData.definitionMismatchReason} whereas our PNC was a ${formData.pncJobTitle}.`}</li>
                       <li className="!list-none">
                         <ul className="list-disc pl-4">
                           {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && (
