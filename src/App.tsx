@@ -977,7 +977,7 @@ function App() {
                   ) : (
                     // LWDA form output
                     <ul className="list-disc pl-4">
-                      <li>LWDA case {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on {formatDate(formData.date)} with {formData.lawFirm}. Attorney: {formData.attorney}. Not filed in Court as of {formatDate(formData.notFiledDate)}.</li>
+                      <li>LWDA filing {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on {formatDate(formData.date)} by {formData.attorney} ({formData.lawFirm}). Case has not been filed in Court as of {formatDate(formData.notFiledDate)}.</li>
                     </ul>
                   )}
                 </div>
