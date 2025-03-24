@@ -11,6 +11,7 @@ import {
 } from "./components/ui/select"
 import { Checkbox } from "./components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "./components/ui/radio-group"
+import { Switch } from "./components/ui/switch"
 
 function App() {
   const [formData, setFormData] = useState<FormData>({
@@ -43,7 +44,8 @@ function App() {
     customPA: false,
     customFA: false,
     customPAText: '',
-    customFAText: ''
+    customFAText: '',
+    noPNC: false
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -104,7 +106,8 @@ function App() {
           customPA: parsedData.customPA || false,
           customFA: parsedData.customFA || false,
           customPAText: parsedData.customPAText || '',
-          customFAText: parsedData.customFAText || ''
+          customFAText: parsedData.customFAText || '',
+          noPNC: Boolean(parsedData.noPNC)
         }
 
         setFormData(completeData)
@@ -307,7 +310,22 @@ function App() {
   return (
     <div className="app min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
-        <h1 className="text-2xl font-bold mb-6">LR Form</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">LR Form</h1>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="noPNC"
+              checked={formData.noPNC}
+              onCheckedChange={(checked: boolean) => setFormData({ ...formData, noPNC: checked })}
+            />
+            <label
+              htmlFor="noPNC"
+              className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              No PNC
+            </label>
+          </div>
+        </div>
         <Form onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Status and Case Number Row */}

@@ -35,4 +35,5 @@ export interface FormData {
   customFA: boolean
   customPAText: string
   customFAText: string
+  noPNC: boolean
 } 
