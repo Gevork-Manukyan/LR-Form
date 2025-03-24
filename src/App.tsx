@@ -581,9 +581,6 @@ function App() {
               <>
                 {/* Class/PAGA Radio Buttons - On their own row */}
                 <div className="space-y-2">
-                  <label htmlFor="classType" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    Class/PAGA
-                  </label>
                   <RadioGroup
                     value={formData.classType}
                     onValueChange={(value: ClassType) => setFormData({ ...formData, classType: value })}
@@ -1111,15 +1108,15 @@ function App() {
                               return null;
                             })()
                           )}
-                          {formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '') && (
-                            <li>Released Defendants: {formData.defendantNames.filter(name => name.trim() !== '').join('; ')}</li>
-                          )}
                           {formData.hasDescription && formData.description && formData.description.split('\n').some(line => line.trim()) && (
                             <>
                               {formData.description.split('\n').map((line, index) => 
                                 line.trim() && <li key={index}>{line.trim()}</li>
                               )}
                             </>
+                          )}
+                          {formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '') && (
+                            <li>Released Defendants: {formData.defendantNames.filter(name => name.trim() !== '').join('; ')}</li>
                           )}
                           {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && formData.ldwDate && (() => {
                             const periodEnd = new Date(formData.periodEndDate);
