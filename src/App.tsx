@@ -172,7 +172,7 @@ function App() {
           }
         }
         if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
-        requiredFields.push('ldwDate');
+        if (!formData.noPNC) requiredFields.push('ldwDate');
       }
 
       // Add definition mismatch fields as required when "Does not match" is selected
@@ -801,7 +801,7 @@ function App() {
 
             {/* Definition Match, Period End Date, and LDW Date Row - Only for Settled */}
             {formData.status === 'Settled' && (
-              <div className={`grid ${formData.noPNC ? 'grid-cols-2' : 'grid-cols-3'} gap-4`}>
+              <div className={`grid ${formData.noPNC ? 'grid-cols-1' : 'grid-cols-3'} gap-4`}>
                 {/* Definition Match */}
                 {!formData.noPNC && (
                   <div className="space-y-2">
@@ -859,19 +859,21 @@ function App() {
                 </div>
 
                 {/* LDW Date */}
-                <div className="space-y-2">
-                  <label htmlFor="ldwDate" className={getLabelClassName('ldwDate')}>
-                    LDW Date {isFieldRequired('ldwDate') && <span className="text-red-500">*</span>}
-                  </label>
-                  <input
-                    type="date"
-                    name="ldwDate"
-                    id="ldwDate"
-                    className={getInputClassName('ldwDate')}
-                    value={formData.ldwDate}
-                    onChange={(e) => setFormData({ ...formData, ldwDate: e.target.value })}
-                  />
-                </div>
+                {!formData.noPNC && (
+                  <div className="space-y-2">
+                    <label htmlFor="ldwDate" className={getLabelClassName('ldwDate')}>
+                      LDW Date {isFieldRequired('ldwDate') && <span className="text-red-500">*</span>}
+                    </label>
+                    <input
+                      type="date"
+                      name="ldwDate"
+                      id="ldwDate"
+                      className={getInputClassName('ldwDate')}
+                      value={formData.ldwDate}
+                      onChange={(e) => setFormData({ ...formData, ldwDate: e.target.value })}
+                    />
+                  </div>
+                )}
               </div>
             )}
 
@@ -1087,6 +1089,10 @@ function App() {
                               elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
                               const today = new Date();
                               const hasPassed = today >= elevenMonthsLater;
+
+                              if (formData.noPNC) {
+                                return <li>{formData.classType} period end date {formatDate(formData.periodEndDate)}. 11 months {hasPassed ? 'have' : 'have not'} passed. {!hasPassed ? 'Lawsuit Problem' : ''}</li>;
+                              }
 
                               if (formData.ldwDate) {
                                 const ldwDate = new Date(formData.ldwDate);
