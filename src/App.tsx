@@ -149,7 +149,10 @@ function App() {
     if (formData.status === 'LWDA') {
       requiredFields = ['caseNumber', 'date', 'lawFirm', 'attorney', 'notFiledDate'];
     } else {
-      requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
+      requiredFields = ['caseNumber', 'date', 'lawFirm'];
+      if (!formData.noPNC) {
+        requiredFields.push('definitionMatch');
+      }
       
       if (formData.status === 'Settled') {
         if (formData.classType === 'Class' && !formData.noPADate) {
@@ -173,7 +176,7 @@ function App() {
       }
 
       // Add definition mismatch fields as required when "Does not match" is selected
-      if (formData.definitionMatch === 'Does NOT match definition') {
+      if (!formData.noPNC && formData.definitionMatch === 'Does NOT match definition') {
         requiredFields.push('definitionMismatchReason', 'pncJobTitle');
       }
     }
@@ -232,7 +235,7 @@ function App() {
   }
 
   const isFieldRequired = (field: keyof FormData) => {
-    const requiredFields = ['caseNumber', 'date', 'lawFirm', 'definitionMatch'];
+    const requiredFields = ['caseNumber', 'date', 'lawFirm'];
     
     if (formData.status === 'LWDA') {
       return ['caseNumber', 'date', 'lawFirm', 'attorney', 'notFiledDate'].includes(field);
@@ -260,7 +263,7 @@ function App() {
     }
 
     // Add definition mismatch fields as required when "Does not match" is selected
-    if (formData.definitionMatch === 'Does NOT match definition') {
+    if (!formData.noPNC && formData.definitionMatch === 'Does NOT match definition') {
       requiredFields.push('definitionMismatchReason', 'pncJobTitle');
     }
 
@@ -519,28 +522,30 @@ function App() {
                 </div>
 
                 {/* Definition Match Dropdown */}
-                <div className="space-y-2">
-                  <label htmlFor="definitionMatch" className={getLabelClassName('definitionMatch')}>
-                    Definition Match {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
-                  </label>
-                  <Select
-                    value={formData.definitionMatch}
-                    onValueChange={(value: DefinitionMatch) => setFormData({ ...formData, definitionMatch: value })}
-                  >
-                    <SelectTrigger className={showValidation && isFieldRequired('definitionMatch') && !formData.definitionMatch ? "border-red-500" : ""}>
-                      <SelectValue placeholder="Select definition match" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Matches definition">Matches</SelectItem>
-                      <SelectItem value="Does NOT match definition">Does not match</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {!formData.noPNC && (
+                  <div className="space-y-2">
+                    <label htmlFor="definitionMatch" className={getLabelClassName('definitionMatch')}>
+                      Definition Match {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
+                    </label>
+                    <Select
+                      value={formData.definitionMatch}
+                      onValueChange={(value: DefinitionMatch) => setFormData({ ...formData, definitionMatch: value })}
+                    >
+                      <SelectTrigger className={showValidation && isFieldRequired('definitionMatch') && !formData.definitionMatch ? "border-red-500" : ""}>
+                        <SelectValue placeholder="Select definition match" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Matches definition">Matches</SelectItem>
+                        <SelectItem value="Does NOT match definition">Does not match</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
             )}
 
             {/* Definition Mismatch Details - Only show when "Does not match" is selected - For Pending */}
-            {formData.status === 'Pending' && formData.definitionMatch === 'Does NOT match definition' && (
+            {formData.status === 'Pending' && !formData.noPNC && formData.definitionMatch === 'Does NOT match definition' && (
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label htmlFor="definitionMismatchReason" className={getLabelClassName('definitionMismatchReason')}>
@@ -796,25 +801,27 @@ function App() {
 
             {/* Definition Match, Period End Date, and LDW Date Row - Only for Settled */}
             {formData.status === 'Settled' && (
-              <div className="grid grid-cols-3 gap-4">
+              <div className={`grid ${formData.noPNC ? 'grid-cols-2' : 'grid-cols-3'} gap-4`}>
                 {/* Definition Match */}
-                <div className="space-y-2">
-                  <label htmlFor="definitionMatch" className={getLabelClassName('definitionMatch')}>
-                    Definition Match {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
-                  </label>
-                  <Select
-                    value={formData.definitionMatch}
-                    onValueChange={(value: DefinitionMatch) => setFormData({ ...formData, definitionMatch: value })}
-                  >
-                    <SelectTrigger className={showValidation && isFieldRequired('definitionMatch') && !formData.definitionMatch ? "border-red-500" : ""}>
-                      <SelectValue placeholder="Select definition match" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Matches definition">Matches</SelectItem>
-                      <SelectItem value="Does NOT match definition">Does not match</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {!formData.noPNC && (
+                  <div className="space-y-2">
+                    <label htmlFor="definitionMatch" className={getLabelClassName('definitionMatch')}>
+                      Definition Match {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
+                    </label>
+                    <Select
+                      value={formData.definitionMatch}
+                      onValueChange={(value: DefinitionMatch) => setFormData({ ...formData, definitionMatch: value })}
+                    >
+                      <SelectTrigger className={showValidation && isFieldRequired('definitionMatch') && !formData.definitionMatch ? "border-red-500" : ""}>
+                        <SelectValue placeholder="Select definition match" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Matches definition">Matches</SelectItem>
+                        <SelectItem value="Does NOT match definition">Does not match</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 {/* Period End Date */}
                 <div className="space-y-2">
@@ -869,7 +876,7 @@ function App() {
             )}
 
             {/* Definition Mismatch Details - Only show when "Does not match" is selected - For Settled */}
-            {formData.status === 'Settled' && formData.definitionMatch === 'Does NOT match definition' && (
+            {formData.status === 'Settled' && !formData.noPNC && formData.definitionMatch === 'Does NOT match definition' && (
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label htmlFor="definitionMismatchReason" className={getLabelClassName('definitionMismatchReason')}>
@@ -1039,7 +1046,7 @@ function App() {
                         if (monthsDiff > 36) return 'over 36 months ago';
                         if (monthsDiff > 12) return 'within 12-36 months';
                         return 'within 12 months';
-                      })()} on {formatDate(formData.date)} with {formData.lawFirm}. {formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : `PNC does not match the definition, as the definition is for ${formData.definitionMismatchReason} whereas our PNC was a ${formData.pncJobTitle}.`}</li>
+                      })()} on {formatDate(formData.date)} with {formData.lawFirm}.{!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? ' PNC matches the definition.' : ` PNC does not match the definition, as the definition is for ${formData.definitionMismatchReason} whereas our PNC was a ${formData.pncJobTitle}.`)}</li>
                       {(formData.description && formData.description.split('\n').some(line => line.trim())) || (formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '')) ? (
                         <li className="!list-none">
                           <ul className="list-disc pl-4">
@@ -1070,7 +1077,7 @@ function App() {
                           formData.customFA ? `${formData.customFAText}. ` : 
                           `${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}. ` : 
                           `No FA scheduled. `}
-                        {formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : `PNC does not match the definition, as the definition is for ${formData.definitionMismatchReason} whereas our PNC was a ${formData.pncJobTitle}.`}</li>
+                        {!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : `PNC does not match the definition, as the definition is for ${formData.definitionMismatchReason} whereas our PNC was a ${formData.pncJobTitle}.`)}</li>
                       <li className="!list-none">
                         <ul className="list-disc pl-4">
                           {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && (
