@@ -801,7 +801,7 @@ function App() {
 
             {/* Definition Match, Period End Date, and LDW Date Row - Only for Settled */}
             {formData.status === 'Settled' && (
-              <div className={`grid ${formData.noPNC ? 'grid-cols-1' : 'grid-cols-3'} gap-4`}>
+              <div className={`grid ${formData.noPNC ? 'grid-cols-1' : 'grid-cols-3'} gap-4 border-t border-b border-gray-200 py-4`}>
                 {/* Definition Match */}
                 {!formData.noPNC && (
                   <div className="space-y-2">
