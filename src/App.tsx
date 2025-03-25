@@ -15,6 +15,19 @@ import { Switch } from "./components/ui/switch"
 
 const LAWSUIT_PROBLEM = <strong>Lawsuit Problem</strong>
 
+const PARTNER_LAWFIRMS = [
+  "aegis",
+  "cohelan khoury",
+  "cohelan khoury & singer",
+  "cohelan khoury and singer",
+  "diversity",
+  "gaines",
+  "tunyan",
+  "moon",
+  "yang",
+  "otkupman",
+]
+
 function App() {
   const [formData, setFormData] = useState<FormData>({
     status: 'Pending',
@@ -52,6 +65,11 @@ function App() {
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [showValidation, setShowValidation] = useState(false)
+
+  // Add this near the top of the component
+  const isPartnerLawFirm = PARTNER_LAWFIRMS.some(partnerFirm => 
+    formData.lawFirm.trim().toLowerCase().includes(partnerFirm.toLowerCase())
+  )
 
   // Hide output when form data changes
   useEffect(() => {
@@ -444,6 +462,9 @@ function App() {
                     value={formData.lawFirm}
                     onChange={(e) => setFormData({ ...formData, lawFirm: e.target.value })}
                   />
+                  {(formData.status as Status) === 'Pending' && isPartnerLawFirm && (
+                    <p className="text-sm text-red-500">Warning: Partner Law Firm</p>
+                  )}
                 </div>
               </div>
             )}
@@ -1047,7 +1068,7 @@ function App() {
                         if (monthsDiff > 36) return 'over 36 months ago';
                         if (monthsDiff > 12) return 'within 12-36 months';
                         return 'within 12 months';
-                      })()} on {formatDate(formData.date)} with {formData.lawFirm}.{!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? ' PNC matches the definition.' : <> <b>PNC does not match the definition</b>, as the definition is for {formData.definitionMismatchReason} whereas our PNC was a {formData.pncJobTitle}.</>)}</li>
+                      })()} on {formatDate(formData.date)} with {isPartnerLawFirm ? <strong>{formData.lawFirm}</strong> : formData.lawFirm}.{!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? ' PNC matches the definition.' : <> <b>PNC does not match the definition</b>, as the definition is for {formData.definitionMismatchReason} whereas our PNC was a {formData.pncJobTitle}.</>)}</li>
                       {(formData.description && formData.description.split('\n').some(line => line.trim())) || (formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '')) ? (
                         <li className="!list-none">
                           <ul className="list-disc pl-4">
