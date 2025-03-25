@@ -28,6 +28,12 @@ const PARTNER_LAWFIRMS = [
   "otkupman",
 ]
 
+const SPECIAL_LAWFIRMS = [
+  "yeremian",
+  "barnes",
+  "lander",
+]
+
 function App() {
   const [formData, setFormData] = useState<FormData>({
     status: 'Pending',
@@ -66,9 +72,12 @@ function App() {
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [showValidation, setShowValidation] = useState(false)
 
-  // Add this near the top of the component
+  // Add these near the top of the component
   const isPartnerLawFirm = PARTNER_LAWFIRMS.some(partnerFirm => 
     formData.lawFirm.trim().toLowerCase().includes(partnerFirm.toLowerCase())
+  )
+  const isSpecialLawFirm = SPECIAL_LAWFIRMS.some(specialFirm => 
+    formData.lawFirm.trim().toLowerCase().includes(specialFirm.toLowerCase())
   )
 
   // Hide output when form data changes
@@ -142,12 +151,7 @@ function App() {
   useEffect(() => {
     if (!isInitialLoad) {
       try {
-        // Ensure status is valid before saving
-        const dataToSave = {
-          ...formData,
-          status: formData.status === 'Pending' || formData.status === 'Settled' || formData.status === 'LWDA' ? formData.status : 'Pending'
-        }
-        localStorage.setItem('formData', JSON.stringify(dataToSave))
+        localStorage.setItem('formData', JSON.stringify(formData))
       } catch (error) {
         console.error('Error saving form data:', error)
       }
@@ -261,6 +265,11 @@ function App() {
       return ['caseNumber', 'date', 'lawFirm', 'attorney', 'notFiledDate'].includes(field);
     }
 
+    // Add definitionMatch for all statuses when PNC is not disabled
+    if (!formData.noPNC) {
+      requiredFields.push('definitionMatch');
+    }
+
     if (formData.status === 'Settled') {
       if (formData.classType === 'Class' && !formData.noPADate) {
         // Require either paDate or customPAText if customPA is checked
@@ -279,7 +288,7 @@ function App() {
         }
       }
       if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
-      requiredFields.push('ldwDate');
+      if (!formData.noPNC) requiredFields.push('ldwDate');
     }
 
     // Add definition mismatch fields as required when "Does not match" is selected
@@ -462,9 +471,6 @@ function App() {
                     value={formData.lawFirm}
                     onChange={(e) => setFormData({ ...formData, lawFirm: e.target.value })}
                   />
-                  {(formData.status as Status) === 'Pending' && isPartnerLawFirm && (
-                    <p className="text-sm text-red-500">Warning: Partner Law Firm</p>
-                  )}
                 </div>
               </div>
             )}
@@ -500,6 +506,9 @@ function App() {
                     value={formData.lawFirm}
                     onChange={(e) => setFormData({ ...formData, lawFirm: e.target.value })}
                   />
+                  {(formData.status as Status) === 'Pending' && (isPartnerLawFirm || isSpecialLawFirm) && (
+                    <p className="text-sm text-red-500">Warning: {isSpecialLawFirm ? 'Send Email to CTD Review' : 'Partner Law Firm'}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -1068,7 +1077,7 @@ function App() {
                         if (monthsDiff > 36) return 'over 36 months ago';
                         if (monthsDiff > 12) return 'within 12-36 months';
                         return 'within 12 months';
-                      })()} on {formatDate(formData.date)} with {isPartnerLawFirm ? <strong>{formData.lawFirm}</strong> : formData.lawFirm}.{!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? ' PNC matches the definition.' : <> <b>PNC does not match the definition</b>, as the definition is for {formData.definitionMismatchReason} whereas our PNC was a {formData.pncJobTitle}.</>)}</li>
+                      })()} on {formatDate(formData.date)} with {(isPartnerLawFirm || isSpecialLawFirm) ? <strong>{formData.lawFirm}</strong> : formData.lawFirm}.{!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? ' PNC matches the definition.' : <> <b>PNC does not match the definition</b>, as the definition is for {formData.definitionMismatchReason} whereas our PNC was a {formData.pncJobTitle}.</>)}</li>
                       {(formData.description && formData.description.split('\n').some(line => line.trim())) || (formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '')) ? (
                         <li className="!list-none">
                           <ul className="list-disc pl-4">
