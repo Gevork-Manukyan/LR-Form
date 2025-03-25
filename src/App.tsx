@@ -13,6 +13,8 @@ import { Checkbox } from "./components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "./components/ui/radio-group"
 import { Switch } from "./components/ui/switch"
 
+const LAWSUIT_PROBLEM = <strong>Lawsuit Problem</strong>
+
 function App() {
   const [formData, setFormData] = useState<FormData>({
     status: 'Pending',
@@ -1045,7 +1047,7 @@ function App() {
                         if (monthsDiff > 36) return 'over 36 months ago';
                         if (monthsDiff > 12) return 'within 12-36 months';
                         return 'within 12 months';
-                      })()} on {formatDate(formData.date)} with {formData.lawFirm}.{!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? ' PNC matches the definition.' : ` PNC does not match the definition, as the definition is for ${formData.definitionMismatchReason} whereas our PNC was a ${formData.pncJobTitle}.`)}</li>
+                      })()} on {formatDate(formData.date)} with {formData.lawFirm}.{!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? ' PNC matches the definition.' : <> <b>PNC does not match the definition</b>, as the definition is for {formData.definitionMismatchReason} whereas our PNC was a {formData.pncJobTitle}.</>)}</li>
                       {(formData.description && formData.description.split('\n').some(line => line.trim())) || (formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '')) ? (
                         <li className="!list-none">
                           <ul className="list-disc pl-4">
@@ -1076,10 +1078,10 @@ function App() {
                           formData.customFA ? `${formData.customFAText}. ` : 
                           `${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}. ` : 
                           `No FA scheduled. `}
-                        {!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : `PNC does not match the definition, as the definition is for ${formData.definitionMismatchReason} whereas our PNC was a ${formData.pncJobTitle}.`)}</li>
+                        {!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : <><b>PNC does not match the definition</b>, as the definition is for {formData.definitionMismatchReason} whereas our PNC was a {formData.pncJobTitle}.</>)}</li>
                       <li className="!list-none">
                         <ul className="list-disc pl-4">
-                          {formData.definitionMatch === 'Matches definition' && formData.periodEndDate && (
+                          {(formData.definitionMatch === 'Matches definition' || formData.noPNC) && formData.periodEndDate && (
                             (() => {
                               const periodEnd = new Date(formData.periodEndDate);
                               const elevenMonthsLater = new Date(periodEnd);
@@ -1088,7 +1090,7 @@ function App() {
                               const hasPassed = today >= elevenMonthsLater;
 
                               if (formData.noPNC) {
-                                return <li>{formData.classType} period end date {formatDate(formData.periodEndDate)}. 11 months {hasPassed ? 'have' : 'have not'} passed. {!hasPassed ? 'Lawsuit Problem' : ''}</li>;
+                                return <li>{formData.classType} period end date {formatDate(formData.periodEndDate)}. 11 months {hasPassed ? 'have' : 'have not'} passed. {!hasPassed && LAWSUIT_PROBLEM}</li>;
                               }
 
                               if (formData.ldwDate) {
@@ -1097,12 +1099,15 @@ function App() {
 
                                 if (isLDWAfterPeriodEnd) {
                                   if (!hasPassed) {
-                                    return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls after the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). However, 11 months have not passed since the period end date. Lawsuit Problem.</li>;
+                                    // PNC matches the definition and their LDW falls after the period end date, but 11 months have not passed
+                                    return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls after the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). However, 11 months have not passed since the period end date. {LAWSUIT_PROBLEM}</li>;
                                   } else {
+                                    // PNC matches the definition and their LDW falls after the period end date, and 11 months have passed
                                     return <li>PNC matches the definition, but their LDW ({formatDate(formData.ldwDate)}) falls after the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months have passed.</li>;
                                   }
                                 } else {
-                                  return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls within the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months {hasPassed ? 'have' : 'have not'} passed. Lawsuit Problem.</li>;
+                                  // PNC matches the definition and their LDW falls within the period end date
+                                  return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls within the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months {hasPassed ? 'have' : 'have not'} passed. {LAWSUIT_PROBLEM}</li>;
                                 }
                               }
                               return null;
