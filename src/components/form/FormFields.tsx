@@ -1,5 +1,6 @@
 import { FormData } from '../../types/form'
-import { StatusAndCaseNumber } from './fields/StatusAndCaseNumber'
+import { CaseNumber } from './fields/CaseNumber'
+import { StatusTabs } from './fields/StatusTabs'
 import { LWDAFields } from './fields/LWDAFields'
 import { PendingFields } from './fields/PendingFields'
 import { SettledFields } from './fields/SettledFields'
@@ -28,8 +29,14 @@ export function FormFields({
 }: FormFieldsProps) {
   return (
     <div className="space-y-4">
-      {/* Status and Case Number Row */}
-      <StatusAndCaseNumber
+      {/* Status Tabs */}
+      <StatusTabs
+        formData={formData}
+        setFormData={setFormData}
+      />
+
+      {/* Case Number */}
+      <CaseNumber
         formData={formData}
         setFormData={setFormData}
         showValidation={showValidation}
