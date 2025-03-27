@@ -32,23 +32,8 @@ export function PendingFields({
 
   return (
     <>
-      {/* Two Column Grid - Common Fields */}
+      {/* Law Firm and Time Frame Row */}
       <div className="grid grid-cols-2 gap-4">
-        {/* Filed On */}
-        <div className="space-y-2">
-          <label htmlFor="date" className={getLabelClassName('date')}>
-            Filed On {isFieldRequired('date') && <span className="text-red-500">*</span>}
-          </label>
-          <input
-            type="date"
-            name="date"
-            id="date"
-            className={getInputClassName('date')}
-            value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-          />
-        </div>
-
         {/* Law Firm */}
         <div className="space-y-2">
           <label htmlFor="lawFirm" className={getLabelClassName('lawFirm')}>
@@ -66,10 +51,7 @@ export function PendingFields({
             <p className="text-sm text-red-500">Warning: {isSpecialLawFirm ? 'Send Email to CTD Review' : 'Partner Law Firm'}</p>
           )}
         </div>
-      </div>
 
-      {/* Time Frame and Definition Match Row */}
-      <div className="grid grid-cols-2 gap-4">
         {/* Time Frame */}
         <div className="space-y-2">
           <label htmlFor="timeFrame" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -106,9 +88,11 @@ export function PendingFields({
             })()}
           </div>
         </div>
+      </div>
 
-        {/* Definition Match Dropdown */}
-        {!formData.noPNC && (
+      {/* Definition Match Row */}
+      {!formData.noPNC && (
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <label htmlFor="definitionMatch" className={getLabelClassName('definitionMatch')}>
               Definition Match {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
@@ -126,8 +110,8 @@ export function PendingFields({
               </SelectContent>
             </Select>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Definition Mismatch Details */}
       {!formData.noPNC && formData.definitionMatch === 'Does NOT match definition' && (

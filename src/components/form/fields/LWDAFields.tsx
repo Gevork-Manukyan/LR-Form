@@ -19,39 +19,6 @@ export function LWDAFields({
 
   return (
     <>
-      {/* Date Fields Row */}
-      <div className="grid grid-cols-2 gap-4">
-        {/* Filed On */}
-        <div className="space-y-2">
-          <label htmlFor="date" className={getLabelClassName('date')}>
-            Filed On {isFieldRequired('date') && <span className="text-red-500">*</span>}
-          </label>
-          <input
-            type="date"
-            name="date"
-            id="date"
-            className={getInputClassName('date')}
-            value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-          />
-        </div>
-
-        {/* Not Filed in Court as of */}
-        <div className="space-y-2">
-          <label htmlFor="notFiledDate" className={getLabelClassName('notFiledDate')}>
-            Not filed in Court as of {isFieldRequired('notFiledDate') && <span className="text-red-500">*</span>}
-          </label>
-          <input
-            type="date"
-            name="notFiledDate"
-            id="notFiledDate"
-            className={getInputClassName('notFiledDate')}
-            value={formData.notFiledDate}
-            onChange={(e) => setFormData({ ...formData, notFiledDate: e.target.value })}
-          />
-        </div>
-      </div>
-
       {/* Attorney and Law Firm Row */}
       <div className="grid grid-cols-2 gap-4">
         {/* Attorney */}

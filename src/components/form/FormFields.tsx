@@ -1,5 +1,5 @@
 import { FormData } from '../../types/form'
-import { CaseNumber } from './fields/CaseNumber'
+import { TopRowFields } from './fields/TopRowFields'
 import { StatusTabs } from './fields/StatusTabs'
 import { LWDAFields } from './fields/LWDAFields'
 import { PendingFields } from './fields/PendingFields'
@@ -35,8 +35,8 @@ export function FormFields({
         setFormData={setFormData}
       />
 
-      {/* Case Number */}
-      <CaseNumber
+      {/* Top Row Fields (Case Number, Filed On, Not Filed in Court for LWDA) */}
+      <TopRowFields
         formData={formData}
         setFormData={setFormData}
         showValidation={showValidation}

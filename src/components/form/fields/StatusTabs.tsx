@@ -24,8 +24,8 @@ export function StatusTabs({
       className="w-full"
     >
       <TabsList className="w-full h-8">
-        <TabsTrigger value="Pending" className="flex-1 text-sm">Pending</TabsTrigger>
         <TabsTrigger value="Settled" className="flex-1 text-sm">Settled</TabsTrigger>
+        <TabsTrigger value="Pending" className="flex-1 text-sm">Pending</TabsTrigger>
         <TabsTrigger value="LWDA" className="flex-1 text-sm">LWDA</TabsTrigger>
       </TabsList>
     </Tabs>
