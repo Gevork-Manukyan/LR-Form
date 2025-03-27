@@ -65,16 +65,30 @@ export function PendingFields({
 
               const filedDate = new Date(formData.date);
               const today = new Date();
-              const monthsDiff = (today.getFullYear() - filedDate.getFullYear()) * 12 + 
-                (today.getMonth() - filedDate.getMonth());
+
+              // Check if the date is in the future
+              if (filedDate > today) {
+                return (
+                  <div className="text-base font-medium text-red-600">
+                    Invalid: Date is in the future
+                  </div>
+                );
+              }
+
+              // Use exact date difference for edge case handling
+              const fullThreeYearsAgo = new Date(today);
+              fullThreeYearsAgo.setFullYear(today.getFullYear() - 3);
+
+              const fullOneYearAgo = new Date(today);
+              fullOneYearAgo.setFullYear(today.getFullYear() - 1);
 
               let timeFrame;
               let isRed = false;
 
-              if (monthsDiff > 36) {
+              if (filedDate <= fullThreeYearsAgo) {
                 timeFrame = 'More than 36 months ago';
                 isRed = true;
-              } else if (monthsDiff > 12) {
+              } else if (filedDate <= fullOneYearAgo) {
                 timeFrame = 'Between 12-36 months';
               } else {
                 timeFrame = 'Within 12 months';
