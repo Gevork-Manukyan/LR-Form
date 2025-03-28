@@ -1,4 +1,3 @@
-import './App.css'
 import { Form } from './components/ui/form'
 import { FormData } from './types/form'
 import { useState, useEffect } from 'react'
