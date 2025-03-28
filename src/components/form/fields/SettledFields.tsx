@@ -64,7 +64,7 @@ export function SettledFields({
       </div>
 
       {/* Class/PAGA Radio Buttons */}
-      <div className="space-y-2">
+      <div className="space-y-2 pt-4">
         <RadioGroup
           value={formData.classType}
           onValueChange={(value: ClassType) => setFormData({ ...formData, classType: value })}
@@ -89,7 +89,7 @@ export function SettledFields({
       <div className="grid grid-cols-2 gap-4">
         {/* PA Date */}
         {formData.classType === 'Class' && (
-          <div className="space-y-2 pr-4 border-r border-gray-200">
+          <div className="space-y-2 pr-4">
             <label htmlFor="paDate" className={getLabelClassName(formData.customPA ? 'customPAText' : 'paDate')}>
               PA Date {isFieldRequired(formData.customPA ? 'customPAText' : 'paDate') && <span className="text-red-500">*</span>}
             </label>
@@ -317,7 +317,7 @@ export function SettledFields({
       </div>
 
       {/* Definition Match, Period End Date, and LDW Date Row */}
-      <div className={`grid ${formData.noPNC ? 'grid-cols-1' : 'grid-cols-3'} gap-4 border-t border-b border-gray-200 py-4`}>
+      <div className={`grid ${formData.noPNC ? 'grid-cols-1' : 'grid-cols-3'} gap-4 border-b border-gray-200 pb-4`}>
         {/* Definition Match */}
         {!formData.noPNC && (
           <div className="space-y-2">

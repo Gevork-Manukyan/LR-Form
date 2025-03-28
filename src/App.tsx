@@ -206,7 +206,7 @@ function App() {
 
   return (
     <div className="app min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
+      <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">LR Form</h1>
           <div className="flex items-center space-x-2">
