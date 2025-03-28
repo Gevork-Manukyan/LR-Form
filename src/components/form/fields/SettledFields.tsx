@@ -41,7 +41,7 @@ export function SettledFields({
       {/* Two Column Grid - Common Fields */}
       <div className="grid grid-cols-2 gap-4">
         {/* Filed On */}
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label htmlFor="date" className={getLabelClassName('date')}>
             Filed On {isFieldRequired('date') && <span className="text-red-500">*</span>}
           </label>
@@ -53,7 +53,7 @@ export function SettledFields({
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
           />
-        </div>
+        </div> */}
 
         {/* Law Firm */}
         <div className="space-y-2">
