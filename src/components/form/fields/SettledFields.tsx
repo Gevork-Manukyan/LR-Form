@@ -8,6 +8,9 @@ import {
 } from "../../ui/select"
 import { Checkbox } from "../../ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "../../ui/radio-group"
+import { useState } from 'react'
+import { Button } from "../../ui/button"
+import { Settings } from "lucide-react"
 
 interface SettledFieldsProps {
   formData: FormData
@@ -26,6 +29,9 @@ export function SettledFields({
   getInputClassName,
   getLabelClassName
 }: SettledFieldsProps) {
+  const [showPAOptions, setShowPAOptions] = useState(false);
+  const [showFAOptions, setShowFAOptions] = useState(false);
+
   if (formData.status !== 'Settled') return null;
 
   const handleLiabilityCalcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,21 +46,6 @@ export function SettledFields({
     <>
       {/* Two Column Grid - Common Fields */}
       <div className="grid grid-cols-2 gap-4">
-        {/* Filed On */}
-        {/* <div className="space-y-2">
-          <label htmlFor="date" className={getLabelClassName('date')}>
-            Filed On {isFieldRequired('date') && <span className="text-red-500">*</span>}
-          </label>
-          <input
-            type="date"
-            name="date"
-            id="date"
-            className={getInputClassName('date')}
-            value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-          />
-        </div> */}
-
         {/* Law Firm */}
         <div className="space-y-2">
           <label htmlFor="lawFirm" className={getLabelClassName('lawFirm')}>
@@ -123,70 +114,86 @@ export function SettledFields({
                 disabled={formData.noPADate}
               />
             )}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="scheduledMPA"
-                  checked={formData.scheduledMPA}
-                  onCheckedChange={(checked) => {
-                    setFormData({ 
-                      ...formData, 
-                      scheduledMPA: checked as boolean,
-                      noPADate: checked ? false : formData.noPADate,
-                      customPA: checked ? false : formData.customPA
-                    });
-                  }}
-                />
-                <label
-                  htmlFor="scheduledMPA"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Scheduled MPA
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="noPADate"
-                  checked={formData.noPADate}
-                  onCheckedChange={(checked) => {
-                    setFormData({ 
-                      ...formData, 
-                      noPADate: checked as boolean,
-                      scheduledMPA: checked ? false : formData.scheduledMPA,
-                      customPA: checked ? false : formData.customPA,
-                      paDate: checked ? '' : formData.paDate
-                    });
-                  }}
-                />
-                <label
-                  htmlFor="noPADate"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  No PA Date
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="customPA"
-                  checked={formData.customPA}
-                  onCheckedChange={(checked) => {
-                    setFormData({ 
-                      ...formData, 
-                      customPA: checked as boolean,
-                      scheduledMPA: checked ? false : formData.scheduledMPA,
-                      noPADate: checked ? false : formData.noPADate,
-                      paDate: checked ? '' : formData.paDate,
-                      customPAText: checked ? formData.customPAText : ''
-                    });
-                  }}
-                />
-                <label
-                  htmlFor="customPA"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Custom
-                </label>
-              </div>
+            <div className="flex items-start gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowPAOptions(!showPAOptions);
+                }}
+                type="button"
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+              {showPAOptions && (
+                <div className="flex flex-row gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="scheduledMPA"
+                      checked={formData.scheduledMPA}
+                      onCheckedChange={(checked) => {
+                        setFormData({ 
+                          ...formData, 
+                          scheduledMPA: checked as boolean,
+                          noPADate: checked ? false : formData.noPADate,
+                          customPA: checked ? false : formData.customPA
+                        });
+                      }}
+                    />
+                    <label
+                      htmlFor="scheduledMPA"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Scheduled MPA
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="noPADate"
+                      checked={formData.noPADate}
+                      onCheckedChange={(checked) => {
+                        setFormData({ 
+                          ...formData, 
+                          noPADate: checked as boolean,
+                          scheduledMPA: checked ? false : formData.scheduledMPA,
+                          customPA: checked ? false : formData.customPA,
+                          paDate: checked ? '' : formData.paDate
+                        });
+                      }}
+                    />
+                    <label
+                      htmlFor="noPADate"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      No PA Date
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="customPA"
+                      checked={formData.customPA}
+                      onCheckedChange={(checked) => {
+                        setFormData({ 
+                          ...formData, 
+                          customPA: checked as boolean,
+                          scheduledMPA: checked ? false : formData.scheduledMPA,
+                          noPADate: checked ? false : formData.noPADate,
+                          paDate: checked ? '' : formData.paDate,
+                          customPAText: checked ? formData.customPAText : ''
+                        });
+                      }}
+                    />
+                    <label
+                      htmlFor="customPA"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Custom
+                    </label>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -218,70 +225,86 @@ export function SettledFields({
               disabled={formData.noFADate}
             />
           )}
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="scheduledMFA"
-                checked={formData.scheduledMFA}
-                onCheckedChange={(checked) => {
-                  setFormData({ 
-                    ...formData, 
-                    scheduledMFA: checked as boolean,
-                    noFADate: checked ? false : formData.noFADate,
-                    customFA: checked ? false : formData.customFA
-                  });
-                }}
-              />
-              <label
-                htmlFor="scheduledMFA"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Scheduled MFA
-              </label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="noFADate"
-                checked={formData.noFADate}
-                onCheckedChange={(checked) => {
-                  setFormData({ 
-                    ...formData, 
-                    noFADate: checked as boolean,
-                    scheduledMFA: checked ? false : formData.scheduledMFA,
-                    customFA: checked ? false : formData.customFA,
-                    faDate: checked ? '' : formData.faDate
-                  });
-                }}
-              />
-              <label
-                htmlFor="noFADate"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                No FA Date
-              </label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="customFA"
-                checked={formData.customFA}
-                onCheckedChange={(checked) => {
-                  setFormData({ 
-                    ...formData, 
-                    customFA: checked as boolean,
-                    scheduledMFA: checked ? false : formData.scheduledMFA,
-                    noFADate: checked ? false : formData.noFADate,
-                    faDate: checked ? '' : formData.faDate,
-                    customFAText: checked ? formData.customFAText : ''
-                  });
-                }}
-              />
-              <label
-                htmlFor="customFA"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Custom
-              </label>
-            </div>
+          <div className="flex items-start gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowFAOptions(!showFAOptions);
+              }}
+              type="button"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+            {showFAOptions && (
+              <div className="flex flex-row gap-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="scheduledMFA"
+                    checked={formData.scheduledMFA}
+                    onCheckedChange={(checked) => {
+                      setFormData({ 
+                        ...formData, 
+                        scheduledMFA: checked as boolean,
+                        noFADate: checked ? false : formData.noFADate,
+                        customFA: checked ? false : formData.customFA
+                      });
+                    }}
+                  />
+                  <label
+                    htmlFor="scheduledMFA"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Scheduled MFA
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="noFADate"
+                    checked={formData.noFADate}
+                    onCheckedChange={(checked) => {
+                      setFormData({ 
+                        ...formData, 
+                        noFADate: checked as boolean,
+                        scheduledMFA: checked ? false : formData.scheduledMFA,
+                        customFA: checked ? false : formData.customFA,
+                        faDate: checked ? '' : formData.faDate
+                      });
+                    }}
+                  />
+                  <label
+                    htmlFor="noFADate"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    No FA Date
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="customFA"
+                    checked={formData.customFA}
+                    onCheckedChange={(checked) => {
+                      setFormData({ 
+                        ...formData, 
+                        customFA: checked as boolean,
+                        scheduledMFA: checked ? false : formData.scheduledMFA,
+                        noFADate: checked ? false : formData.noFADate,
+                        faDate: checked ? '' : formData.faDate,
+                        customFAText: checked ? formData.customFAText : ''
+                      });
+                    }}
+                  />
+                  <label
+                    htmlFor="customFA"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Custom
+                  </label>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
