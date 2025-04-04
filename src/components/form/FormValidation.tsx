@@ -1,6 +1,29 @@
 import { FormData } from '../../types/form'
 
 export function isFieldRequired(field: keyof FormData, formData: FormData): boolean {
+  // Check if field is visible
+  if (field === 'faDate' || field === 'customFAText') {
+    // FA date is only required if PA date is not "No PA Date" or "Scheduled MPA"
+    if (formData.noPADate || formData.scheduledMPA) return false;
+  }
+
+  if (field === 'paDate' || field === 'customPAText') {
+    // PA date is only required if not "No PA Date"
+    if (formData.noPADate) return false;
+  }
+
+  if (field === 'periodEndDate') {
+    if (formData.noPeriodEndDate) return false;
+  }
+
+  if (field === 'ldwDate') {
+    if (formData.noPNC) return false;
+  }
+
+  if (field === 'definitionMismatchReason' || field === 'pncJobTitle') {
+    if (formData.noPNC || formData.definitionMatch !== 'Does NOT match definition') return false;
+  }
+
   const requiredFields = ['caseNumber', 'date', 'lawFirm'];
   
   if (formData.status === 'LWDA') {
@@ -21,7 +44,7 @@ export function isFieldRequired(field: keyof FormData, formData: FormData): bool
         requiredFields.push('paDate');
       }
     }
-    if (!formData.noFADate) {
+    if (!formData.noFADate && !formData.noPADate && !formData.scheduledMPA) {
       // Require either faDate or customFAText if customFA is checked
       if (formData.customFA) {
         requiredFields.push('customFAText');
@@ -89,7 +112,7 @@ export function validateForm(formData: FormData): boolean {
           requiredFields.push('paDate');
         }
       }
-      if (!formData.noFADate) {
+      if (!formData.noFADate && !formData.noPADate && !formData.scheduledMPA) {
         // Require either faDate or customFAText if customFA is checked
         if (formData.customFA) {
           requiredFields.push('customFAText');

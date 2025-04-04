@@ -148,7 +148,7 @@ export function SettledFields({
                         customPA: checked ? false : formData.customPA,
                         // Reset FA date related fields when PA becomes scheduled
                         faDate: checked ? '' : formData.faDate,
-                        noFADate: checked ? false : formData.noFADate,
+                        noFADate: checked ? true : formData.noFADate,
                         scheduledMFA: checked ? false : formData.scheduledMFA,
                         customFA: checked ? false : formData.customFA,
                         customFAText: checked ? '' : formData.customFAText
@@ -176,7 +176,7 @@ export function SettledFields({
                         paDate: checked ? '' : formData.paDate,
                         // Reset FA date related fields when PA becomes "no date"
                         faDate: checked ? '' : formData.faDate,
-                        noFADate: checked ? false : formData.noFADate,
+                        noFADate: checked ? true : formData.noFADate,
                         scheduledMFA: checked ? false : formData.scheduledMFA,
                         customFA: checked ? false : formData.customFA,
                         customFAText: checked ? '' : formData.customFAText
