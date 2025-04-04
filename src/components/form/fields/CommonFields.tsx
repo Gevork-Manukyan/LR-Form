@@ -1,5 +1,6 @@
 import { FormData } from '../../../types/form'
 import { Checkbox } from "../../ui/checkbox"
+import { TagInput } from "../../ui/tag-input"
 
 interface CommonFieldsProps {
   formData: FormData
@@ -51,18 +52,12 @@ export function CommonFields({
       {formData.hasMultipleDefendants && (
         <div className="space-y-2">
           <label htmlFor="defendantNames" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Defendant Names (one per line)
+            Defendant Names
           </label>
-          <textarea
-            name="defendantNames"
-            id="defendantNames"
-            rows={4}
-            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            value={formData.defendantNames.join('\n')}
-            onChange={(e) => setFormData({ 
-              ...formData, 
-              defendantNames: e.target.value.split('\n')
-            })}
+          <TagInput
+            tags={formData.defendantNames}
+            onChange={(tags) => setFormData({ ...formData, defendantNames: tags })}
+            placeholder="Type defendant name and press enter..."
           />
         </div>
       )}
