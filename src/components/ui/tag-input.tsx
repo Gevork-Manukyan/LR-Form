@@ -31,11 +31,11 @@ export function TagInput({
   }
 
   return (
-    <div className={`flex flex-wrap gap-1.5 p-2 min-h-[40px] w-full rounded-md border border-input bg-background text-sm ring-offset-background placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ${className}`}>
+    <div className={`flex flex-wrap items-center gap-1.5 p-1.5 min-h-fit w-full rounded-md border border-input bg-background text-sm ring-offset-background placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ${className}`}>
       {tags.map((tag, index) => (
         <div
           key={index}
-          className="flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-md text-sm"
+          className="flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-md"
         >
           <span>{tag}</span>
           <button
