@@ -46,13 +46,15 @@ export function FormFields({
       />
 
       {/* LWDA Fields */}
-      <LWDAFields
-        formData={formData}
-        setFormData={setFormData}
-        isFieldRequired={isFieldRequired}
-        getInputClassName={getInputClassName}
-        getLabelClassName={getLabelClassName}
-      />
+      {formData.status === 'LWDA' && (
+        <LWDAFields
+          formData={formData}
+          setFormData={setFormData}
+          isFieldRequired={isFieldRequired}
+          getInputClassName={getInputClassName}
+          getLabelClassName={getLabelClassName}
+        />
+      )}
 
       {/* Pending Fields */}
       <PendingFields

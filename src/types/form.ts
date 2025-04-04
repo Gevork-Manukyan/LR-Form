@@ -1,5 +1,5 @@
 export type Status = 'Pending' | 'Settled' | 'LWDA'
-export type TimeFrame = '12 months' | '12-36 months' | '36 months'
+export type TimeFrame = '12 months' | '12-36 months' | 'over 36 months'
 export type DefinitionMatch = 'Matches definition' | 'Does NOT match definition'
 export type ClassType = 'Class' | 'PAGA'
 export type LDWDate = string
@@ -9,7 +9,7 @@ export interface FormData {
   caseNumber: string
   timeFrame: TimeFrame
   date: string
-  lawFirm: string
+  lawFirm: string[]
   definitionMatch: DefinitionMatch
   description: string
   hasMultipleDefendants: boolean
@@ -30,7 +30,7 @@ export interface FormData {
   definitionMismatchReason: string
   pncJobTitle: string
   notFiledDate: string
-  attorney: string
+  attorney: string[]
   customPA: boolean
   customFA: boolean
   customPAText: string

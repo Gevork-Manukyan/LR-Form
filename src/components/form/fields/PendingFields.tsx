@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select"
+import { TagInput } from "../../ui/tag-input"
 
 interface PendingFieldsProps {
   formData: FormData
@@ -39,16 +40,17 @@ export function PendingFields({
           <label htmlFor="lawFirm" className={getLabelClassName('lawFirm')}>
             Law Firm {isFieldRequired('lawFirm') && <span className="text-red-500">*</span>}
           </label>
-          <input
-            type="text"
-            name="lawFirm"
-            id="lawFirm"
+          <TagInput
+            tags={formData.lawFirm}
+            onChange={(tags) => setFormData({ ...formData, lawFirm: tags })}
+            placeholder="Type law firm name and press enter..."
             className={getInputClassName('lawFirm')}
-            value={formData.lawFirm}
-            onChange={(e) => setFormData({ ...formData, lawFirm: e.target.value })}
           />
-          {(isPartnerLawFirm || isSpecialLawFirm) && (
-            <p className="text-sm text-red-500">Warning: {isSpecialLawFirm ? 'Send Email to CTD Review' : 'Partner Law Firm'}</p>
+          {isPartnerLawFirm && (
+            <p className="text-sm text-red-500">Warning: Partner Law Firm</p>
+          )}
+          {isSpecialLawFirm && (
+            <p className="text-sm text-red-500">Warning: Send Email to CTD Review</p>
           )}
         </div>
 

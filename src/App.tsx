@@ -31,7 +31,7 @@ function App() {
     caseNumber: '',
     timeFrame: '12 months',
     date: '',
-    lawFirm: '',
+    lawFirm: [],
     definitionMatch: 'Matches definition',
     description: '',
     hasMultipleDefendants: false,
@@ -52,7 +52,7 @@ function App() {
     definitionMismatchReason: '',
     pncJobTitle: '',
     notFiledDate: '',
-    attorney: '',
+    attorney: [],
     customPA: false,
     customFA: false,
     customPAText: '',
@@ -65,10 +65,10 @@ function App() {
 
   // Add these near the top of the component
   const isPartnerLawFirm = PARTNER_LAWFIRMS.some(partnerFirm => 
-    formData.lawFirm.trim().toLowerCase().includes(partnerFirm.toLowerCase())
+    formData.lawFirm.some(firm => firm.trim().toLowerCase().includes(partnerFirm.toLowerCase()))
   )
   const isSpecialLawFirm = SPECIAL_LAWFIRMS.some(specialFirm => 
-    formData.lawFirm.trim().toLowerCase().includes(specialFirm.toLowerCase())
+    formData.lawFirm.some(firm => firm.trim().toLowerCase().includes(specialFirm.toLowerCase()))
   )
 
   // Hide output when form data changes
@@ -94,43 +94,15 @@ function App() {
     if (savedFormData) {
       try {
         const parsedData = JSON.parse(savedFormData)
-
-        // Ensure all required fields are present
-        const completeData: FormData = {
-          status: parsedData.status === 'Pending' || parsedData.status === 'Settled' || parsedData.status === 'LWDA' ? parsedData.status : 'Pending',
-          caseNumber: parsedData.caseNumber || '',
-          timeFrame: parsedData.timeFrame || '12 months',
-          date: parsedData.date || '',
-          lawFirm: parsedData.lawFirm || '',
-          definitionMatch: parsedData.definitionMatch || 'Matches definition',
-          description: parsedData.description || '',
-          hasMultipleDefendants: parsedData.hasMultipleDefendants || false,
-          defendantNames: parsedData.defendantNames || [],
-          paDate: parsedData.paDate || '',
-          faDate: parsedData.faDate || '',
-          noPADate: parsedData.noPADate || false,
-          noFADate: parsedData.noFADate || false,
-          classType: parsedData.classType || 'Class',
-          periodEndDate: parsedData.periodEndDate || '',
-          ldwDate: parsedData.ldwDate || '',
-          isLDWAfterPeriodEnd: parsedData.isLDWAfterPeriodEnd || false,
-          liabilityCalc: parsedData.liabilityCalc || '',
-          hasDescription: parsedData.hasDescription || false,
-          scheduledMPA: Boolean(parsedData.scheduledMPA),
-          scheduledMFA: Boolean(parsedData.scheduledMFA),
-          noPeriodEndDate: parsedData.noPeriodEndDate || false,
-          definitionMismatchReason: parsedData.definitionMismatchReason || '',
-          pncJobTitle: parsedData.pncJobTitle || '',
-          notFiledDate: parsedData.notFiledDate || '',
-          attorney: parsedData.attorney || '',
-          customPA: parsedData.customPA || false,
-          customFA: parsedData.customFA || false,
-          customPAText: parsedData.customPAText || '',
-          customFAText: parsedData.customFAText || '',
-          noPNC: Boolean(parsedData.noPNC)
+        // Ensure lawFirm is an array
+        if (!Array.isArray(parsedData.lawFirm)) {
+          parsedData.lawFirm = parsedData.lawFirm ? [parsedData.lawFirm] : []
         }
-
-        setFormData(completeData)
+        // Ensure attorney is an array
+        if (!Array.isArray(parsedData.attorney)) {
+          parsedData.attorney = parsedData.attorney ? [parsedData.attorney] : []
+        }
+        setFormData(parsedData)
       } catch (error) {
         console.error('Error loading form data:', error)
       }
@@ -172,7 +144,7 @@ function App() {
       caseNumber: '',
       timeFrame: '12 months',
       date: '',
-      lawFirm: '',
+      lawFirm: [], // Ensure empty array
       definitionMatch: 'Matches definition',
       description: '',
       hasMultipleDefendants: false,
@@ -192,7 +164,7 @@ function App() {
       definitionMismatchReason: '',
       pncJobTitle: '',
       notFiledDate: '',
-      attorney: '',
+      attorney: [], // Ensure empty array
       customPA: false,
       customFA: false,
       customPAText: '',

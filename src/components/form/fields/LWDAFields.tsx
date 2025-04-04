@@ -1,4 +1,5 @@
 import { FormData } from '../../../types/form'
+import { TagInput } from '../../ui/tag-input'
 
 interface LWDAFieldsProps {
   formData: FormData
@@ -8,49 +9,44 @@ interface LWDAFieldsProps {
   getLabelClassName: (field: keyof FormData) => string
 }
 
-export function LWDAFields({
-  formData,
-  setFormData,
-  isFieldRequired,
-  getInputClassName,
-  getLabelClassName
-}: LWDAFieldsProps) {
-  if (formData.status !== 'LWDA') return null;
-
+export function LWDAFields({ formData, setFormData, getInputClassName, getLabelClassName }: LWDAFieldsProps) {
   return (
-    <>
-      {/* Attorney and Law Firm Row */}
+    <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        {/* Attorney */}
         <div className="space-y-2">
-          <label htmlFor="attorney" className={getLabelClassName('attorney')}>
-            Attorney {isFieldRequired('attorney') && <span className="text-red-500">*</span>}
+          <label className={getLabelClassName('attorney')}>
+            Attorney Name
           </label>
-          <input
-            type="text"
-            name="attorney"
-            id="attorney"
+          <TagInput
+            tags={formData.attorney}
+            onChange={(tags: string[]) => setFormData({ ...formData, attorney: tags })}
+            placeholder="Enter attorney name"
             className={getInputClassName('attorney')}
-            value={formData.attorney}
-            onChange={(e) => setFormData({ ...formData, attorney: e.target.value })}
           />
         </div>
-
-        {/* Law Firm */}
         <div className="space-y-2">
-          <label htmlFor="lawFirm" className={getLabelClassName('lawFirm')}>
-            Law Firm {isFieldRequired('lawFirm') && <span className="text-red-500">*</span>}
+          <label className={getLabelClassName('lawFirm')}>
+            Law Firm
           </label>
-          <input
-            type="text"
-            name="lawFirm"
-            id="lawFirm"
+          <TagInput
+            tags={formData.lawFirm}
+            onChange={(tags: string[]) => setFormData({ ...formData, lawFirm: tags })}
+            placeholder="Enter law firm name"
             className={getInputClassName('lawFirm')}
-            value={formData.lawFirm}
-            onChange={(e) => setFormData({ ...formData, lawFirm: e.target.value })}
           />
         </div>
       </div>
-    </>
+      <div className="space-y-2">
+        <label className={getLabelClassName('notFiledDate')}>
+          Not Filed Date
+        </label>
+        <input
+          type="date"
+          value={formData.notFiledDate}
+          onChange={(e) => setFormData({ ...formData, notFiledDate: e.target.value })}
+          className={getInputClassName('notFiledDate')}
+        />
+      </div>
+    </div>
   )
 } 

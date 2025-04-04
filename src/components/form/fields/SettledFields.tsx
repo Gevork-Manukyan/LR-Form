@@ -12,6 +12,7 @@ import { useState } from 'react'
 import { Button } from "../../ui/button"
 import { Settings } from "lucide-react"
 import { cn } from "../../../lib/utils"
+import { TagInput } from "../../ui/tag-input"
 
 interface SettledFieldsProps {
   formData: FormData
@@ -55,13 +56,10 @@ export function SettledFields({
           <label htmlFor="lawFirm" className={getLabelClassName('lawFirm')}>
             Law Firm {isFieldRequired('lawFirm') && <span className="text-red-500">*</span>}
           </label>
-          <input
-            type="text"
-            name="lawFirm"
-            id="lawFirm"
-            className={getInputClassName('lawFirm')}
-            value={formData.lawFirm}
-            onChange={(e) => setFormData({ ...formData, lawFirm: e.target.value })}
+          <TagInput
+            tags={formData.lawFirm}
+            onChange={(tags) => setFormData({ ...formData, lawFirm: tags })}
+            placeholder="Type law firm name and press enter..."
           />
         </div>
       </div>
