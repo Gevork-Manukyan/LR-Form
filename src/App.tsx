@@ -25,64 +25,6 @@ const SPECIAL_LAWFIRMS = [
   "lander",
 ]
 
-function formatArrayWithConjunction(items: string[]): string {
-  if (items.length === 0) return '';
-  if (items.length === 1) return items[0];
-  if (items.length === 2) return `${items[0]} and ${items[1]}`;
-  return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
-}
-
-function formatOutput(formData: FormData): string {
-  const lines: string[] = [];
-
-  // Case Number
-  lines.push(`Case Number: ${formData.caseNumber}`);
-
-  // Date
-  lines.push(`Date: ${formData.date}`);
-
-  // Status-specific fields
-  if (formData.status === 'LWDA') {
-    lines.push(`Not Filed in Court: ${formData.notFiledDate}`);
-    lines.push(`Attorney: ${formatArrayWithConjunction(formData.attorney)}`);
-    lines.push(`Law Firm: ${formatArrayWithConjunction(formData.lawFirm)}`);
-  } else {
-    // Pending or Settled
-    if (formData.status === 'Settled') {
-      if (formData.classType === 'Class') {
-        if (formData.customPA) {
-          lines.push(`PA Date: ${formData.customPAText}`);
-        } else {
-          lines.push(`PA Date: ${formData.paDate}`);
-        }
-      }
-      if (formData.customFA) {
-        lines.push(`FA Date: ${formData.customFAText}`);
-      } else {
-        lines.push(`FA Date: ${formData.faDate}`);
-      }
-      if (!formData.noPeriodEndDate) {
-        lines.push(`Period End Date: ${formData.periodEndDate}`);
-      }
-      if (!formData.noPNC) {
-        lines.push(`LDW Date: ${formData.ldwDate}`);
-      }
-    }
-    lines.push(`Law Firm: ${formatArrayWithConjunction(formData.lawFirm)}`);
-  }
-
-  // PNC-related fields
-  if (!formData.noPNC) {
-    lines.push(`Definition Match: ${formData.definitionMatch}`);
-    if (formData.definitionMatch === 'Does NOT match definition') {
-      lines.push(`Definition Mismatch Reason: ${formData.definitionMismatchReason}`);
-      lines.push(`PNC Job Title: ${formData.pncJobTitle}`);
-    }
-  }
-
-  return lines.join('\n');
-}
-
 function App() {
   const [formData, setFormData] = useState<FormData>({
     status: 'Pending',
