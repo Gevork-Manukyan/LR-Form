@@ -124,7 +124,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
                 formData.customFA ? `${formData.customFAText}. ` : 
                 `${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}. ` : 
                 `No FA scheduled. `}
-              {!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : <><b>PNC does not match the definition</b>, as the definition is for {formData.definitionMismatchReason} whereas our PNC was a {formData.pncJobTitle}.</>)}</li>
+              {!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? 'PNC matches the definition.' : <><b>PNC does not match the definition</b>, as the definition is for {formData.definitionMismatchReason} whereas our PNC {formData.pncJobTitle}.</>)}</li>
             <li className="!list-none">
               <ul className="list-disc pl-4">
                 {(formData.definitionMatch === 'Matches definition' || formData.noPNC) && formData.periodEndDate && (
