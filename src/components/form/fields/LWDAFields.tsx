@@ -9,13 +9,13 @@ interface LWDAFieldsProps {
   getLabelClassName: (field: keyof FormData) => string
 }
 
-export function LWDAFields({ formData, setFormData, getInputClassName, getLabelClassName }: LWDAFieldsProps) {
+export function LWDAFields({ formData, setFormData, getInputClassName, getLabelClassName, isFieldRequired }: LWDAFieldsProps) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <label className={getLabelClassName('attorney')}>
-            Attorney Name
+            Attorney Name {isFieldRequired('attorney') && <span className="text-red-500">*</span>}
           </label>
           <TagInput
             tags={formData.attorney}
@@ -26,7 +26,7 @@ export function LWDAFields({ formData, setFormData, getInputClassName, getLabelC
         </div>
         <div className="space-y-2">
           <label className={getLabelClassName('lawFirm')}>
-            Law Firm
+            Law Firm {isFieldRequired('lawFirm') && <span className="text-red-500">*</span>}
           </label>
           <TagInput
             tags={formData.lawFirm}
@@ -35,17 +35,6 @@ export function LWDAFields({ formData, setFormData, getInputClassName, getLabelC
             className={getInputClassName('lawFirm')}
           />
         </div>
-      </div>
-      <div className="space-y-2">
-        <label className={getLabelClassName('notFiledDate')}>
-          Not Filed Date
-        </label>
-        <input
-          type="date"
-          value={formData.notFiledDate}
-          onChange={(e) => setFormData({ ...formData, notFiledDate: e.target.value })}
-          className={getInputClassName('notFiledDate')}
-        />
       </div>
     </div>
   )
