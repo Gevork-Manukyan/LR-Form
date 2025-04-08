@@ -37,7 +37,7 @@ export function SettledFields({
   if (formData.status !== 'Settled') return null;
 
   // Helper to determine if FA date should be shown
-  const shouldShowFADate = !formData.noPADate && !formData.scheduledMPA;
+  const shouldShowFADate = formData.classType === 'PAGA' || (!formData.noPADate && !formData.scheduledMPA);
 
   const handleLiabilityCalcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
