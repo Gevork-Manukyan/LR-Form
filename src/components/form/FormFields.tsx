@@ -53,6 +53,7 @@ export function FormFields({
           isFieldRequired={isFieldRequired}
           getInputClassName={getInputClassName}
           getLabelClassName={getLabelClassName}
+          showValidation={showValidation}
         />
       )}
 
