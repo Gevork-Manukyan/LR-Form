@@ -21,8 +21,8 @@ export function Sidebar({ isOpen, onClose, children }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "absolute right-0 top-0 h-full w-60 bg-white transform transition-transform duration-300 ease-in-out z-0",
-          isOpen ? "translate-x-[240px]" : "translate-x-0",
+          "absolute right-0 top-0 h-full w-60 bg-white transform transition-all duration-300 ease-in-out z-0 rounded-r-lg",
+          isOpen ? "translate-x-[240px] shadow-lg" : "translate-x-0",
           "max-w-3xl mx-auto"
         )}
       >
