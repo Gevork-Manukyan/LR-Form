@@ -7,9 +7,10 @@ interface LWDAFieldsProps {
   isFieldRequired: (field: keyof FormData) => boolean
   getInputClassName: (field: keyof FormData) => string
   getLabelClassName: (field: keyof FormData) => string
+  showValidation: boolean
 }
 
-export function LWDAFields({ formData, setFormData, getInputClassName, getLabelClassName, isFieldRequired }: LWDAFieldsProps) {
+export function LWDAFields({ formData, setFormData, getInputClassName, getLabelClassName, isFieldRequired, showValidation }: LWDAFieldsProps) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
@@ -32,7 +33,7 @@ export function LWDAFields({ formData, setFormData, getInputClassName, getLabelC
             tags={formData.lawFirm}
             onChange={(tags: string[]) => setFormData({ ...formData, lawFirm: tags })}
             placeholder="Enter law firm name"
-            className={getInputClassName('lawFirm')}
+            className={`${getInputClassName('lawFirm')} ${showValidation && isFieldRequired('lawFirm') && formData.lawFirm.length === 0 ? "border-red-500" : ""}`}
           />
         </div>
       </div>

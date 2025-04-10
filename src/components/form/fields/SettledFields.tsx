@@ -60,6 +60,7 @@ export function SettledFields({
             tags={formData.lawFirm}
             onChange={(tags) => setFormData({ ...formData, lawFirm: tags })}
             placeholder="Type law firm name and press enter..."
+            className={showValidation && isFieldRequired('lawFirm') && formData.lawFirm.length === 0 ? "border-red-500" : ""}
           />
         </div>
       </div>

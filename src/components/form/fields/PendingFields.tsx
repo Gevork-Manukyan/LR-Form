@@ -44,7 +44,7 @@ export function PendingFields({
             tags={formData.lawFirm}
             onChange={(tags) => setFormData({ ...formData, lawFirm: tags })}
             placeholder="Type law firm name and press enter..."
-            className={getInputClassName('lawFirm')}
+            className={`${getInputClassName('lawFirm')} ${showValidation && isFieldRequired('lawFirm') && formData.lawFirm.length === 0 ? "border-red-500" : ""}`}
           />
           {isPartnerLawFirm && (
             <p className="text-sm text-red-500">Warning: Partner Law Firm</p>
