@@ -24,10 +24,13 @@ export function isFieldRequired(field: keyof FormData, formData: FormData): bool
     if (formData.noPNC || formData.definitionMatch !== 'Does NOT match definition') return false;
   }
 
-  const requiredFields = ['caseNumber', 'date', 'lawFirm'];
+  // Always require law firm and attorney fields
+  if (field === 'lawFirm' || field === 'attorney') return true;
+
+  const requiredFields = ['caseNumber', 'date'];
   
   if (formData.status === 'LWDA') {
-    return ['caseNumber', 'date', 'lawFirm', 'attorney', 'notFiledDate'].includes(field);
+    return ['caseNumber', 'date', 'notFiledDate'].includes(field);
   }
 
   // Add definitionMatch for all statuses when PNC is not disabled

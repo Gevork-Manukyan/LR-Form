@@ -13,6 +13,7 @@ import { Button } from "../../ui/button"
 import { Settings } from "lucide-react"
 import { cn } from "../../../lib/utils"
 import { LawFirmField } from './LawFirmField'
+import { AttorneyField } from './AttorneyField'
 
 interface SettledFieldsProps {
   formData: FormData
@@ -52,14 +53,25 @@ export function SettledFields({
       {/* Two Column Grid - Common Fields */}
       <div className="grid grid-cols-2 gap-4">
         {/* Law Firm */}
-        <LawFirmField
-          formData={formData}
-          setFormData={setFormData}
-          showValidation={showValidation}
-          isFieldRequired={isFieldRequired}
-          getInputClassName={getInputClassName}
-          getLabelClassName={getLabelClassName}
-        />
+        {formData.noLawFirm ? (
+          <AttorneyField
+            formData={formData}
+            setFormData={setFormData}
+            showValidation={showValidation}
+            isFieldRequired={isFieldRequired}
+            getInputClassName={getInputClassName}
+            getLabelClassName={getLabelClassName}
+          />
+        ) : (
+          <LawFirmField
+            formData={formData}
+            setFormData={setFormData}
+            showValidation={showValidation}
+            isFieldRequired={isFieldRequired}
+            getInputClassName={getInputClassName}
+            getLabelClassName={getLabelClassName}
+          />
+        )}
       </div>
 
       {/* Class/PAGA Radio Buttons */}

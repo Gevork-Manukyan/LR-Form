@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from "../../ui/select"
 import { LawFirmField } from './LawFirmField'
+import { AttorneyField } from './AttorneyField'
 
 interface PendingFieldsProps {
   formData: FormData
@@ -37,14 +38,25 @@ export function PendingFields({
       <div className="grid grid-cols-2 gap-4">
         {/* Law Firm */}
         <div className="space-y-2">
-          <LawFirmField
-            formData={formData}
-            setFormData={setFormData}
-            showValidation={showValidation}
-            isFieldRequired={isFieldRequired}
-            getInputClassName={getInputClassName}
-            getLabelClassName={getLabelClassName}
-          />
+          {formData.noLawFirm ? (
+            <AttorneyField
+              formData={formData}
+              setFormData={setFormData}
+              showValidation={showValidation}
+              isFieldRequired={isFieldRequired}
+              getInputClassName={getInputClassName}
+              getLabelClassName={getLabelClassName}
+            />
+          ) : (
+            <LawFirmField
+              formData={formData}
+              setFormData={setFormData}
+              showValidation={showValidation}
+              isFieldRequired={isFieldRequired}
+              getInputClassName={getInputClassName}
+              getLabelClassName={getLabelClassName}
+            />
+          )}
           {isPartnerLawFirm && (
             <p className="text-sm text-red-500">Warning: Partner Law Firm</p>
           )}

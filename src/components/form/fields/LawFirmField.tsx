@@ -26,7 +26,7 @@ export function LawFirmField({
       <TagInput
         tags={formData.lawFirm}
         onChange={(tags) => setFormData({ ...formData, lawFirm: tags })}
-        placeholder="Type law firm name and press enter..."
+        placeholder="Enter law firm name and press enter..."
         className={`${getInputClassName('lawFirm')} ${showValidation && isFieldRequired('lawFirm') && formData.lawFirm.length === 0 ? "border-red-500" : ""}`}
       />
     </div>
