@@ -8,6 +8,7 @@ import {
 } from "../../ui/select"
 import { LawFirmField } from './LawFirmField'
 import { AttorneyField } from './AttorneyField'
+import { SPECIAL_ATTORNEY } from '../../../lib/constants'
 
 interface PendingFieldsProps {
   formData: FormData
@@ -62,6 +63,13 @@ export function PendingFields({
           )}
           {isSpecialLawFirm && (
             <p className="text-sm text-red-500">Warning: Send Email to CTD Review</p>
+          )}
+          {formData.attorney.some(attorney => 
+            SPECIAL_ATTORNEY.some(special => 
+              attorney.toLowerCase().includes(special.toLowerCase())
+            )
+          ) && (
+            <p className="text-sm text-red-500">Warning: If not filed with D. Law, treat as LP based on partner attorney, but notify manager about case</p>
           )}
         </div>
 

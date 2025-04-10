@@ -9,12 +9,16 @@ export const PARTNER_LAWFIRMS = [
     "moon",
     "yang",
     "otkupman",
-    "vanessa",
-    "ruggles"
 ]
   
 export const SPECIAL_LAWFIRMS = [
     "yeremian",
     "barnes",
     "lander",
+]
+
+export const SPECIAL_ATTORNEY = [
+    "vanessa",
+    "ruggles",
+    "vanessa ruggles"
 ]
