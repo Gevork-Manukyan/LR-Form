@@ -13,7 +13,7 @@ export function Sidebar({ isOpen, onClose, children }: SidebarProps) {
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/20 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/20 lg:hidden"
           onClick={onClose}
         />
       )}
@@ -21,8 +21,9 @@ export function Sidebar({ isOpen, onClose, children }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed right-0 top-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50",
-          isOpen ? "translate-x-0" : "translate-x-full"
+          "absolute right-0 top-0 h-full w-60 bg-white transform transition-transform duration-300 ease-in-out z-0",
+          isOpen ? "translate-x-[240px]" : "translate-x-0",
+          "max-w-3xl mx-auto"
         )}
       >
         <div className="p-4 h-full overflow-y-auto">

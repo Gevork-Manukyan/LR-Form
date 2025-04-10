@@ -162,51 +162,53 @@ function App() {
 
   return (
     <div className="app min-h-screen bg-gray-50 py-8">
-      <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow relative">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">LR Form</h1>
-          <HamburgerMenu
-            isOpen={isSidebarOpen}
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          />
-        </div>
-        <Form onSubmit={handleSubmit}>
-          <FormFields
-            formData={formData}
-            setFormData={setFormData}
-            showValidation={showValidation}
-            isFieldRequired={(field) => isFieldRequired(field, formData)}
-            getInputClassName={(field) => getInputClassName(field, showValidation, formData)}
-            getLabelClassName={(field) => getLabelClassName(field, showValidation, formData)}
-            isPartnerLawFirm={isPartnerLawFirm}
-            isSpecialLawFirm={isSpecialLawFirm}
-          />
-
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 flex-1"
-            >
-              {showOutput ? 'Hide' : 'Show'}
-            </button>
-            <button
-              type="button"
-              onClick={handleClear}
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2"
-            >
-              Clear
-            </button>
+      <div className="max-w-3xl mx-auto relative">
+        <div className="p-6 bg-white rounded-lg shadow relative z-50">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">LR Form</h1>
+            <HamburgerMenu
+              isOpen={isSidebarOpen}
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            />
           </div>
-
-          {/* Formatted Display Section */}
-          {showOutput && (
-            <FormOutput
+          <Form onSubmit={handleSubmit}>
+            <FormFields
               formData={formData}
+              setFormData={setFormData}
+              showValidation={showValidation}
+              isFieldRequired={(field) => isFieldRequired(field, formData)}
+              getInputClassName={(field) => getInputClassName(field, showValidation, formData)}
+              getLabelClassName={(field) => getLabelClassName(field, showValidation, formData)}
               isPartnerLawFirm={isPartnerLawFirm}
               isSpecialLawFirm={isSpecialLawFirm}
             />
-          )}
-        </Form>
+
+            <div className="flex gap-4">
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 flex-1"
+              >
+                {showOutput ? 'Hide' : 'Show'}
+              </button>
+              <button
+                type="button"
+                onClick={handleClear}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2"
+              >
+                Clear
+              </button>
+            </div>
+
+            {/* Formatted Display Section */}
+            {showOutput && (
+              <FormOutput
+                formData={formData}
+                isPartnerLawFirm={isPartnerLawFirm}
+                isSpecialLawFirm={isSpecialLawFirm}
+              />
+            )}
+          </Form>
+        </div>
 
         {/* Sidebar */}
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
