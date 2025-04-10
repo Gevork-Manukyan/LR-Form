@@ -146,14 +146,14 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
                       if (isLDWAfterPeriodEnd) {
                         if (!hasPassed) {
                           // PNC matches the definition and their LDW falls after the period end date, but 11 months have not passed
-                          return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls after the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). However, 11 months have not passed since the period end date. {LAWSUIT_PROBLEM}</li>;
+                          return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls <strong><em>after</em></strong> the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). However, 11 months <strong><em>have not</em></strong> passed since the period end date. {LAWSUIT_PROBLEM}</li>;
                         } else {
                           // PNC matches the definition and their LDW falls after the period end date, and 11 months have passed
-                          return <li>PNC matches the definition, but their LDW ({formatDate(formData.ldwDate)}) falls after the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months have passed.</li>;
+                          return <li>PNC matches the definition, but their LDW ({formatDate(formData.ldwDate)}) falls <strong><em>after</em></strong> the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months have passed.</li>;
                         }
                       } else {
                         // PNC matches the definition and their LDW falls within the period end date
-                        return <li>PNC matches the definition and their LDW ({formatDate(formData.ldwDate)}) falls within the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months {hasPassed ? 'have' : 'have not'} passed. {LAWSUIT_PROBLEM}</li>;
+                        return <li>PNC matches the definition <strong><em>and</em></strong> their LDW ({formatDate(formData.ldwDate)}) falls within the {formData.classType} period end date ({formatDate(formData.periodEndDate)}). 11 months {hasPassed ? 'have' : 'have not'} passed. {LAWSUIT_PROBLEM}</li>;
                       }
                     }
                     return null;
