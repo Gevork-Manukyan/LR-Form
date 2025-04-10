@@ -17,6 +17,8 @@ const PARTNER_LAWFIRMS = [
   "moon",
   "yang",
   "otkupman",
+  "vanessa",
+  "ruggles"
 ]
 
 const SPECIAL_LAWFIRMS = [
