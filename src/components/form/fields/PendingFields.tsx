@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select"
-import { TagInput } from "../../ui/tag-input"
+import { LawFirmField } from './LawFirmField'
 
 interface PendingFieldsProps {
   formData: FormData
@@ -37,14 +37,13 @@ export function PendingFields({
       <div className="grid grid-cols-2 gap-4">
         {/* Law Firm */}
         <div className="space-y-2">
-          <label htmlFor="lawFirm" className={getLabelClassName('lawFirm')}>
-            Law Firm {isFieldRequired('lawFirm') && <span className="text-red-500">*</span>}
-          </label>
-          <TagInput
-            tags={formData.lawFirm}
-            onChange={(tags) => setFormData({ ...formData, lawFirm: tags })}
-            placeholder="Type law firm name and press enter..."
-            className={`${getInputClassName('lawFirm')} ${showValidation && isFieldRequired('lawFirm') && formData.lawFirm.length === 0 ? "border-red-500" : ""}`}
+          <LawFirmField
+            formData={formData}
+            setFormData={setFormData}
+            showValidation={showValidation}
+            isFieldRequired={isFieldRequired}
+            getInputClassName={getInputClassName}
+            getLabelClassName={getLabelClassName}
           />
           {isPartnerLawFirm && (
             <p className="text-sm text-red-500">Warning: Partner Law Firm</p>

@@ -226,12 +226,13 @@ function App() {
                 checked={formData.noPNC}
                 onCheckedChange={(checked) => setFormData({ ...formData, noPNC: checked })}
               />
-              <SidebarToggle
+              {/* TODO: Implement this functionality once you have multiple forms available */}
+              {/* <SidebarToggle
                 id="limitedClaims"
                 label="Limited Claims"
                 checked={formData.limitedClaims}
                 onCheckedChange={(checked) => setFormData({ ...formData, limitedClaims: checked })}
-              />
+              /> */}
               <SidebarToggle
                 id="noLawFirm"
                 label="No Law Firm"
