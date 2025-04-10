@@ -6,6 +6,8 @@ import { FormFields } from './components/form/FormFields'
 import { FormOutput } from './components/form/FormOutput'
 import { isFieldRequired, getInputClassName, getLabelClassName, validateForm } from './components/form/FormValidation'
 import { PARTNER_LAWFIRMS, SPECIAL_LAWFIRMS } from './lib/constants'
+import { Sidebar } from './components/ui/Sidebar'
+import { HamburgerMenu } from './components/ui/HamburgerMenu'
 
 function App() {
   const [formData, setFormData] = useState<FormData>({
@@ -44,6 +46,7 @@ function App() {
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [showValidation, setShowValidation] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   // Add these near the top of the component
   const isPartnerLawFirm = PARTNER_LAWFIRMS.some(partnerFirm => 
@@ -159,22 +162,13 @@ function App() {
 
   return (
     <div className="app min-h-screen bg-gray-50 py-8">
-      <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow">
+      <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow relative">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">LR Form</h1>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="noPNC"
-              checked={formData.noPNC}
-              onCheckedChange={(checked: boolean) => setFormData({ ...formData, noPNC: checked })}
-            />
-            <label
-              htmlFor="noPNC"
-              className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              No PNC
-            </label>
-          </div>
+          <HamburgerMenu
+            isOpen={isSidebarOpen}
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          />
         </div>
         <Form onSubmit={handleSubmit}>
           <FormFields
@@ -213,6 +207,26 @@ function App() {
             />
           )}
         </Form>
+
+        {/* Sidebar */}
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold">Settings</h2>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="noPNC"
+                className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                No PNC
+              </label>
+              <Switch
+                id="noPNC"
+                checked={formData.noPNC}
+                onCheckedChange={(checked: boolean) => setFormData({ ...formData, noPNC: checked })}
+              />
+            </div>
+          </div>
+        </Sidebar>
       </div>
     </div>
   )
