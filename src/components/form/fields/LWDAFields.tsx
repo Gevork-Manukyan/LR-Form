@@ -26,14 +26,16 @@ export function LWDAFields({ formData, setFormData, getInputClassName, getLabelC
           />
         </div>
 
-        <LawFirmField
-          formData={formData}
-          setFormData={setFormData}
-          showValidation={showValidation}
-          isFieldRequired={isFieldRequired}
-          getInputClassName={getInputClassName}
-          getLabelClassName={getLabelClassName}
-        />
+        {!formData.noLawFirm && (
+          <LawFirmField
+            formData={formData}
+            setFormData={setFormData}
+            showValidation={showValidation}
+            isFieldRequired={isFieldRequired}
+            getInputClassName={getInputClassName}
+            getLabelClassName={getLabelClassName}
+          />
+        )}
       </div>
     </div>
   )

@@ -93,7 +93,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
               if (monthsDiff > 36) return 'over 36 months ago';
               if (monthsDiff > 12) return 'within 12-36 months';
               return 'within 12 months';
-            })()} on {formatDate(formData.date)} with {(isPartnerLawFirm || isSpecialLawFirm) ? <strong>{formatArrayWithConjunction(formData.lawFirm)}</strong> : formatArrayWithConjunction(formData.lawFirm)}.{!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? ' PNC matches the definition.' : <> <b>PNC does not match the definition</b>, as the definition is for {formData.definitionMismatchReason} whereas our PNC {formData.pncJobTitle}.</>)}</li>
+            })()} on {formatDate(formData.date)} with {formData.noLawFirm ? formatArrayWithConjunction(formData.attorney) : (isPartnerLawFirm || isSpecialLawFirm) ? <strong>{formatArrayWithConjunction(formData.lawFirm)}</strong> : formatArrayWithConjunction(formData.lawFirm)}.{!formData.noPNC && (formData.definitionMatch === 'Matches definition' ? ' PNC matches the definition.' : <> <b>PNC does not match the definition</b>, as the definition is for {formData.definitionMismatchReason} whereas our PNC {formData.pncJobTitle}.</>)}</li>
             {(formData.description && formData.description.split('\n').some(line => line.trim())) || (formData.hasMultipleDefendants && formData.defendantNames.length > 0 && formData.defendantNames.some(name => name.trim() !== '')) ? (
               <li className="!list-none">
                 <ul className="list-disc pl-4">
@@ -115,7 +115,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
           // Settled form output
           <ul className="list-disc pl-4">
             <li>
-              {`Settled case ${formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on ${formatDate(formData.date)} with ${formatArrayWithConjunction(formData.lawFirm)}. `}
+              {`Settled case ${formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on ${formatDate(formData.date)} with ${formData.noLawFirm ? formatArrayWithConjunction(formData.attorney) : formatArrayWithConjunction(formData.lawFirm)}. `}
               {formData.classType === 'Class' && !formData.noPADate ? 
                 formData.customPA ? `${formData.customPAText}; ` : 
                 `${formData.scheduledMPA ? 'MPA scheduled on' : 'PA on'} ${formatDate(formData.paDate)}; ` : 
@@ -189,7 +189,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
         ) : (
           // LWDA form output
           <ul className="list-disc pl-4">
-            <li>LWDA filing {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on {formatDate(formData.date)} by {formatArrayWithConjunction(formData.attorney)} ({formatArrayWithConjunction(formData.lawFirm)}). Case has not been filed in Court as of {formatDate(formData.notFiledDate)}.</li>
+            <li>LWDA filing {formData.caseNumber ? `(${formData.caseNumber})` : ''} filed on {formatDate(formData.date)} by {formatArrayWithConjunction(formData.attorney)}{!formData.noLawFirm && ` (${formatArrayWithConjunction(formData.lawFirm)})`}. Case has not been filed in Court as of {formatDate(formData.notFiledDate)}.</li>
           </ul>
         )}
       </div>
