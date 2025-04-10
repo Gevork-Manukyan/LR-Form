@@ -5,27 +5,7 @@ import { Switch } from "./components/ui/switch"
 import { FormFields } from './components/form/FormFields'
 import { FormOutput } from './components/form/FormOutput'
 import { isFieldRequired, getInputClassName, getLabelClassName, validateForm } from './components/form/FormValidation'
-
-const PARTNER_LAWFIRMS = [
-  "aegis",
-  "cohelan khoury",
-  "cohelan khoury & singer",
-  "cohelan khoury and singer",
-  "diversity",
-  "gaines",
-  "tunyan",
-  "moon",
-  "yang",
-  "otkupman",
-  "vanessa",
-  "ruggles"
-]
-
-const SPECIAL_LAWFIRMS = [
-  "yeremian",
-  "barnes",
-  "lander",
-]
+import { PARTNER_LAWFIRMS, SPECIAL_LAWFIRMS } from './lib/constants'
 
 function App() {
   const [formData, setFormData] = useState<FormData>({
