@@ -99,9 +99,17 @@ export function validateForm(formData: FormData): boolean {
   let requiredFields: (keyof FormData)[] = [];
   
   if (formData.status === 'LWDA') {
-    requiredFields = ['caseNumber', 'date', 'lawFirm', 'attorney', 'notFiledDate'];
+    requiredFields = ['caseNumber', 'date', 'attorney', 'notFiledDate'];
+    if (!formData.noLawFirm) {
+      requiredFields.push('lawFirm');
+    }
   } else {
-    requiredFields = ['caseNumber', 'date', 'lawFirm'];
+    requiredFields = ['caseNumber', 'date'];
+    if (!formData.noLawFirm) {
+      requiredFields.push('lawFirm');
+    } else {
+      requiredFields.push('attorney');
+    }
     if (!formData.noPNC) {
       requiredFields.push('definitionMatch');
     }
