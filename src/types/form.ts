@@ -36,4 +36,6 @@ export interface FormData {
   customPAText: string
   customFAText: string
   noPNC: boolean
+  limitedClaims: boolean
+  noLawFirm: boolean
 } 

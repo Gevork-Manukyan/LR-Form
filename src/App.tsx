@@ -1,13 +1,13 @@
 import { Form } from './components/ui/form'
 import { FormData } from './types/form'
 import { useState, useEffect } from 'react'
-import { Switch } from "./components/ui/switch"
 import { FormFields } from './components/form/FormFields'
 import { FormOutput } from './components/form/FormOutput'
 import { isFieldRequired, getInputClassName, getLabelClassName, validateForm } from './components/form/FormValidation'
 import { PARTNER_LAWFIRMS, SPECIAL_LAWFIRMS } from './lib/constants'
 import { Sidebar } from './components/ui/Sidebar'
 import { HamburgerMenu } from './components/ui/HamburgerMenu'
+import { SidebarToggle } from './components/ui/SidebarToggle'
 
 function App() {
   const [formData, setFormData] = useState<FormData>({
@@ -41,7 +41,9 @@ function App() {
     customFA: false,
     customPAText: '',
     customFAText: '',
-    noPNC: false
+    noPNC: false,
+    limitedClaims: false,
+    noLawFirm: false
   })
   const [showOutput, setShowOutput] = useState(false)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
@@ -153,7 +155,10 @@ function App() {
       customPA: false,
       customFA: false,
       customPAText: '',
-      customFAText: ''
+      customFAText: '',
+      noPNC: false,
+      limitedClaims: false,
+      noLawFirm: false
     })
     localStorage.removeItem('formData')
     setShowOutput(false)
@@ -214,17 +219,24 @@ function App() {
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Settings</h2>
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="noPNC"
-                className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                No PNC
-              </label>
-              <Switch
+            <div className="space-y-4">
+              <SidebarToggle
                 id="noPNC"
+                label="No PNC"
                 checked={formData.noPNC}
-                onCheckedChange={(checked: boolean) => setFormData({ ...formData, noPNC: checked })}
+                onCheckedChange={(checked) => setFormData({ ...formData, noPNC: checked })}
+              />
+              <SidebarToggle
+                id="limitedClaims"
+                label="Limited Claims"
+                checked={formData.limitedClaims}
+                onCheckedChange={(checked) => setFormData({ ...formData, limitedClaims: checked })}
+              />
+              <SidebarToggle
+                id="noLawFirm"
+                label="No Law Firm"
+                checked={formData.noLawFirm}
+                onCheckedChange={(checked) => setFormData({ ...formData, noLawFirm: checked })}
               />
             </div>
           </div>
