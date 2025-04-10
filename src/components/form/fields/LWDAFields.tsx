@@ -1,5 +1,5 @@
 import { FormData } from '../../../types/form'
-import { TagInput } from '../../ui/tag-input'
+import { AttorneyField } from './AttorneyField'
 import { LawFirmField } from './LawFirmField'
 
 interface LWDAFieldsProps {
@@ -16,14 +16,13 @@ export function LWDAFields({ formData, setFormData, getInputClassName, getLabelC
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className={getLabelClassName('attorney')}>
-            Attorney Name {isFieldRequired('attorney') && <span className="text-red-500">*</span>}
-          </label>
-          <TagInput
-            tags={formData.attorney}
-            onChange={(tags: string[]) => setFormData({ ...formData, attorney: tags })}
-            placeholder="Enter attorney name"
-            className={getInputClassName('attorney')}
+          <AttorneyField
+            formData={formData}
+            setFormData={setFormData}
+            showValidation={showValidation}
+            isFieldRequired={isFieldRequired}
+            getInputClassName={getInputClassName}
+            getLabelClassName={getLabelClassName}
           />
         </div>
 

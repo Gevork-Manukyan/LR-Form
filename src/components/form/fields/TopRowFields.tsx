@@ -22,7 +22,7 @@ export function TopRowFields({
   return (
     <div className="flex space-x-4">
         <div className="flex-1">
-        <CaseNumber
+          <CaseNumber
             formData={formData}
             setFormData={setFormData}
             showValidation={showValidation}
@@ -33,14 +33,14 @@ export function TopRowFields({
         </div>
 
         <div className="flex-1">
-            <FiledOnField
-                formData={formData}
-                setFormData={setFormData}
-                showValidation={showValidation}
-                isFieldRequired={isFieldRequired}
-                getInputClassName={getInputClassName}
-                getLabelClassName={getLabelClassName}
-            />
+          <FiledOnField
+            formData={formData}
+            setFormData={setFormData}
+            showValidation={showValidation}
+            isFieldRequired={isFieldRequired}
+            getInputClassName={getInputClassName}
+            getLabelClassName={getLabelClassName}
+          />
         </div>
 
       {formData.status === 'LWDA' && (
