@@ -38,7 +38,7 @@ export function SettledFields({
   if (formData.status !== 'Settled') return null;
 
   // Helper to determine if FA date should be shown
-  const shouldShowFADate = formData.classType === 'PAGA' || (!formData.noPADate && !formData.scheduledMPA);
+  const shouldShowFADate = formData.classType === 'PAGA' || !formData.noPADate;
 
   const handleLiabilityCalcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -156,12 +156,11 @@ export function SettledFields({
                         scheduledMPA: checked as boolean,
                         noPADate: checked ? false : formData.noPADate,
                         customPA: checked ? false : formData.customPA,
-                        // Reset FA date related fields when PA becomes scheduled
-                        faDate: checked ? '' : formData.faDate,
-                        noFADate: checked ? true : formData.noFADate,
-                        scheduledMFA: checked ? false : formData.scheduledMFA,
-                        customFA: checked ? false : formData.customFA,
-                        customFAText: checked ? '' : formData.customFAText
+                        faDate: formData.faDate,
+                        noFADate: formData.noFADate,
+                        scheduledMFA: formData.scheduledMFA,
+                        customFA: formData.customFA,
+                        customFAText: formData.customFAText
                       });
                     }}
                     tabIndex={showPAOptions ? 0 : -1}
@@ -184,9 +183,8 @@ export function SettledFields({
                         scheduledMPA: checked ? false : formData.scheduledMPA,
                         customPA: checked ? false : formData.customPA,
                         paDate: checked ? '' : formData.paDate,
-                        // Reset FA date related fields when PA becomes "no date"
                         faDate: checked ? '' : formData.faDate,
-                        noFADate: checked ? true : formData.noFADate,
+                        noFADate: checked ? true : false,
                         scheduledMFA: checked ? false : formData.scheduledMFA,
                         customFA: checked ? false : formData.customFA,
                         customFAText: checked ? '' : formData.customFAText

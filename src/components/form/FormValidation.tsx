@@ -1,70 +1,64 @@
 import { FormData } from '../../types/form'
 
 export function isFieldRequired(field: keyof FormData, formData: FormData): boolean {
-  // Check if field is visible
+  // Handle law firm and attorney fields based on noLawFirm
+  if (field === 'lawFirm' || field === 'attorney') {
+    return true;
+  }
+
+  // Handle FA date - always required for settled cases
   if (field === 'faDate' || field === 'customFAText') {
-    // FA date is only required if PA date is not "No PA Date" or "Scheduled MPA"
-    if (formData.noPADate || formData.scheduledMPA) return false;
+    return formData.status === 'Settled' && (formData.classType === 'PAGA' || !formData.noPADate) && !formData.noFADate;
   }
 
+  // Handle PA date - required for settled cases unless noPADate is true
   if (field === 'paDate' || field === 'customPAText') {
-    // PA date is only required if not "No PA Date"
-    if (formData.noPADate) return false;
+    return formData.status === 'Settled' && formData.classType === 'Class' && !formData.noPADate;
   }
 
-  if (field === 'periodEndDate') {
-    if (formData.noPeriodEndDate) return false;
+  // Handle definition match - required for settled cases unless noPNC is true
+  if (field === 'definitionMatch') {
+    return formData.status === 'Settled' && !formData.noPNC;
   }
 
-  if (field === 'ldwDate') {
-    if (formData.noPNC) return false;
-  }
-
+  // Handle definition mismatch reason - required if definition match is "Does NOT match definition"
   if (field === 'definitionMismatchReason' || field === 'pncJobTitle') {
-    if (formData.noPNC || formData.definitionMatch !== 'Does NOT match definition') return false;
+    return formData.status === 'Settled' && !formData.noPNC && formData.definitionMatch === 'Does NOT match definition';
   }
 
-  // Always require law firm and attorney fields
-  if (field === 'lawFirm' || field === 'attorney') return true;
-
-  const requiredFields = ['caseNumber', 'date'];
-  
-  if (formData.status === 'LWDA') {
-    return ['caseNumber', 'date', 'notFiledDate'].includes(field);
+  // Handle period end date - required for settled cases
+  if (field === 'periodEndDate') {
+    return formData.status === 'Settled';
   }
 
-  // Add definitionMatch for all statuses when PNC is not disabled
-  if (!formData.noPNC) {
-    requiredFields.push('definitionMatch');
+  // Handle LDW date - required for settled cases unless noPNC is true
+  if (field === 'ldwDate') {
+    return formData.status === 'Settled' && !formData.noPNC;
   }
 
-  if (formData.status === 'Settled') {
-    if (formData.classType === 'Class' && !formData.noPADate) {
-      // Require either paDate or customPAText if customPA is checked
-      if (formData.customPA) {
-        requiredFields.push('customPAText');
-      } else {
-        requiredFields.push('paDate');
-      }
-    }
-    if (!formData.noFADate && !formData.noPADate && !formData.scheduledMPA) {
-      // Require either faDate or customFAText if customFA is checked
-      if (formData.customFA) {
-        requiredFields.push('customFAText');
-      } else {
-        requiredFields.push('faDate');
-      }
-    }
-    if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
-    if (!formData.noPNC) requiredFields.push('ldwDate');
+  // Handle liability calc - required for settled cases with specific conditions
+  if (field === 'liabilityCalc') {
+    if (formData.status !== 'Settled') return false;
+    if (!formData.periodEndDate || !formData.ldwDate) return false;
+    if (formData.definitionMatch !== 'Matches definition') return false;
+
+    const periodEnd = new Date(formData.periodEndDate);
+    const elevenMonthsLater = new Date(periodEnd);
+    elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+    const today = new Date();
+    const hasPassed = today >= elevenMonthsLater;
+    const ldwDate = new Date(formData.ldwDate);
+    const isLDWAfterPeriodEnd = ldwDate > periodEnd;
+
+    return hasPassed && isLDWAfterPeriodEnd;
   }
 
-  // Add definition mismatch fields as required when "Does not match" is selected
-  if (!formData.noPNC && formData.definitionMatch === 'Does NOT match definition') {
-    requiredFields.push('definitionMismatchReason', 'pncJobTitle');
+  // Handle description - required for settled cases if hasDescription is true
+  if (field === 'description') {
+    return formData.status === 'Settled' && formData.hasDescription;
   }
 
-  return requiredFields.includes(field);
+  return false;
 }
 
 export function getInputClassName(field: keyof FormData, showValidation: boolean, formData: FormData): string {
