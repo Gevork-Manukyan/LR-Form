@@ -174,7 +174,7 @@ export default function Lawsuit() {
     <div className="max-w-3xl w-[1000px] relative">
       <div className="p-6 bg-white rounded-lg shadow relative z-50">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">LR Form</h1>
+          <h1 className="text-2xl font-bold">{formData.caseNumber || 'New Case'}</h1>
           <HamburgerMenu isOpen={isSidebarOpen} onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
         </div>
         <Form onSubmit={handleSubmit}>
