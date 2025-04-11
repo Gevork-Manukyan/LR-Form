@@ -1,15 +1,12 @@
-import { FormData } from '../../../types/form'
-import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs"
+import { FormData } from '../../../types/form';
+import { Tabs, TabsList, TabsTrigger } from '../../ui/tabs';
 
 interface StatusTabsProps {
-  formData: FormData
-  setFormData: (data: FormData) => void
+  formData: FormData;
+  setFormData: (data: FormData) => void;
 }
 
-export function StatusTabs({
-  formData,
-  setFormData,
-}: StatusTabsProps) {
+export function StatusTabs({ formData, setFormData }: StatusTabsProps) {
   return (
     <Tabs
       value={formData.status || 'Pending'}
@@ -17,17 +14,23 @@ export function StatusTabs({
         if (value === 'Pending' || value === 'Settled' || value === 'LWDA') {
           setFormData({
             ...formData,
-            status: value
+            status: value,
           });
         }
       }}
       className="w-full"
     >
       <TabsList className="w-full h-8">
-        <TabsTrigger value="Settled" className="flex-1 text-sm">Settled</TabsTrigger>
-        <TabsTrigger value="Pending" className="flex-1 text-sm">Pending</TabsTrigger>
-        <TabsTrigger value="LWDA" className="flex-1 text-sm">LWDA</TabsTrigger>
+        <TabsTrigger value="Settled" className="flex-1 text-sm">
+          Settled
+        </TabsTrigger>
+        <TabsTrigger value="Pending" className="flex-1 text-sm">
+          Pending
+        </TabsTrigger>
+        <TabsTrigger value="LWDA" className="flex-1 text-sm">
+          LWDA
+        </TabsTrigger>
       </TabsList>
     </Tabs>
-  )
-} 
+  );
+}

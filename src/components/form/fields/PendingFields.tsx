@@ -1,24 +1,18 @@
-import { FormData, DefinitionMatch } from '../../../types/form'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select"
-import { LawFirmField } from './LawFirmField'
-import { AttorneyField } from './AttorneyField'
-import { SPECIAL_ATTORNEY } from '../../../lib/constants'
+import { FormData, DefinitionMatch } from '../../../types/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
+import { LawFirmField } from './LawFirmField';
+import { AttorneyField } from './AttorneyField';
+import { SPECIAL_ATTORNEY } from '../../../lib/constants';
 
 interface PendingFieldsProps {
-  formData: FormData
-  setFormData: (data: FormData) => void
-  showValidation: boolean
-  isFieldRequired: (field: keyof FormData) => boolean
-  getInputClassName: (field: keyof FormData) => string
-  getLabelClassName: (field: keyof FormData) => string
-  isPartnerLawFirm: boolean
-  isSpecialLawFirm: boolean
+  formData: FormData;
+  setFormData: (data: FormData) => void;
+  showValidation: boolean;
+  isFieldRequired: (field: keyof FormData) => boolean;
+  getInputClassName: (field: keyof FormData) => string;
+  getLabelClassName: (field: keyof FormData) => string;
+  isPartnerLawFirm: boolean;
+  isSpecialLawFirm: boolean;
 }
 
 export function PendingFields({
@@ -29,7 +23,7 @@ export function PendingFields({
   getInputClassName,
   getLabelClassName,
   isPartnerLawFirm,
-  isSpecialLawFirm
+  isSpecialLawFirm,
 }: PendingFieldsProps) {
   if (formData.status !== 'Pending') return null;
 
@@ -58,30 +52,39 @@ export function PendingFields({
               getLabelClassName={getLabelClassName}
             />
           )}
-          {isPartnerLawFirm && (
-            <p className="text-sm text-red-500">Warning: Partner Law Firm</p>
-          )}
+          {isPartnerLawFirm && <p className="text-sm text-red-500">Warning: Partner Law Firm</p>}
           {isSpecialLawFirm && (
             <p className="text-sm text-red-500">Warning: Send Email to CTD Review</p>
           )}
-          {formData.noLawFirm && formData.attorney.some(attorney => 
-            SPECIAL_ATTORNEY.some(special => 
-              attorney.toLowerCase().includes(special.toLowerCase())
-            )
-          ) && (
-            <p className="text-sm text-red-500">Warning: If not filed with D. Law, treat as LP based on partner attorney, but notify manager about case</p>
-          )}
+          {formData.noLawFirm &&
+            formData.attorney.some(attorney =>
+              SPECIAL_ATTORNEY.some(special =>
+                attorney.toLowerCase().includes(special.toLowerCase())
+              )
+            ) && (
+              <p className="text-sm text-red-500">
+                Warning: If not filed with D. Law, treat as LP based on partner attorney, but notify
+                manager about case
+              </p>
+            )}
         </div>
 
         {/* Time Frame */}
         <div className="space-y-2">
-          <label htmlFor="timeFrame" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          <label
+            htmlFor="timeFrame"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
             Time Frame
           </label>
           <div className="flex flex-col gap-1">
             {(() => {
               if (!formData.date) {
-                return <div className="text-sm text-muted-foreground">Enter Filed On date to calculate</div>;
+                return (
+                  <div className="text-sm text-muted-foreground">
+                    Enter Filed On date to calculate
+                  </div>
+                );
               }
 
               const filedDate = new Date(formData.date);
@@ -116,7 +119,9 @@ export function PendingFields({
               }
 
               return (
-                <div className={`text-base font-medium ${isRed ? 'text-red-600' : 'text-green-600'}`}>
+                <div
+                  className={`text-base font-medium ${isRed ? 'text-red-600' : 'text-green-600'}`}
+                >
                   {timeFrame}
                 </div>
               );
@@ -130,13 +135,22 @@ export function PendingFields({
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <label htmlFor="definitionMatch" className={getLabelClassName('definitionMatch')}>
-              Definition Match {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
+              Definition Match{' '}
+              {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
             </label>
             <Select
               value={formData.definitionMatch}
-              onValueChange={(value: DefinitionMatch) => setFormData({ ...formData, definitionMatch: value })}
+              onValueChange={(value: DefinitionMatch) =>
+                setFormData({ ...formData, definitionMatch: value })
+              }
             >
-              <SelectTrigger className={showValidation && isFieldRequired('definitionMatch') && !formData.definitionMatch ? "border-red-500" : ""}>
+              <SelectTrigger
+                className={
+                  showValidation && isFieldRequired('definitionMatch') && !formData.definitionMatch
+                    ? 'border-red-500'
+                    : ''
+                }
+              >
                 <SelectValue placeholder="Select definition match" />
               </SelectTrigger>
               <SelectContent>
@@ -152,8 +166,14 @@ export function PendingFields({
       {!formData.noPNC && formData.definitionMatch === 'Does NOT match definition' && (
         <div className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="definitionMismatchReason" className={getLabelClassName('definitionMismatchReason')}>
-              PNC does not match the definition, as the definition is for {isFieldRequired('definitionMismatchReason') && <span className="text-red-500">*</span>}
+            <label
+              htmlFor="definitionMismatchReason"
+              className={getLabelClassName('definitionMismatchReason')}
+            >
+              PNC does not match the definition, as the definition is for{' '}
+              {isFieldRequired('definitionMismatchReason') && (
+                <span className="text-red-500">*</span>
+              )}
             </label>
             <input
               type="text"
@@ -161,12 +181,13 @@ export function PendingFields({
               id="definitionMismatchReason"
               className={getInputClassName('definitionMismatchReason')}
               value={formData.definitionMismatchReason}
-              onChange={(e) => setFormData({ ...formData, definitionMismatchReason: e.target.value })}
+              onChange={e => setFormData({ ...formData, definitionMismatchReason: e.target.value })}
             />
           </div>
           <div className="space-y-2">
             <label htmlFor="pncJobTitle" className={getLabelClassName('pncJobTitle')}>
-              whereas our PNC {isFieldRequired('pncJobTitle') && <span className="text-red-500">*</span>}
+              whereas our PNC{' '}
+              {isFieldRequired('pncJobTitle') && <span className="text-red-500">*</span>}
             </label>
             <input
               type="text"
@@ -174,11 +195,11 @@ export function PendingFields({
               id="pncJobTitle"
               className={getInputClassName('pncJobTitle')}
               value={formData.pncJobTitle}
-              onChange={(e) => setFormData({ ...formData, pncJobTitle: e.target.value })}
+              onChange={e => setFormData({ ...formData, pncJobTitle: e.target.value })}
             />
           </div>
         </div>
       )}
     </>
-  )
-} 
+  );
+}

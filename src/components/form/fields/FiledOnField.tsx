@@ -1,12 +1,12 @@
-import { FormData } from '../../../types/form'
+import { FormData } from '../../../types/form';
 
 interface FiledOnFieldProps {
-  formData: FormData
-  setFormData: (data: FormData) => void
-  showValidation: boolean
-  isFieldRequired: (field: keyof FormData) => boolean
-  getInputClassName: (field: keyof FormData) => string
-  getLabelClassName: (field: keyof FormData) => string
+  formData: FormData;
+  setFormData: (data: FormData) => void;
+  showValidation: boolean;
+  isFieldRequired: (field: keyof FormData) => boolean;
+  getInputClassName: (field: keyof FormData) => string;
+  getLabelClassName: (field: keyof FormData) => string;
 }
 
 export function FiledOnField({
@@ -14,7 +14,7 @@ export function FiledOnField({
   setFormData,
   isFieldRequired,
   getInputClassName,
-  getLabelClassName
+  getLabelClassName,
 }: FiledOnFieldProps) {
   return (
     <div className="space-y-2">
@@ -27,8 +27,8 @@ export function FiledOnField({
         id="date"
         className={getInputClassName('date')}
         value={formData.date}
-        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+        onChange={e => setFormData({ ...formData, date: e.target.value })}
       />
     </div>
-  )
-} 
+  );
+}

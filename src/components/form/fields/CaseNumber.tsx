@@ -1,12 +1,12 @@
-import { FormData } from '../../../types/form'
+import { FormData } from '../../../types/form';
 
 interface CaseNumberProps {
-  formData: FormData
-  setFormData: (data: FormData) => void
-  showValidation: boolean
-  isFieldRequired: (field: keyof FormData) => boolean
-  getInputClassName: (field: keyof FormData) => string
-  getLabelClassName: (field: keyof FormData) => string
+  formData: FormData;
+  setFormData: (data: FormData) => void;
+  showValidation: boolean;
+  isFieldRequired: (field: keyof FormData) => boolean;
+  getInputClassName: (field: keyof FormData) => string;
+  getLabelClassName: (field: keyof FormData) => string;
 }
 
 export function CaseNumber({
@@ -14,7 +14,7 @@ export function CaseNumber({
   setFormData,
   isFieldRequired,
   getInputClassName,
-  getLabelClassName
+  getLabelClassName,
 }: CaseNumberProps) {
   return (
     <div className="space-y-2">
@@ -27,8 +27,8 @@ export function CaseNumber({
         id="caseNumber"
         className={getInputClassName('caseNumber')}
         value={formData.caseNumber}
-        onChange={(e) => setFormData({ ...formData, caseNumber: e.target.value })}
+        onChange={e => setFormData({ ...formData, caseNumber: e.target.value })}
       />
     </div>
-  )
-} 
+  );
+}
