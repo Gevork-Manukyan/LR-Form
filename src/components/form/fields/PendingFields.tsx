@@ -1,8 +1,8 @@
-import { FormData, DefinitionMatch } from '../../../types/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
+import { FormData } from '../../../types/form';
 import { LawFirmField } from './LawFirmField';
 import { AttorneyField } from './AttorneyField';
 import { SPECIAL_ATTORNEY } from '../../../lib/constants';
+import { DefinitionMatchField } from './DefinitionMatchField'
 
 interface PendingFieldsProps {
   formData: FormData;
@@ -133,32 +133,12 @@ export function PendingFields({
       {/* Definition Match Row */}
       {!formData.noPNC && (
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label htmlFor="definitionMatch" className={getLabelClassName('definitionMatch')}>
-              Definition Match{' '}
-              {isFieldRequired('definitionMatch') && <span className="text-red-500">*</span>}
-            </label>
-            <Select
+
+            <DefinitionMatchField
               value={formData.definitionMatch}
-              onValueChange={(value: DefinitionMatch) =>
-                setFormData({ ...formData, definitionMatch: value })
-              }
-            >
-              <SelectTrigger
-                className={
-                  showValidation && isFieldRequired('definitionMatch') && !formData.definitionMatch
-                    ? 'border-red-500'
-                    : ''
-                }
-              >
-                <SelectValue placeholder="Select definition match" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Matches definition">Matches</SelectItem>
-                <SelectItem value="Does NOT match definition">Does not match</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+              onChange={(value) => setFormData({ ...formData, definitionMatch: value })}
+              getLabelClassName={(field: string) => getLabelClassName(field as keyof FormData)}
+            />
         </div>
       )}
 
