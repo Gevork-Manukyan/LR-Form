@@ -1,9 +1,19 @@
 import { FormData } from '../../types/form';
 
 export function isFieldRequired(field: keyof FormData, formData: FormData): boolean {
+  // Always required fields
+  if (field === 'caseNumber' || field === 'date') {
+    return true;
+  }
+
   // Handle law firm and attorney fields based on noLawFirm
   if (field === 'lawFirm' || field === 'attorney') {
     return true;
+  }
+
+  // Handle notFiledDate - required for LWDA cases
+  if (field === 'notFiledDate') {
+    return formData.status === 'LWDA';
   }
 
   // Handle FA date - always required for settled cases
