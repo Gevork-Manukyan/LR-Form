@@ -13,6 +13,7 @@ import { PARTNER_LAWFIRMS, SPECIAL_LAWFIRMS } from '../lib/constants';
 import { Sidebar } from '../components/ui/Sidebar';
 import { HamburgerMenu } from '../components/ui/HamburgerMenu';
 import { SidebarToggle } from '../components/ui/SidebarToggle';
+import { ChevronRight } from 'lucide-react';
 
 export default function Lawsuit() {
   const [formData, setFormData] = useState<FormData>({
@@ -54,6 +55,7 @@ export default function Lawsuit() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showValidation, setShowValidation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
 
   // Add these near the top of the component
   const isPartnerLawFirm = PARTNER_LAWFIRMS.some(partnerFirm =>
@@ -173,47 +175,62 @@ export default function Lawsuit() {
   return (
     <div className="max-w-3xl w-[1000px] relative">
       <div className="p-6 bg-white rounded-lg shadow relative z-50">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">{formData.caseNumber || 'New Case'}</h1>
-          <HamburgerMenu isOpen={isSidebarOpen} onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
-        </div>
-        <Form onSubmit={handleSubmit}>
-          <FormFields
-            formData={formData}
-            setFormData={setFormData}
-            showValidation={showValidation}
-            isFieldRequired={field => isFieldRequired(field, formData)}
-            getInputClassName={field => getInputClassName(field, showValidation, formData)}
-            getLabelClassName={field => getLabelClassName(field, showValidation, formData)}
-            isPartnerLawFirm={isPartnerLawFirm}
-            isSpecialLawFirm={isSpecialLawFirm}
-          />
-
-          <div className="flex gap-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
             <button
-              type="submit"
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 flex-1"
+              onClick={() => setIsMinimized(!isMinimized)}
+              className="p-1 hover:bg-gray-100 rounded transition-transform duration-300"
             >
-              {showOutput ? 'Hide' : 'Show'}
+              <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${!isMinimized ? 'rotate-90' : ''}`} />
             </button>
-            <button
-              type="button"
-              onClick={handleClear}
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2"
-            >
-              Clear
-            </button>
+            <h2 className="text-2xl font-bold">{formData.caseNumber || 'New Case'}</h2>
           </div>
+          {!isMinimized && 
+            <HamburgerMenu isOpen={isSidebarOpen} onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+          }
+        </div>
+        <div className={`transition-all duration-300 ${isMinimized ? 'h-0 overflow-hidden' : 'h-auto'}`}>
+          {!isMinimized && (
+            <>
+              <Form className='mt-6' onSubmit={handleSubmit}>
+                <FormFields
+                  formData={formData}
+                  setFormData={setFormData}
+                  showValidation={showValidation}
+                  isFieldRequired={field => isFieldRequired(field, formData)}
+                  getInputClassName={field => getInputClassName(field, showValidation, formData)}
+                  getLabelClassName={field => getLabelClassName(field, showValidation, formData)}
+                  isPartnerLawFirm={isPartnerLawFirm}
+                  isSpecialLawFirm={isSpecialLawFirm}
+                />
 
-          {/* Formatted Display Section */}
-          {showOutput && (
-            <FormOutput
-              formData={formData}
-              isPartnerLawFirm={isPartnerLawFirm}
-              isSpecialLawFirm={isSpecialLawFirm}
-            />
+                <div className="flex gap-4">
+                  <button
+                    type="submit"
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 flex-1"
+                  >
+                    {showOutput ? 'Hide' : 'Show'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleClear}
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2"
+                  >
+                    Clear
+                  </button>
+                </div>
+
+                {showOutput && (
+                  <FormOutput
+                    formData={formData}
+                    isPartnerLawFirm={isPartnerLawFirm}
+                    isSpecialLawFirm={isSpecialLawFirm}
+                  />
+                )}
+              </Form>
+            </>
           )}
-        </Form>
+        </div>
       </div>
 
       {/* Sidebar */}
