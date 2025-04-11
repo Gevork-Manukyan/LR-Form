@@ -16,23 +16,23 @@ export function HamburgerMenu({ isOpen, onClick }: HamburgerMenuProps) {
       <div className="block w-6">
         <span
           className={cn(
-            'block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out',
-            isOpen ? 'rotate-45 translate-y-1.5' : '-translate-y-1.5'
+            "block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out",
+            isOpen ? "rotate-45 translate-y-1.5" : "-translate-y-1.5"
           )}
         />
         <span
           className={cn(
-            'block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out',
-            isOpen ? 'opacity-0' : 'opacity-100'
+            "block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out",
+            isOpen ? "opacity-0" : "opacity-100"
           )}
         />
         <span
           className={cn(
-            'block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out',
-            isOpen ? '-rotate-45 translate-y-1.5' : 'translate-y-1.5'
+            "block absolute h-0.5 w-6 bg-current transform transition duration-300 ease-in-out",
+            isOpen ? "-rotate-45 translate-y-1.5" : "translate-y-1.5"
           )}
         />
       </div>
     </button>
   );
-}
+} 

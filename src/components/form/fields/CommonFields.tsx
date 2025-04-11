@@ -1,26 +1,25 @@
-import { FormData } from '../../../types/form';
-import { Checkbox } from '../../ui/checkbox';
-import { TagInput } from '../../ui/tag-input';
+import { FormData } from '../../../types/form'
+import { Checkbox } from "../../ui/checkbox"
+import { TagInput } from "../../ui/tag-input"
 
 interface CommonFieldsProps {
-  formData: FormData;
-  setFormData: (data: FormData) => void;
+  formData: FormData
+  setFormData: (data: FormData) => void
 }
 
-export function CommonFields({ formData, setFormData }: CommonFieldsProps) {
+export function CommonFields({
+  formData,
+  setFormData,
+}: CommonFieldsProps) {
   // Only show for Pending and Settled
   if (formData.status !== 'Pending' && formData.status !== 'Settled') return null;
 
   return (
     <>
       {/* Description Text Area */}
-      {(formData.status === 'Pending' ||
-        (formData.status === 'Settled' && formData.hasDescription)) && (
+      {(formData.status === 'Pending' || (formData.status === 'Settled' && formData.hasDescription)) && (
         <div className="space-y-2">
-          <label
-            htmlFor="description"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
+          <label htmlFor="description" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Description
           </label>
           <textarea
@@ -29,7 +28,7 @@ export function CommonFields({ formData, setFormData }: CommonFieldsProps) {
             rows={4}
             className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             value={formData.description}
-            onChange={e => setFormData({ ...formData, description: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           />
         </div>
       )}
@@ -39,9 +38,7 @@ export function CommonFields({ formData, setFormData }: CommonFieldsProps) {
         <Checkbox
           id="hasMultipleDefendants"
           checked={formData.hasMultipleDefendants}
-          onCheckedChange={checked =>
-            setFormData({ ...formData, hasMultipleDefendants: checked as boolean })
-          }
+          onCheckedChange={(checked) => setFormData({ ...formData, hasMultipleDefendants: checked as boolean })}
         />
         <label
           htmlFor="hasMultipleDefendants"
@@ -54,19 +51,16 @@ export function CommonFields({ formData, setFormData }: CommonFieldsProps) {
       {/* Defendant Names List */}
       {formData.hasMultipleDefendants && (
         <div className="space-y-2">
-          <label
-            htmlFor="defendantNames"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
+          <label htmlFor="defendantNames" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Defendant Names
           </label>
           <TagInput
             tags={formData.defendantNames}
-            onChange={tags => setFormData({ ...formData, defendantNames: tags })}
+            onChange={(tags) => setFormData({ ...formData, defendantNames: tags })}
             placeholder="Type defendant name and press enter..."
           />
         </div>
       )}
     </>
-  );
-}
+  )
+} 

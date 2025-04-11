@@ -1,4 +1,4 @@
-import { Switch } from './switch';
+import { Switch } from "./switch"
 
 interface SidebarToggleProps {
   id: string;
@@ -16,7 +16,11 @@ export function SidebarToggle({ id, label, checked, onCheckedChange }: SidebarTo
       >
         {label}
       </label>
-      <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} />
+      <Switch
+        id={id}
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+      />
     </div>
   );
-}
+} 
