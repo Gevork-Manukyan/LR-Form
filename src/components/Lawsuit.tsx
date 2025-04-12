@@ -15,7 +15,12 @@ import { HamburgerMenu } from '../components/ui/HamburgerMenu';
 import { SidebarToggle } from '../components/ui/SidebarToggle';
 import { ChevronRight } from 'lucide-react';
 
-export default function Lawsuit() {
+interface LawsuitProps {
+  id: string;
+  onRemove?: (id: string) => void;
+}
+
+export default function Lawsuit({ id, onRemove }: LawsuitProps) {
   const [formData, setFormData] = useState<FormData>({
     status: 'Pending',
     caseNumber: '',
@@ -84,36 +89,42 @@ export default function Lawsuit() {
 
   // Load form data from localStorage on component mount
   useEffect(() => {
-    const savedFormData = localStorage.getItem('formData');
-    if (savedFormData) {
+    const savedLawsuits = localStorage.getItem('lawsuits');
+    if (savedLawsuits) {
       try {
-        const parsedData = JSON.parse(savedFormData);
-        // Ensure lawFirm is an array
-        if (!Array.isArray(parsedData.lawFirm)) {
-          parsedData.lawFirm = parsedData.lawFirm ? [parsedData.lawFirm] : [];
+        const lawsuits = JSON.parse(savedLawsuits);
+        const savedFormData = lawsuits[id];
+        if (savedFormData) {
+          // Ensure lawFirm is an array
+          if (!Array.isArray(savedFormData.lawFirm)) {
+            savedFormData.lawFirm = savedFormData.lawFirm ? [savedFormData.lawFirm] : [];
+          }
+          // Ensure attorney is an array
+          if (!Array.isArray(savedFormData.attorney)) {
+            savedFormData.attorney = savedFormData.attorney ? [savedFormData.attorney] : [];
+          }
+          setFormData(savedFormData);
         }
-        // Ensure attorney is an array
-        if (!Array.isArray(parsedData.attorney)) {
-          parsedData.attorney = parsedData.attorney ? [parsedData.attorney] : [];
-        }
-        setFormData(parsedData);
       } catch (error) {
         console.error('Error loading form data:', error);
       }
     }
     setIsInitialLoad(false);
-  }, []);
+  }, [id]);
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
     if (!isInitialLoad) {
       try {
-        localStorage.setItem('formData', JSON.stringify(formData));
+        const savedLawsuits = localStorage.getItem('lawsuits');
+        const lawsuits = savedLawsuits ? JSON.parse(savedLawsuits) : {};
+        lawsuits[id] = formData;
+        localStorage.setItem('lawsuits', JSON.stringify(lawsuits));
       } catch (error) {
         console.error('Error saving form data:', error);
       }
     }
-  }, [formData, isInitialLoad]);
+  }, [formData, isInitialLoad, id]);
 
   // Add this after the handleLiabilityCalcChange function
   useEffect(() => {
@@ -167,9 +178,26 @@ export default function Lawsuit() {
       limitedClaims: false,
       noLawFirm: false,
     });
-    localStorage.removeItem('formData');
+    const savedLawsuits = localStorage.getItem('lawsuits');
+    if (savedLawsuits) {
+      const lawsuits = JSON.parse(savedLawsuits);
+      delete lawsuits[id];
+      localStorage.setItem('lawsuits', JSON.stringify(lawsuits));
+    }
     setShowOutput(false);
     setShowValidation(false);
+  };
+
+  const handleRemove = () => {
+    if (onRemove) {
+      const savedLawsuits = localStorage.getItem('lawsuits');
+      if (savedLawsuits) {
+        const lawsuits = JSON.parse(savedLawsuits);
+        delete lawsuits[id];
+        localStorage.setItem('lawsuits', JSON.stringify(lawsuits));
+      }
+      onRemove(id);
+    }
   };
 
   return (
@@ -185,9 +213,23 @@ export default function Lawsuit() {
             </button>
             <h2 className="text-2xl font-bold">{formData.caseNumber || 'New Case'}</h2>
           </div>
-          {!isMinimized && 
-            <HamburgerMenu isOpen={isSidebarOpen} onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
-          }
+          <div className="flex items-center gap-2">
+            {!isMinimized && (
+              <HamburgerMenu isOpen={isSidebarOpen} onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+            )}
+            {onRemove && (
+              <button
+                onClick={handleRemove}
+                className="p-1 hover:bg-gray-100 rounded text-red-500"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18" />
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
         <div className={`transition-all duration-300 ${isMinimized ? 'h-0 overflow-hidden' : 'h-auto'}`}>
           {!isMinimized && (
