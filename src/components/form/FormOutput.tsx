@@ -293,6 +293,13 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
               {!formData.noLawFirm && ` (${formatArrayWithConjunction(formData.lawFirm)})`}. Case
               has not been filed in Court as of {formatDate(formData.notFiledDate)}.
             </li>
+            {formData.description && formData.description.split('\n').some(line => line.trim()) && (
+              <ul className="list-disc pl-4">
+                {formData.description
+                  .split('\n')
+                  .map((line, index) => line.trim() && <li key={index}>{line.trim()}</li>)}
+              </ul>
+            )}
           </ul>
         )}
       </div>
