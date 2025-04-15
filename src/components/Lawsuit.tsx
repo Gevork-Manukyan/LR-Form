@@ -14,6 +14,7 @@ import { Sidebar } from '../components/ui/Sidebar';
 import { HamburgerMenu } from '../components/ui/HamburgerMenu';
 import { SidebarToggle } from '../components/ui/SidebarToggle';
 import { ChevronRight } from 'lucide-react';
+import { ConfirmationModal } from '../components/ui/ConfirmationModal';
 
 interface LawsuitProps {
   id: string;
@@ -62,6 +63,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
   const [showValidation, setShowValidation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Update isMinimized when externalIsCollapsed changes
   useEffect(() => {
@@ -197,6 +199,10 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
   };
 
   const handleRemove = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
     if (onRemove) {
       const savedLawsuits = localStorage.getItem('lawsuits');
       if (savedLawsuits) {
@@ -206,6 +212,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
       }
       onRemove(id);
     }
+    setShowDeleteModal(false);
   };
 
   return (
@@ -282,6 +289,14 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
           )}
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Case"
+        message="Are you sure you want to delete this case? This action cannot be undone."
+      />
 
       {/* Sidebar */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
