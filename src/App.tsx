@@ -30,6 +30,7 @@ function App() {
     }
     // Then add the new lawsuit and expand it
     setLawsuitIds(prev => [newId, ...prev]);
+    // Always expand the new lawsuit
     setExpandedLawsuitId(newId);
   };
 
@@ -63,7 +64,7 @@ function App() {
               key={id}
               id={id}
               onRemove={handleRemoveLawsuit}
-              isCollapsed={isAllCollapsed || (expandedLawsuitId !== null && expandedLawsuitId !== id)}
+              isCollapsed={expandedLawsuitId === id ? false : (isAllCollapsed || (expandedLawsuitId !== null && expandedLawsuitId !== id))}
             />
           ))}
         </div>

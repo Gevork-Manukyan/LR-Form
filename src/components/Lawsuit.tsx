@@ -229,9 +229,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
             <h2 className="text-2xl font-bold">{formData.caseNumber || 'New Case'}</h2>
           </div>
           <div className="flex items-center gap-2">
-            {!isMinimized && (
-              <HamburgerMenu isOpen={isSidebarOpen} onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
-            )}
+            {/* Delete Button */}
             {onRemove && (
               <button
                 onClick={handleRemove}
@@ -243,6 +241,11 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
                   <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                 </svg>
               </button>
+            )}
+
+            {/* Sidebar Button */}
+            {!isMinimized && (
+              <HamburgerMenu isOpen={isSidebarOpen} onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
             )}
           </div>
         </div>
