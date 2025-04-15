@@ -251,7 +251,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
         <div className={`px-6 transition-all duration-300 ${isMinimized ? 'h-0 overflow-hidden' : 'h-auto pb-6'}`}>
           {!isMinimized && (
             <>
-              <Form className='mt-6' onSubmit={handleSubmit}>
+              <Form className='mt-4' onSubmit={handleSubmit}>
                 <FormFields
                   formData={formData}
                   setFormData={setFormData}

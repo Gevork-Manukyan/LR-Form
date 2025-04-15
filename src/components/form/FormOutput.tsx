@@ -17,6 +17,14 @@ interface FormOutputProps {
 }
 
 export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDate }: FormOutputProps) {
+  if (!ldwDate) {
+    return (
+      <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+        <p className="text-red-500">Please fill in the PNC LDW first.</p>
+      </div>
+    );
+  }
+
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
     const date = new Date(dateString + 'T00:00:00');
