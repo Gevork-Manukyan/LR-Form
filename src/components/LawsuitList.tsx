@@ -8,7 +8,7 @@ interface LawsuitListProps {
   onAddLawsuit: (index: number) => void;
   onRemoveLawsuit: (id: string) => void;
   name: string;
-  lwdaDate: string;
+  ldwDate: string;
 }
 
 export function LawsuitList({
@@ -17,8 +17,7 @@ export function LawsuitList({
   isAllCollapsed,
   onAddLawsuit,
   onRemoveLawsuit,
-  name,
-  lwdaDate,
+  ldwDate,
 }: LawsuitListProps) {
   return (
     <div className="pb-8">
@@ -28,6 +27,7 @@ export function LawsuitList({
             <DividerWithAddButton onAdd={onAddLawsuit} index={index} />
             <Lawsuit
               id={id}
+              ldwDate={ldwDate}
               onRemove={onRemoveLawsuit}
               isCollapsed={expandedLawsuitId === id ? false : (isAllCollapsed || (expandedLawsuitId !== null && expandedLawsuitId !== id))}
             />

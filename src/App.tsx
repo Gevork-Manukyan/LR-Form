@@ -9,7 +9,7 @@ function App() {
     expandedLawsuitId,
     isAllCollapsed,
     name,
-    lwdaDate,
+    ldwDate,
     handleAddLawsuit,
     handleRemoveLawsuit,
     handleCollapseAll,
@@ -28,7 +28,7 @@ function App() {
         onPNCInfoChange={handlePNCInfoChange} 
         className="mt-8" 
         name={name}
-        lwdaDate={lwdaDate}
+        ldwDate={ldwDate}
       />
       <LawsuitList
         lawsuitIds={lawsuitIds}
@@ -37,7 +37,7 @@ function App() {
         onAddLawsuit={handleAddLawsuit}
         onRemoveLawsuit={handleRemoveLawsuit}
         name={name}
-        lwdaDate={lwdaDate}
+        ldwDate={ldwDate}
       />
     </div>
   );

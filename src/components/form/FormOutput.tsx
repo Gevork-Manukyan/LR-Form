@@ -13,9 +13,10 @@ interface FormOutputProps {
   formData: FormData;
   isPartnerLawFirm: boolean;
   isSpecialLawFirm: boolean;
+  ldwDate: string;
 }
 
-export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: FormOutputProps) {
+export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDate }: FormOutputProps) {
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
     const date = new Date(dateString + 'T00:00:00');
@@ -61,7 +62,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
         lines.push(`Period End Date: ${formData.periodEndDate}`);
       }
       if (!formData.noPNC) {
-        lines.push(`LDW Date: ${formData.ldwDate}`);
+        lines.push(`LDW Date: ${ldwDate}`);
       }
     }
     lines.push(`Law Firm: ${formatArrayWithConjunction(formData.lawFirm)}`);
@@ -191,9 +192,9 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
                       );
                     }
 
-                    if (formData.ldwDate) {
-                      const ldwDate = new Date(formData.ldwDate);
-                      const isLDWAfterPeriodEnd = ldwDate > periodEnd;
+                    if (ldwDate) {
+                      const ldwDateObj = new Date(ldwDate);
+                      const isLDWAfterPeriodEnd = ldwDateObj > periodEnd;
 
                       if (isLDWAfterPeriodEnd) {
                         if (!hasPassed) {
@@ -201,7 +202,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
                           return (
                             <li>
                               PNC matches the definition and their LDW (
-                              {formatDate(formData.ldwDate)}) falls{' '}
+                              {formatDate(ldwDate)}) falls{' '}
                               <strong>
                                 <em>after</em>
                               </strong>{' '}
@@ -218,7 +219,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
                           return (
                             <li>
                               PNC matches the definition, but their LDW (
-                              {formatDate(formData.ldwDate)}) falls{' '}
+                              {formatDate(ldwDate)}) falls{' '}
                               <strong>
                                 <em>after</em>
                               </strong>{' '}
@@ -235,7 +236,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
                             <strong>
                               <em>and</em>
                             </strong>{' '}
-                            their LDW ({formatDate(formData.ldwDate)}) falls within the{' '}
+                            their LDW ({formatDate(ldwDate)}) falls within the{' '}
                             {formData.classType} period end date (
                             {formatDate(formData.periodEndDate)}). 11 months{' '}
                             {hasPassed ? 'have' : 'have not'} passed. {LAWSUIT_PROBLEM}
@@ -264,15 +265,15 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm }: For
                   )}
                 {formData.definitionMatch === 'Matches definition' &&
                   formData.periodEndDate &&
-                  formData.ldwDate &&
+                  ldwDate &&
                   (() => {
                     const periodEnd = new Date(formData.periodEndDate);
                     const elevenMonthsLater = new Date(periodEnd);
                     elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
                     const today = new Date();
                     const hasPassed = today >= elevenMonthsLater;
-                    const ldwDate = new Date(formData.ldwDate);
-                    const isLDWAfterPeriodEnd = ldwDate > periodEnd;
+                    const ldwDateObj = new Date(ldwDate);
+                    const isLDWAfterPeriodEnd = ldwDateObj > periodEnd;
 
                     if (hasPassed && isLDWAfterPeriodEnd && formData.liabilityCalc) {
                       return (

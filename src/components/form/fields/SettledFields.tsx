@@ -16,6 +16,7 @@ interface SettledFieldsProps {
   isFieldRequired: (field: keyof FormData) => boolean;
   getInputClassName: (field: keyof FormData) => string;
   getLabelClassName: (field: keyof FormData) => string;
+  ldwDate: string;
 }
 
 export function SettledFields({
@@ -25,6 +26,7 @@ export function SettledFields({
   isFieldRequired,
   getInputClassName,
   getLabelClassName,
+  ldwDate,
 }: SettledFieldsProps) {
   const [showPAOptions, setShowPAOptions] = useState(false);
   const [showFAOptions, setShowFAOptions] = useState(false);
@@ -365,7 +367,7 @@ export function SettledFields({
 
       {/* Definition Match, Period End Date, and LDW Date Row */}
       <div
-        className={`grid ${formData.noPNC ? 'grid-cols-1' : 'grid-cols-3'} gap-4 border-b border-gray-200 pb-4`}
+        className={`grid ${formData.noPNC ? 'grid-cols-1' : 'grid-cols-2'} gap-4 border-b border-gray-200 pb-4`}
       >
         {/* Definition Match */}
         {!formData.noPNC && (
@@ -411,23 +413,6 @@ export function SettledFields({
             </label>
           </div>
         </div>
-
-        {/* LDW Date */}
-        {!formData.noPNC && (
-          <div className="space-y-2">
-            <label htmlFor="ldwDate" className={getLabelClassName('ldwDate')}>
-              LDW Date {isFieldRequired('ldwDate') && <span className="text-red-500">*</span>}
-            </label>
-            <input
-              type="date"
-              name="ldwDate"
-              id="ldwDate"
-              className={getInputClassName('ldwDate')}
-              value={formData.ldwDate}
-              onChange={e => setFormData({ ...formData, ldwDate: e.target.value })}
-            />
-          </div>
-        )}
       </div>
 
       {/* Definition Mismatch Details */}
@@ -472,15 +457,15 @@ export function SettledFields({
       {/* Liability Calc */}
       {formData.definitionMatch === 'Matches definition' &&
         formData.periodEndDate &&
-        formData.ldwDate &&
+        ldwDate &&
         (() => {
           const periodEnd = new Date(formData.periodEndDate);
           const elevenMonthsLater = new Date(periodEnd);
           elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
           const today = new Date();
           const hasPassed = today >= elevenMonthsLater;
-          const ldwDate = new Date(formData.ldwDate);
-          const isLDWAfterPeriodEnd = ldwDate > periodEnd;
+          const ldwDateObj = new Date(ldwDate);
+          const isLDWAfterPeriodEnd = ldwDateObj > periodEnd;
 
           if (hasPassed && isLDWAfterPeriodEnd) {
             return (

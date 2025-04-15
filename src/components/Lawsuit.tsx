@@ -20,9 +20,10 @@ interface LawsuitProps {
   id: string;
   onRemove?: (id: string) => void;
   isCollapsed?: boolean;
+  ldwDate: string;
 }
 
-export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed }: LawsuitProps) {
+export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed, ldwDate }: LawsuitProps) {
   const [formData, setFormData] = useState<FormData>({
     status: 'Pending',
     caseNumber: '',
@@ -260,6 +261,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
                   getLabelClassName={field => getLabelClassName(field, showValidation, formData)}
                   isPartnerLawFirm={isPartnerLawFirm}
                   isSpecialLawFirm={isSpecialLawFirm}
+                  ldwDate={ldwDate}
                 />
 
                 <div className="flex gap-4">
@@ -283,6 +285,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
                     formData={formData}
                     isPartnerLawFirm={isPartnerLawFirm}
                     isSpecialLawFirm={isSpecialLawFirm}
+                    ldwDate={ldwDate}
                   />
                 )}
               </Form>

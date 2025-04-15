@@ -1,6 +1,6 @@
 import { FormData } from '../../types/form';
 
-export function isFieldRequired(field: keyof FormData, formData: FormData): boolean {
+export function isFieldRequired(field: keyof FormData, formData: FormData, ldwDate?: string): boolean {
   // Always required fields
   if (field === 'caseNumber' || field === 'date') {
     return true;
@@ -57,7 +57,7 @@ export function isFieldRequired(field: keyof FormData, formData: FormData): bool
   // Handle liability calc - required for settled cases with specific conditions
   if (field === 'liabilityCalc') {
     if (formData.status !== 'Settled') return false;
-    if (!formData.periodEndDate || !formData.ldwDate) return false;
+    if (!formData.periodEndDate || !ldwDate) return false;
     if (formData.definitionMatch !== 'Matches definition') return false;
 
     const periodEnd = new Date(formData.periodEndDate);
@@ -65,8 +65,8 @@ export function isFieldRequired(field: keyof FormData, formData: FormData): bool
     elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
     const today = new Date();
     const hasPassed = today >= elevenMonthsLater;
-    const ldwDate = new Date(formData.ldwDate);
-    const isLDWAfterPeriodEnd = ldwDate > periodEnd;
+    const ldwDateObj = new Date(ldwDate);
+    const isLDWAfterPeriodEnd = ldwDateObj > periodEnd;
 
     return hasPassed && isLDWAfterPeriodEnd;
   }
@@ -123,7 +123,7 @@ export function getLabelClassName(
   return baseClasses;
 }
 
-export function validateForm(formData: FormData): boolean {
+export function validateForm(formData: FormData, ldwDate?: string): boolean {
   let requiredFields: (keyof FormData)[] = [];
 
   if (formData.status === 'LWDA') {
@@ -160,29 +160,39 @@ export function validateForm(formData: FormData): boolean {
         }
       }
       if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
-      if (!formData.noPNC) requiredFields.push('ldwDate');
+      if (!formData.noPNC && ldwDate) requiredFields.push('ldwDate');
     }
 
     // Add definition mismatch fields as required when "Does not match" is selected
     if (!formData.noPNC && formData.definitionMatch === 'Does NOT match definition') {
       requiredFields.push('definitionMismatchReason', 'pncJobTitle');
     }
+
+    // Add liabilityCalc as required when conditions are met
+    if (formData.status === 'Settled' && 
+        formData.definitionMatch === 'Matches definition' && 
+        formData.periodEndDate && 
+        ldwDate) {
+      const periodEnd = new Date(formData.periodEndDate);
+      const elevenMonthsLater = new Date(periodEnd);
+      elevenMonthsLater.setMonth(periodEnd.getMonth() + 11);
+      const today = new Date();
+      const hasPassed = today >= elevenMonthsLater;
+      const ldwDateObj = new Date(ldwDate);
+      const isLDWAfterPeriodEnd = ldwDateObj > periodEnd;
+
+      if (hasPassed && isLDWAfterPeriodEnd) {
+        requiredFields.push('liabilityCalc');
+      }
+    }
   }
 
+  // Check if all required fields have values
   return requiredFields.every(field => {
-    // Special handling for custom text fields
-    if (field === 'customPAText' && formData.customPA) {
-      return !!formData.customPAText;
+    const value = formData[field];
+    if (Array.isArray(value)) {
+      return value.length > 0;
     }
-    if (field === 'customFAText' && formData.customFA) {
-      return !!formData.customFAText;
-    }
-
-    // Special handling for array fields
-    if (['lawFirm', 'attorney', 'defendantNames'].includes(field)) {
-      return (formData[field] as string[]).length > 0;
-    }
-
-    return !!formData[field];
+    return value !== undefined && value !== null && value !== '';
   });
 }

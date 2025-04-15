@@ -15,6 +15,7 @@ interface FormFieldsProps {
   getLabelClassName: (field: keyof FormData) => string;
   isPartnerLawFirm: boolean;
   isSpecialLawFirm: boolean;
+  ldwDate: string;
 }
 
 export function FormFields({
@@ -26,6 +27,7 @@ export function FormFields({
   getLabelClassName,
   isPartnerLawFirm,
   isSpecialLawFirm,
+  ldwDate,
 }: FormFieldsProps) {
   return (
     <div className="space-y-4">
@@ -74,6 +76,7 @@ export function FormFields({
         isFieldRequired={isFieldRequired}
         getInputClassName={getInputClassName}
         getLabelClassName={getLabelClassName}
+        ldwDate={ldwDate}
       />
 
       {/* Common Fields */}
