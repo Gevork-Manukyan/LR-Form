@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface PNCFormProps {
@@ -11,14 +11,27 @@ interface PNCFormProps {
 export function PNCForm({ onPNCInfoChange, className = '', name, ldwDate }: PNCFormProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
+  // Load data from localStorage on component mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('pncFormData');
+    if (savedData) {
+      const { name: savedName, ldwDate: savedLdwDate } = JSON.parse(savedData);
+      onPNCInfoChange({ name: savedName, ldwDate: savedLdwDate });
+    }
+  }, [onPNCInfoChange]);
+
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
-    onPNCInfoChange({ name: newName, ldwDate });
+    const newData = { name: newName, ldwDate };
+    onPNCInfoChange(newData);
+    localStorage.setItem('pncFormData', JSON.stringify(newData));
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
-    onPNCInfoChange({ name, ldwDate: newDate });
+    const newData = { name, ldwDate: newDate };
+    onPNCInfoChange(newData);
+    localStorage.setItem('pncFormData', JSON.stringify(newData));
   };
 
   const toggleExpand = () => {
