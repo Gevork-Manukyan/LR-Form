@@ -68,6 +68,9 @@ function App() {
               />
             </div>
           ))}
+          {lawsuitIds.length > 0 && (
+            <DividerWithAddButton onAdd={handleAddLawsuit} index={lawsuitIds.length} />
+          )}
           {lawsuitIds.length === 0 && (
             <button
               onClick={() => handleAddLawsuit(0)}
