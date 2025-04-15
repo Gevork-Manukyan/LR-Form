@@ -17,7 +17,7 @@ export function LawsuitList({
   onRemoveLawsuit,
 }: LawsuitListProps) {
   return (
-    <div className="py-8">
+    <div className="pb-8">
       <div className="flex flex-col items-center">
         {lawsuitIds.map((id, index) => (
           <div key={id} className="flex flex-col">
