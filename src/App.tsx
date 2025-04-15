@@ -22,15 +22,19 @@ function App() {
     }
   }, []);
 
-  const handleAddLawsuit = () => {
+  const handleAddLawsuit = (index: number) => {
     const newId = crypto.randomUUID();
-    const previousTopId = lawsuitIds[0];
+    const previousTopId = lawsuitIds[index];
     // First collapse the previous top lawsuit if it exists
     if (previousTopId && expandedLawsuitId === previousTopId) {
       setExpandedLawsuitId(null);
     }
-    // Then add the new lawsuit and expand it
-    setLawsuitIds(prev => [newId, ...prev]);
+    // Insert the new lawsuit at the specified position
+    setLawsuitIds(prev => {
+      const newIds = [...prev];
+      newIds.splice(index, 0, newId);
+      return newIds;
+    });
     // Always expand the new lawsuit
     setExpandedLawsuitId(newId);
   };
@@ -54,9 +58,9 @@ function App() {
       <Navbar onCollapseAll={handleCollapseAll} isAllCollapsed={isAllCollapsed} />
       <div className="py-8">
         <div className="flex flex-col items-center gap-4">
-          {lawsuitIds.map((id) => (
+          {lawsuitIds.map((id, index) => (
             <div key={id}>
-              <DividerWithAddButton onAdd={handleAddLawsuit} />
+              <DividerWithAddButton onAdd={handleAddLawsuit} index={index} />
               <Lawsuit
                 id={id}
                 onRemove={handleRemoveLawsuit}
@@ -65,7 +69,7 @@ function App() {
             </div>
           ))}
           {lawsuitIds.length === 0 && (
-            <DividerWithAddButton onAdd={handleAddLawsuit} />
+            <DividerWithAddButton onAdd={handleAddLawsuit} index={0} />
           )}
         </div>
       </div>
