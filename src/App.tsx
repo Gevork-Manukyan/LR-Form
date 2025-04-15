@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Lawsuit from './components/Lawsuit';
 import { Navbar } from './components/ui/Navbar';
+import { DividerWithAddButton } from './components/ui/DividerWithAddButton';
 
 function App() {
   const [lawsuitIds, setLawsuitIds] = useState<string[]>([]);
@@ -53,20 +54,19 @@ function App() {
       <Navbar onCollapseAll={handleCollapseAll} isAllCollapsed={isAllCollapsed} />
       <div className="py-8">
         <div className="flex flex-col items-center gap-4">
-          <button
-            onClick={handleAddLawsuit}
-            className="mb-4 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-          >
-            Add New Case
-          </button>
-          {lawsuitIds.map(id => (
-            <Lawsuit
-              key={id}
-              id={id}
-              onRemove={handleRemoveLawsuit}
-              isCollapsed={expandedLawsuitId === id ? false : (isAllCollapsed || (expandedLawsuitId !== null && expandedLawsuitId !== id))}
-            />
+          {lawsuitIds.map((id) => (
+            <div key={id}>
+              <DividerWithAddButton onAdd={handleAddLawsuit} />
+              <Lawsuit
+                id={id}
+                onRemove={handleRemoveLawsuit}
+                isCollapsed={expandedLawsuitId === id ? false : (isAllCollapsed || (expandedLawsuitId !== null && expandedLawsuitId !== id))}
+              />
+            </div>
           ))}
+          {lawsuitIds.length === 0 && (
+            <DividerWithAddButton onAdd={handleAddLawsuit} />
+          )}
         </div>
       </div>
     </div>
