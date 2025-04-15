@@ -2,13 +2,11 @@ import { useState, useEffect } from 'react';
 import Lawsuit from './components/Lawsuit';
 import { Navbar } from './components/ui/Navbar';
 import { DividerWithAddButton } from './components/ui/DividerWithAddButton';
-import { ConfirmationModal } from './components/ui/ConfirmationModal';
 
 function App() {
   const [lawsuitIds, setLawsuitIds] = useState<string[]>([]);
   const [isAllCollapsed, setIsAllCollapsed] = useState(true);
   const [expandedLawsuitId, setExpandedLawsuitId] = useState<string | null>(null);
-  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
 
   // Load existing lawsuits from localStorage on mount
   useEffect(() => {
@@ -71,7 +69,6 @@ function App() {
     setExpandedLawsuitId(null);
     localStorage.removeItem('lawsuits');
     localStorage.removeItem('lawsuitOrder');
-    setShowDeleteAllModal(false);
   };
 
   return (
@@ -79,7 +76,7 @@ function App() {
       <Navbar 
         onCollapseAll={handleCollapseAll} 
         isAllCollapsed={isAllCollapsed} 
-        onDeleteAll={() => setShowDeleteAllModal(true)}
+        onDeleteAll={handleDeleteAll}
       />
       <div className="py-8">
         <div className="flex flex-col items-center">
@@ -106,14 +103,6 @@ function App() {
           )}
         </div>
       </div>
-      <ConfirmationModal
-        isOpen={showDeleteAllModal}
-        onClose={() => setShowDeleteAllModal(false)}
-        onConfirm={handleDeleteAll}
-        title="Delete All Lawsuits"
-        message="Are you sure you want to delete all lawsuits? This action cannot be undone."
-        confirmText="Delete All"
-      />
     </div>
   );
 }
