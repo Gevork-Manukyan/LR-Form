@@ -18,9 +18,10 @@ import { ChevronRight } from 'lucide-react';
 interface LawsuitProps {
   id: string;
   onRemove?: (id: string) => void;
+  isCollapsed?: boolean;
 }
 
-export default function Lawsuit({ id, onRemove }: LawsuitProps) {
+export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed }: LawsuitProps) {
   const [formData, setFormData] = useState<FormData>({
     status: 'Pending',
     caseNumber: '',
@@ -61,6 +62,13 @@ export default function Lawsuit({ id, onRemove }: LawsuitProps) {
   const [showValidation, setShowValidation] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+
+  // Update isMinimized when externalIsCollapsed changes
+  useEffect(() => {
+    if (externalIsCollapsed !== undefined) {
+      setIsMinimized(externalIsCollapsed);
+    }
+  }, [externalIsCollapsed]);
 
   // Add these near the top of the component
   const isPartnerLawFirm = PARTNER_LAWFIRMS.some(partnerFirm =>

@@ -2,25 +2,13 @@ import { useState, useEffect } from 'react';
 import Lawsuit from './components/Lawsuit';
 import { Navbar } from './components/ui/Navbar';
 
-interface Settings {
-  theme: 'light' | 'dark';
-  autoSave: boolean;
-  defaultStatus: 'Pending' | 'Settled' | 'LWDA';
-}
-
 function App() {
   const [lawsuitIds, setLawsuitIds] = useState<string[]>([]);
-  const [settings, setSettings] = useState<Settings>({
-    theme: 'light',
-    autoSave: true,
-    defaultStatus: 'Pending'
-  });
+  const [isAllCollapsed, setIsAllCollapsed] = useState(false);
 
-  // Load existing lawsuits and settings from localStorage on mount
+  // Load existing lawsuits from localStorage on mount
   useEffect(() => {
     const savedLawsuits = localStorage.getItem('lawsuits');
-    const savedSettings = localStorage.getItem('settings');
-    
     if (savedLawsuits) {
       const lawsuits = JSON.parse(savedLawsuits);
       setLawsuitIds(Object.keys(lawsuits));
@@ -28,16 +16,7 @@ function App() {
       // Only create a new lawsuit if there are no saved lawsuits
       setLawsuitIds([crypto.randomUUID()]);
     }
-
-    if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
-    }
   }, []);
-
-  // Save settings to localStorage when they change
-  useEffect(() => {
-    localStorage.setItem('settings', JSON.stringify(settings));
-  }, [settings]);
 
   const handleAddLawsuit = () => {
     setLawsuitIds(prev => [crypto.randomUUID(), ...prev]);
@@ -47,13 +26,13 @@ function App() {
     setLawsuitIds(prev => prev.filter(lawsuitId => lawsuitId !== id));
   };
 
-  const handleSettingsChange = (newSettings: Settings) => {
-    setSettings(newSettings);
+  const handleCollapseAll = () => {
+    setIsAllCollapsed(!isAllCollapsed);
   };
 
   return (
-    <div className={`min-h-screen ${settings.theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-50'}`}>
-      <Navbar onSettingsChange={handleSettingsChange} />
+    <div className="min-h-screen bg-gray-50">
+      <Navbar onCollapseAll={handleCollapseAll} isAllCollapsed={isAllCollapsed} />
       <div className="py-8">
         <div className="flex flex-col items-center gap-4">
           <button
@@ -63,7 +42,7 @@ function App() {
             Add New Case
           </button>
           {lawsuitIds.map(id => (
-            <Lawsuit key={id} id={id} onRemove={handleRemoveLawsuit} />
+            <Lawsuit key={id} id={id} onRemove={handleRemoveLawsuit} isCollapsed={isAllCollapsed} />
           ))}
         </div>
       </div>
