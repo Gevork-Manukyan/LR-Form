@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import Lawsuit from './components/Lawsuit';
 import { Navbar } from './components/ui/Navbar';
 import { DividerWithAddButton } from './components/ui/DividerWithAddButton';
+import { ConfirmationModal } from './components/ui/ConfirmationModal';
 
 function App() {
   const [lawsuitIds, setLawsuitIds] = useState<string[]>([]);
   const [isAllCollapsed, setIsAllCollapsed] = useState(false);
   const [expandedLawsuitId, setExpandedLawsuitId] = useState<string | null>(null);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
 
   // Load existing lawsuits from localStorage on mount
   useEffect(() => {
@@ -53,13 +55,24 @@ function App() {
     }
   };
 
+  const handleDeleteAll = () => {
+    setLawsuitIds([]);
+    setExpandedLawsuitId(null);
+    localStorage.removeItem('lawsuits');
+    setShowDeleteAllModal(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar onCollapseAll={handleCollapseAll} isAllCollapsed={isAllCollapsed} />
+      <Navbar 
+        onCollapseAll={handleCollapseAll} 
+        isAllCollapsed={isAllCollapsed} 
+        onDeleteAll={() => setShowDeleteAllModal(true)}
+      />
       <div className="py-8">
         <div className="flex flex-col items-center">
           {lawsuitIds.map((id, index) => (
-            <div key={id} className="flex flex-col">
+            <div key={id} className="flex flex-col gap-4">
               <DividerWithAddButton onAdd={handleAddLawsuit} index={index} />
               <Lawsuit
                 id={id}
@@ -81,6 +94,14 @@ function App() {
           )}
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={showDeleteAllModal}
+        onClose={() => setShowDeleteAllModal(false)}
+        onConfirm={handleDeleteAll}
+        title="Delete All Lawsuits"
+        message="Are you sure you want to delete all lawsuits? This action cannot be undone."
+        confirmText="Delete All"
+      />
     </div>
   );
 }
