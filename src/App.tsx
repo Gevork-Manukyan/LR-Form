@@ -6,7 +6,7 @@ import { ConfirmationModal } from './components/ui/ConfirmationModal';
 
 function App() {
   const [lawsuitIds, setLawsuitIds] = useState<string[]>([]);
-  const [isAllCollapsed, setIsAllCollapsed] = useState(false);
+  const [isAllCollapsed, setIsAllCollapsed] = useState(true);
   const [expandedLawsuitId, setExpandedLawsuitId] = useState<string | null>(null);
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
 
