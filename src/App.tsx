@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import Lawsuit from './components/Lawsuit';
 import { Navbar } from './components/ui/Navbar';
-import { DividerWithAddButton } from './components/ui/DividerWithAddButton';
+import { LawsuitList } from './components/LawsuitList';
 
 function App() {
   const [lawsuitIds, setLawsuitIds] = useState<string[]>([]);
@@ -78,31 +77,13 @@ function App() {
         isAllCollapsed={isAllCollapsed} 
         onDeleteAll={handleDeleteAll}
       />
-      <div className="py-8">
-        <div className="flex flex-col items-center">
-          {lawsuitIds.map((id, index) => (
-            <div key={id} className="flex flex-col">
-              <DividerWithAddButton onAdd={handleAddLawsuit} index={index} />
-              <Lawsuit
-                id={id}
-                onRemove={handleRemoveLawsuit}
-                isCollapsed={expandedLawsuitId === id ? false : (isAllCollapsed || (expandedLawsuitId !== null && expandedLawsuitId !== id))}
-              />
-            </div>
-          ))}
-          {lawsuitIds.length > 0 && (
-            <DividerWithAddButton onAdd={handleAddLawsuit} index={lawsuitIds.length} />
-          )}
-          {lawsuitIds.length === 0 && (
-            <button
-              onClick={() => handleAddLawsuit(0)}
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-            >
-              Add Lawsuit
-            </button>
-          )}
-        </div>
-      </div>
+      <LawsuitList
+        lawsuitIds={lawsuitIds}
+        expandedLawsuitId={expandedLawsuitId}
+        isAllCollapsed={isAllCollapsed}
+        onAddLawsuit={handleAddLawsuit}
+        onRemoveLawsuit={handleRemoveLawsuit}
+      />
     </div>
   );
 }
