@@ -217,7 +217,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
 
   return (
     <div className="max-w-3xl w-[1000px] relative">
-      <div className="p-6 bg-white rounded-lg shadow relative z-50">
+      <div className="p-6 bg-white rounded-lg shadow relative z-10">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <button
