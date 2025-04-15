@@ -5,6 +5,7 @@ import { Navbar } from './components/ui/Navbar';
 function App() {
   const [lawsuitIds, setLawsuitIds] = useState<string[]>([]);
   const [isAllCollapsed, setIsAllCollapsed] = useState(false);
+  const [expandedLawsuitId, setExpandedLawsuitId] = useState<string | null>(null);
 
   // Load existing lawsuits from localStorage on mount
   useEffect(() => {
@@ -14,20 +15,36 @@ function App() {
       setLawsuitIds(Object.keys(lawsuits));
     } else {
       // Only create a new lawsuit if there are no saved lawsuits
-      setLawsuitIds([crypto.randomUUID()]);
+      const newId = crypto.randomUUID();
+      setLawsuitIds([newId]);
+      setExpandedLawsuitId(newId);
     }
   }, []);
 
   const handleAddLawsuit = () => {
-    setLawsuitIds(prev => [crypto.randomUUID(), ...prev]);
+    const newId = crypto.randomUUID();
+    const previousTopId = lawsuitIds[0];
+    // First collapse the previous top lawsuit if it exists
+    if (previousTopId && expandedLawsuitId === previousTopId) {
+      setExpandedLawsuitId(null);
+    }
+    // Then add the new lawsuit and expand it
+    setLawsuitIds(prev => [newId, ...prev]);
+    setExpandedLawsuitId(newId);
   };
 
   const handleRemoveLawsuit = (id: string) => {
     setLawsuitIds(prev => prev.filter(lawsuitId => lawsuitId !== id));
+    if (expandedLawsuitId === id) {
+      setExpandedLawsuitId(null);
+    }
   };
 
   const handleCollapseAll = () => {
     setIsAllCollapsed(!isAllCollapsed);
+    if (!isAllCollapsed) {
+      setExpandedLawsuitId(null);
+    }
   };
 
   return (
@@ -42,7 +59,12 @@ function App() {
             Add New Case
           </button>
           {lawsuitIds.map(id => (
-            <Lawsuit key={id} id={id} onRemove={handleRemoveLawsuit} isCollapsed={isAllCollapsed} />
+            <Lawsuit
+              key={id}
+              id={id}
+              onRemove={handleRemoveLawsuit}
+              isCollapsed={isAllCollapsed || (expandedLawsuitId !== null && expandedLawsuitId !== id)}
+            />
           ))}
         </div>
       </div>
