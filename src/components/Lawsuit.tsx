@@ -217,18 +217,16 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
 
   return (
     <div className="max-w-3xl w-[1000px] relative">
-      <div className="p-6 bg-white rounded-lg shadow relative z-10">
+      <div className="bg-white rounded-lg shadow relative z-10">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsMinimized(!isMinimized)}
-              className="p-1 hover:bg-gray-100 rounded transition-transform duration-300"
-            >
-              <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${!isMinimized ? 'rotate-90' : ''}`} />
-            </button>
+          <button
+            onClick={() => setIsMinimized(!isMinimized)}
+            className="flex flex-row items-center flex-1 p-6 hover:bg-gray-100 rounded transition-transform duration-300"
+          >
+            <ChevronRight className={`mr-2 w-5 h-5 transition-transform duration-300 ${!isMinimized ? 'rotate-90' : ''}`} />
             <h2 className="text-2xl font-bold">{formData.caseNumber || 'New Case'}</h2>
-          </div>
-          <div className="flex items-center gap-2">
+          </button>
+          <div className={`flex items-center gap-2 ${isMinimized ? 'px-3' : 'pr-6 pl-3'}`}>
             {/* Delete Button */}
             {onRemove && (
               <button
@@ -249,7 +247,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
             )}
           </div>
         </div>
-        <div className={`transition-all duration-300 ${isMinimized ? 'h-0 overflow-hidden' : 'h-auto'}`}>
+        <div className={`px-6 transition-all duration-300 ${isMinimized ? 'h-0 overflow-hidden' : 'h-auto pb-6'}`}>
           {!isMinimized && (
             <>
               <Form className='mt-6' onSubmit={handleSubmit}>
