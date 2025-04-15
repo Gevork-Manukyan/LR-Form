@@ -11,7 +11,7 @@ export function DividerWithAddButton({ onAdd, index }: DividerWithAddButtonProps
 
   return (
     <div 
-      className="relative h-8 w-[800px] flex items-center justify-center group"
+      className="relative h-8 w-[800px] my-2 flex items-center justify-center group"
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
     >
