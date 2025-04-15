@@ -90,6 +90,11 @@ export function getInputClassName(
   const isArrayField = ['lawFirm', 'attorney', 'defendantNames'].includes(field);
   const isEmpty = isArrayField ? (formData[field] as string[]).length === 0 : !formData[field];
 
+  // Special case for periodEndDate when noPeriodEndDate is true
+  if (field === 'periodEndDate' && formData.noPeriodEndDate) {
+    return baseClasses;
+  }
+
   if (showValidation && isFieldRequired(field, formData) && isEmpty) {
     return `${baseClasses} border-red-500 focus-visible:ring-red-500`;
   }
@@ -106,6 +111,11 @@ export function getLabelClassName(
 
   const isArrayField = ['lawFirm', 'attorney', 'defendantNames'].includes(field);
   const isEmpty = isArrayField ? (formData[field] as string[]).length === 0 : !formData[field];
+
+  // Special case for periodEndDate when noPeriodEndDate is true
+  if (field === 'periodEndDate' && formData.noPeriodEndDate) {
+    return baseClasses;
+  }
 
   if (showValidation && isFieldRequired(field, formData) && isEmpty) {
     return `${baseClasses} text-red-500`;

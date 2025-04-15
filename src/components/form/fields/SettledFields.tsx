@@ -380,7 +380,7 @@ export function SettledFields({
         <div className="space-y-2">
           <label htmlFor="periodEndDate" className={getLabelClassName('periodEndDate')}>
             Period End Date{' '}
-            {isFieldRequired('periodEndDate') && <span className="text-red-500">*</span>}
+            {!formData.noPeriodEndDate && isFieldRequired('periodEndDate') && <span className="text-red-500">*</span>}
           </label>
           <input
             type="date"
