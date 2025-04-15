@@ -4,22 +4,20 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 interface PNCFormProps {
   onPNCInfoChange: (info: { name: string; lwdaDate: string }) => void;
   className?: string;
+  name: string;
+  lwdaDate: string;
 }
 
-export function PNCForm({ onPNCInfoChange, className = '' }: PNCFormProps) {
-  const [name, setName] = useState('');
-  const [lwdaDate, setLwdaDate] = useState('');
+export function PNCForm({ onPNCInfoChange, className = '', name, lwdaDate }: PNCFormProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
-    setName(newName);
     onPNCInfoChange({ name: newName, lwdaDate });
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
-    setLwdaDate(newDate);
     onPNCInfoChange({ name, lwdaDate: newDate });
   };
 

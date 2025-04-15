@@ -8,16 +8,14 @@ function App() {
     lawsuitIds,
     expandedLawsuitId,
     isAllCollapsed,
+    name,
+    lwdaDate,
     handleAddLawsuit,
     handleRemoveLawsuit,
     handleCollapseAll,
     handleDeleteAll,
+    handlePNCInfoChange,
   } = useLawsuitManager();
-
-  const handlePNCInfoChange = (info: { name: string; lwdaDate: string }) => {
-    // You can handle the PNC information here
-    console.log('PNC Info:', info);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -26,13 +24,20 @@ function App() {
         isAllCollapsed={isAllCollapsed} 
         onDeleteAll={handleDeleteAll}
       />
-      <PNCForm onPNCInfoChange={handlePNCInfoChange} className="mt-8" />
+      <PNCForm 
+        onPNCInfoChange={handlePNCInfoChange} 
+        className="mt-8" 
+        name={name}
+        lwdaDate={lwdaDate}
+      />
       <LawsuitList
         lawsuitIds={lawsuitIds}
         expandedLawsuitId={expandedLawsuitId}
         isAllCollapsed={isAllCollapsed}
         onAddLawsuit={handleAddLawsuit}
         onRemoveLawsuit={handleRemoveLawsuit}
+        name={name}
+        lwdaDate={lwdaDate}
       />
     </div>
   );

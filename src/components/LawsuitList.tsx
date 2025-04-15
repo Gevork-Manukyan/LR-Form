@@ -7,6 +7,8 @@ interface LawsuitListProps {
   isAllCollapsed: boolean;
   onAddLawsuit: (index: number) => void;
   onRemoveLawsuit: (id: string) => void;
+  name: string;
+  lwdaDate: string;
 }
 
 export function LawsuitList({
@@ -15,6 +17,8 @@ export function LawsuitList({
   isAllCollapsed,
   onAddLawsuit,
   onRemoveLawsuit,
+  name,
+  lwdaDate,
 }: LawsuitListProps) {
   return (
     <div className="pb-8">
