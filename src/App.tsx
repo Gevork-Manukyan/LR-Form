@@ -57,9 +57,9 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <Navbar onCollapseAll={handleCollapseAll} isAllCollapsed={isAllCollapsed} />
       <div className="py-8">
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center">
           {lawsuitIds.map((id, index) => (
-            <div key={id}>
+            <div key={id} className="flex flex-col">
               <DividerWithAddButton onAdd={handleAddLawsuit} index={index} />
               <Lawsuit
                 id={id}
