@@ -72,7 +72,7 @@ function App() {
       <div className="py-8">
         <div className="flex flex-col items-center">
           {lawsuitIds.map((id, index) => (
-            <div key={id} className="flex flex-col gap-4">
+            <div key={id} className="flex flex-col">
               <DividerWithAddButton onAdd={handleAddLawsuit} index={index} />
               <Lawsuit
                 id={id}
