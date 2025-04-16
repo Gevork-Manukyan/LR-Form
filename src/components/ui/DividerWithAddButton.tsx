@@ -21,7 +21,9 @@ export function DividerWithAddButton({ onAdd, index }: DividerWithAddButtonProps
       <div className="relative flex justify-center">
         <button
           onClick={() => onAdd(index)}
-          className={`${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'} inline-flex items-center justify-center rounded-full w-8 h-8 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 ease-in-out`}
+          onFocus={() => setIsVisible(true)}
+          onBlur={() => setIsVisible(false)}
+          className={`${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'} inline-flex items-center justify-center rounded-full w-8 h-8 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`}
         >
           <Plus className="w-4 h-4" />
         </button>
