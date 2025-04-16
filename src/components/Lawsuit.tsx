@@ -1,6 +1,5 @@
 import { Form } from '../components/ui/form';
-import { FormData } from '../types/form';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { FormFields } from '../components/form/FormFields';
 import { FormOutput } from '../components/form/FormOutput';
 import {
@@ -15,6 +14,7 @@ import { HamburgerMenu } from '../components/ui/HamburgerMenu';
 import { SidebarToggle } from '../components/ui/SidebarToggle';
 import { ChevronRight } from 'lucide-react';
 import { ConfirmationModal } from '../components/ui/ConfirmationModal';
+import { useLawsuitStore } from '../store/lawsuitStore';
 
 interface LawsuitProps {
   id: string;
@@ -24,41 +24,9 @@ interface LawsuitProps {
 }
 
 export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed, ldwDate }: LawsuitProps) {
-  const [formData, setFormData] = useState<FormData>({
-    status: 'Pending',
-    caseNumber: '',
-    timeFrame: '12 months',
-    date: '',
-    lawFirm: [],
-    definitionMatch: 'Matches definition',
-    description: '',
-    hasMultipleDefendants: false,
-    defendantNames: [],
-    paDate: '',
-    faDate: '',
-    noPADate: false,
-    noFADate: false,
-    classType: 'Class',
-    periodEndDate: '',
-    ldwDate: '',
-    isLDWAfterPeriodEnd: false,
-    liabilityCalc: '',
-    hasDescription: false,
-    scheduledMPA: false,
-    scheduledMFA: false,
-    noPeriodEndDate: false,
-    definitionMismatchReason: '',
-    pncJobTitle: '',
-    notFiledDate: '',
-    attorney: [],
-    customPA: false,
-    customFA: false,
-    customPAText: '',
-    customFAText: '',
-    noPNC: false,
-    limitedClaims: false,
-    noLawFirm: false,
-  });
+  const { updateLawsuit, removeLawsuit, getLawsuit } = useLawsuitStore();
+  const formData = useMemo(() => getLawsuit(id), [getLawsuit, id]);
+
   const [showOutput, setShowOutput] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showValidation, setShowValidation] = useState(false);
@@ -94,9 +62,9 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
       const periodEnd = new Date(formData.periodEndDate);
       const ldwDate = new Date(formData.ldwDate);
       const isLDWAfterPeriodEnd = ldwDate > periodEnd;
-      setFormData(prev => ({ ...prev, isLDWAfterPeriodEnd }));
+      updateLawsuit(id, { ...formData, isLDWAfterPeriodEnd });
     }
-  }, [formData.periodEndDate, formData.ldwDate]);
+  }, [formData.periodEndDate, formData.ldwDate, id, formData, updateLawsuit]);
 
   // Load form data from localStorage on component mount
   useEffect(() => {
@@ -114,14 +82,14 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
           if (!Array.isArray(savedFormData.attorney)) {
             savedFormData.attorney = savedFormData.attorney ? [savedFormData.attorney] : [];
           }
-          setFormData(savedFormData);
+          updateLawsuit(id, savedFormData);
         }
       } catch (error) {
         console.error('Error loading form data:', error);
       }
     }
     setIsInitialLoad(false);
-  }, [id]);
+  }, [id, updateLawsuit]);
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
@@ -142,9 +110,9 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
     if (formData.status === 'LWDA' && !formData.notFiledDate) {
       const today = new Date();
       const formattedDate = today.toISOString().split('T')[0];
-      setFormData(prev => ({ ...prev, notFiledDate: formattedDate }));
+      updateLawsuit(id, { ...formData, notFiledDate: formattedDate });
     }
-  }, [formData.status, formData.notFiledDate]);
+  }, [formData.status, formData.notFiledDate, id, formData, updateLawsuit]);
 
   const handleSubmit = () => {
     setShowValidation(true);
@@ -155,7 +123,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
   };
 
   const handleClear = () => {
-    setFormData({
+    updateLawsuit(id, {
       ...formData,
       caseNumber: '',
       timeFrame: '12 months',
@@ -180,7 +148,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
       definitionMismatchReason: '',
       pncJobTitle: '',
       notFiledDate: '',
-      attorney: [], // Ensure empty array
+      attorney: [],
       customPA: false,
       customFA: false,
       customPAText: '',
@@ -211,6 +179,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
         delete lawsuits[id];
         localStorage.setItem('lawsuits', JSON.stringify(lawsuits));
       }
+      removeLawsuit(id);
       onRemove(id);
     }
     setShowDeleteModal(false);
@@ -259,7 +228,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
               <Form className='mt-4' onSubmit={handleSubmit}>
                 <FormFields
                   formData={formData}
-                  setFormData={setFormData}
+                  setFormData={(newData) => updateLawsuit(id, newData)}
                   showValidation={showValidation}
                   isFieldRequired={field => isFieldRequired(field, formData)}
                   getInputClassName={field => getInputClassName(field, showValidation, formData)}
@@ -316,19 +285,19 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
               id="noPNC"
               label="No PNC"
               checked={formData.noPNC}
-              onCheckedChange={checked => setFormData({ ...formData, noPNC: checked })}
+              onCheckedChange={checked => updateLawsuit(id, { ...formData, noPNC: checked })}
             />
             <SidebarToggle
               id="limitedClaims"
               label="Limited Claims"
               checked={formData.limitedClaims}
-              onCheckedChange={checked => setFormData({ ...formData, limitedClaims: checked })}
+              onCheckedChange={checked => updateLawsuit(id, { ...formData, limitedClaims: checked })}
             />
             <SidebarToggle
               id="noLawFirm"
               label="No Law Firm"
               checked={formData.noLawFirm}
-              onCheckedChange={checked => setFormData({ ...formData, noLawFirm: checked })}
+              onCheckedChange={checked => updateLawsuit(id, { ...formData, noLawFirm: checked })}
             />
           </div>
         </div>

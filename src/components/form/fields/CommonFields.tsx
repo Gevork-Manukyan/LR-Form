@@ -1,10 +1,10 @@
-import { FormData } from '../../../types/form';
+import { LawsuitFormData } from '../../../types/form';
 import { Checkbox } from '../../ui/checkbox';
 import { TagInput } from '../../ui/tag-input';
 
 interface CommonFieldsProps {
-  formData: FormData;
-  setFormData: (data: FormData) => void;
+  formData: LawsuitFormData;
+  setFormData: (data: LawsuitFormData) => void;
 }
 
 export function CommonFields({ formData, setFormData }: CommonFieldsProps) {

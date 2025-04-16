@@ -1,4 +1,4 @@
-import { FormData, DefinitionMatch, ClassType } from '../../../types/form';
+import { LawsuitFormData, DefinitionMatch, ClassType } from '../../../types/form';
 import { Checkbox } from '../../ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '../../ui/radio-group';
 import { useState } from 'react';
@@ -10,12 +10,12 @@ import { AttorneyField } from './AttorneyField';
 import { DefinitionMatchField } from './DefinitionMatchField';
 
 interface SettledFieldsProps {
-  formData: FormData;
-  setFormData: (data: FormData) => void;
+  formData: LawsuitFormData;
+  setFormData: (data: LawsuitFormData) => void;
   showValidation: boolean;
-  isFieldRequired: (field: keyof FormData) => boolean;
-  getInputClassName: (field: keyof FormData) => string;
-  getLabelClassName: (field: keyof FormData) => string;
+  isFieldRequired: (field: keyof LawsuitFormData) => boolean;
+  getInputClassName: (field: keyof LawsuitFormData) => string;
+  getLabelClassName: (field: keyof LawsuitFormData) => string;
   ldwDate: string;
 }
 

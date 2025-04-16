@@ -1,13 +1,13 @@
-import { FormData } from '../../../types/form';
+import { LawsuitFormData } from '../../../types/form';
 import { AttorneyField } from './AttorneyField';
 import { LawFirmField } from './LawFirmField';
 
 interface LWDAFieldsProps {
-  formData: FormData;
-  setFormData: (data: FormData) => void;
-  isFieldRequired: (field: keyof FormData) => boolean;
-  getInputClassName: (field: keyof FormData) => string;
-  getLabelClassName: (field: keyof FormData) => string;
+  formData: LawsuitFormData;
+  setFormData: (data: LawsuitFormData) => void;
+  isFieldRequired: (field: keyof LawsuitFormData) => boolean;
+  getInputClassName: (field: keyof LawsuitFormData) => string;
+  getLabelClassName: (field: keyof LawsuitFormData) => string;
   showValidation: boolean;
 }
 

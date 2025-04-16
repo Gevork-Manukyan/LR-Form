@@ -1,4 +1,4 @@
-import { FormData } from '../../types/form';
+import { LawsuitFormData } from '../../types/form';
 import { TopRowFields } from './fields/TopRowFields';
 import { StatusTabs } from './fields/StatusTabs';
 import { LWDAFields } from './fields/LWDAFields';
@@ -7,12 +7,12 @@ import { SettledFields } from './fields/SettledFields';
 import { CommonFields } from './fields/CommonFields';
 
 interface FormFieldsProps {
-  formData: FormData;
-  setFormData: (data: FormData) => void;
+  formData: LawsuitFormData;
+  setFormData: (data: LawsuitFormData) => void;
   showValidation: boolean;
-  isFieldRequired: (field: keyof FormData) => boolean;
-  getInputClassName: (field: keyof FormData) => string;
-  getLabelClassName: (field: keyof FormData) => string;
+  isFieldRequired: (field: keyof LawsuitFormData) => boolean;
+  getInputClassName: (field: keyof LawsuitFormData) => string;
+  getLabelClassName: (field: keyof LawsuitFormData) => string;
   isPartnerLawFirm: boolean;
   isSpecialLawFirm: boolean;
   ldwDate: string;

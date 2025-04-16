@@ -1,9 +1,9 @@
-import { FormData } from '../../../types/form';
+import { LawsuitFormData } from '../../../types/form';
 import { Tabs, TabsList, TabsTrigger } from '../../ui/tabs';
 
 interface StatusTabsProps {
-  formData: FormData;
-  setFormData: (data: FormData) => void;
+  formData: LawsuitFormData;
+  setFormData: (data: LawsuitFormData) => void;
 }
 
 export function StatusTabs({ formData, setFormData }: StatusTabsProps) {

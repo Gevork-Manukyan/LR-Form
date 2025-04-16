@@ -1,13 +1,13 @@
-import { FormData } from '../../../types/form';
+import { LawsuitFormData } from '../../../types/form';
 import { TagInput } from '../../ui/tag-input';
 
 interface AttorneyFieldProps {
-  formData: FormData;
-  setFormData: (data: FormData) => void;
+  formData: LawsuitFormData;
+  setFormData: (data: LawsuitFormData) => void;
   showValidation: boolean;
-  isFieldRequired: (field: keyof FormData) => boolean;
-  getInputClassName: (field: keyof FormData) => string;
-  getLabelClassName: (field: keyof FormData) => string;
+  isFieldRequired: (field: keyof LawsuitFormData) => boolean;
+  getInputClassName: (field: keyof LawsuitFormData) => string;
+  getLabelClassName: (field: keyof LawsuitFormData) => string;
 }
 
 export function AttorneyField({

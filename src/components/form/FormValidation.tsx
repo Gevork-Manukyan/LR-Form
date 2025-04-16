@@ -1,6 +1,6 @@
-import { FormData } from '../../types/form';
+import { LawsuitFormData } from '../../types/form';
 
-export function isFieldRequired(field: keyof FormData, formData: FormData, ldwDate?: string): boolean {
+export function isFieldRequired(field: keyof LawsuitFormData, formData: LawsuitFormData, ldwDate?: string): boolean {
   // Always required fields
   if (field === 'caseNumber' || field === 'date') {
     return true;
@@ -80,9 +80,9 @@ export function isFieldRequired(field: keyof FormData, formData: FormData, ldwDa
 }
 
 export function getInputClassName(
-  field: keyof FormData,
+  field: keyof LawsuitFormData,
   showValidation: boolean,
-  formData: FormData
+  formData: LawsuitFormData
 ): string {
   const baseClasses =
     'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
@@ -102,9 +102,9 @@ export function getInputClassName(
 }
 
 export function getLabelClassName(
-  field: keyof FormData,
+  field: keyof LawsuitFormData,
   showValidation: boolean,
-  formData: FormData
+  formData: LawsuitFormData
 ): string {
   const baseClasses =
     'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70';
@@ -123,8 +123,8 @@ export function getLabelClassName(
   return baseClasses;
 }
 
-export function validateForm(formData: FormData, ldwDate?: string): boolean {
-  let requiredFields: (keyof FormData)[] = [];
+export function validateForm(formData: LawsuitFormData, ldwDate?: string): boolean {
+  let requiredFields: (keyof LawsuitFormData)[] = [];
 
   if (formData.status === 'LWDA') {
     requiredFields = ['caseNumber', 'date', 'attorney', 'notFiledDate'];

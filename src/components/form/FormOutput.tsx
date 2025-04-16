@@ -1,4 +1,4 @@
-import { FormData } from '../../types/form';
+import { LawsuitFormData } from '../../types/form';
 
 function formatArrayWithConjunction(items: string[]): string {
   if (items.length === 0) return '';
@@ -10,7 +10,7 @@ function formatArrayWithConjunction(items: string[]): string {
 const LAWSUIT_PROBLEM = <strong>Lawsuit Problem</strong>;
 
 interface FormOutputProps {
-  formData: FormData;
+  formData: LawsuitFormData;
   isPartnerLawFirm: boolean;
   isSpecialLawFirm: boolean;
   ldwDate: string;

@@ -4,7 +4,7 @@ export type DefinitionMatch = 'Matches definition' | 'Does NOT match definition'
 export type ClassType = 'Class' | 'PAGA';
 export type LDWDate = string;
 
-export interface FormData {
+export interface LawsuitFormData {
   status: Status;
   caseNumber: string;
   timeFrame: TimeFrame;
