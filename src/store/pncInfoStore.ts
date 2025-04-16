@@ -16,16 +16,22 @@ const defaultPNCInfo: PNCInfo = {
   ldwDate: '',
 };
 
-export const usePNCInfoStore = create<PNCInfoState>((set) => ({
-  pncInfo: defaultPNCInfo,
-  
-  updatePNCInfo: (info: PNCInfo) => {
-    set({ pncInfo: info });
-    localStorage.setItem('pncInfo', JSON.stringify(info));
-  },
+export const usePNCInfoStore = create<PNCInfoState>((set) => {
+  // Load from localStorage on store creation
+  const savedPNCInfo = localStorage.getItem('pncInfo');
+  const initialPNCInfo = savedPNCInfo ? JSON.parse(savedPNCInfo) : defaultPNCInfo;
 
-  resetPNCInfo: () => {
-    set({ pncInfo: defaultPNCInfo });
-    localStorage.removeItem('pncInfo');
-  },
-})); 
+  return {
+    pncInfo: initialPNCInfo,
+    
+    updatePNCInfo: (info: PNCInfo) => {
+      set({ pncInfo: info });
+      localStorage.setItem('pncInfo', JSON.stringify(info));
+    },
+
+    resetPNCInfo: () => {
+      set({ pncInfo: defaultPNCInfo });
+      localStorage.removeItem('pncInfo');
+    },
+  };
+}); 
