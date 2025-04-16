@@ -1,47 +1,29 @@
-import { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
+import { usePNCInfoStore } from '../store/pncInfoStore';
 
 interface PNCFormProps {
-  onPNCInfoChange: (info: { name: string; ldwDate: string }) => void;
   className?: string;
-  name: string;
-  ldwDate: string;
 }
 
-export function PNCForm({ onPNCInfoChange, className = '', name, ldwDate }: PNCFormProps) {
+export function PNCForm({ className = '' }: PNCFormProps) {
   const [isExpanded, setIsExpanded] = useState(true);
-
-  // Load data from localStorage on component mount
-  useEffect(() => {
-    const savedData = localStorage.getItem('pncFormData');
-    if (savedData) {
-      const { name: savedName, ldwDate: savedLdwDate } = JSON.parse(savedData);
-      onPNCInfoChange({ name: savedName, ldwDate: savedLdwDate });
-    }
-  }, [onPNCInfoChange]);
+  const { pncInfo, updatePNCInfo } = usePNCInfoStore();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
-    const newData = { name: newName, ldwDate };
-    onPNCInfoChange(newData);
-    localStorage.setItem('pncFormData', JSON.stringify(newData));
+    updatePNCInfo({ ...pncInfo, name: newName });
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLdwDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
-    const newData = { name, ldwDate: newDate };
-    onPNCInfoChange(newData);
-    localStorage.setItem('pncFormData', JSON.stringify(newData));
-  };
-
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
+    updatePNCInfo({ ...pncInfo, ldwDate: newDate });
   };
 
   return (
     <div className={`w-full max-w-2xl mx-auto bg-white rounded-lg shadow-sm mb-8 ${className}`}>
       <button
-        onClick={toggleExpand}
+        onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between p-6 hover:bg-gray-100 rounded-t-lg"
       >
         <h2 className="text-xl font-semibold">PNC Information</h2>
@@ -57,7 +39,7 @@ export function PNCForm({ onPNCInfoChange, className = '', name, ldwDate }: PNCF
               <input
                 type="text"
                 id="name"
-                value={name}
+                value={pncInfo.name}
                 onChange={handleNameChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter PNC name"
@@ -70,8 +52,8 @@ export function PNCForm({ onPNCInfoChange, className = '', name, ldwDate }: PNCF
               <input
                 type="date"
                 id="ldwDate"
-                value={ldwDate}
-                onChange={handleDateChange}
+                value={pncInfo.ldwDate}
+                onChange={handleLdwDateChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>

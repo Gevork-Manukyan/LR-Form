@@ -8,13 +8,10 @@ function App() {
     lawsuitIds,
     expandedLawsuitId,
     isAllCollapsed,
-    name,
-    ldwDate,
     handleAddLawsuit,
     handleRemoveLawsuit,
     handleCollapseAll,
     handleDeleteAll,
-    handlePNCInfoChange,
   } = useLawsuitManager();
 
   return (
@@ -24,20 +21,13 @@ function App() {
         isAllCollapsed={isAllCollapsed} 
         onDeleteAll={handleDeleteAll}
       />
-      <PNCForm 
-        onPNCInfoChange={handlePNCInfoChange} 
-        className="mt-8" 
-        name={name}
-        ldwDate={ldwDate}
-      />
+      <PNCForm className="mt-8" />
       <LawsuitList
         lawsuitIds={lawsuitIds}
         expandedLawsuitId={expandedLawsuitId}
         isAllCollapsed={isAllCollapsed}
         onAddLawsuit={handleAddLawsuit}
         onRemoveLawsuit={handleRemoveLawsuit}
-        name={name}
-        ldwDate={ldwDate}
       />
     </div>
   );

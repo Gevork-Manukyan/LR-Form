@@ -2,7 +2,7 @@ import { Modal } from './Modal';
 import { useLawsuitStore } from '../../store/lawsuitStore';
 import { FormOutput } from '../form/FormOutput';
 import { useLawFirmType } from '../../hooks/useLawFirmType';
-import { useEffect, useState } from 'react';
+import { usePNCInfoStore } from '../../store/pncInfoStore';
 import { LawsuitFormData } from '../../types/form';
 
 interface NotesModalProps {
@@ -32,16 +32,7 @@ function LawsuitEntry({ lawsuit, ldwDate }: LawsuitEntryProps) {
 
 export function NotesModal({ isOpen, onClose }: NotesModalProps) {
   const lawsuits = useLawsuitStore(state => state.lawsuits);
-  const [ldwDate, setLdwDate] = useState('');
-
-  // Load ldwDate from localStorage
-  useEffect(() => {
-    const savedPNCInfo = localStorage.getItem('pncInfo');
-    if (savedPNCInfo) {
-      const { ldwDate: savedLdwDate } = JSON.parse(savedPNCInfo);
-      setLdwDate(savedLdwDate);
-    }
-  }, []);
+  const { pncInfo } = usePNCInfoStore();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Combined Notes">
@@ -52,7 +43,7 @@ export function NotesModal({ isOpen, onClose }: NotesModalProps) {
               <p className="text-gray-500">No notes available</p>
             ) : (
               Object.entries(lawsuits).map(([id, lawsuit]) => (
-                <LawsuitEntry key={id} lawsuit={lawsuit} ldwDate={ldwDate} />
+                <LawsuitEntry key={id} lawsuit={lawsuit} ldwDate={pncInfo.ldwDate} />
               ))
             )}
           </div>

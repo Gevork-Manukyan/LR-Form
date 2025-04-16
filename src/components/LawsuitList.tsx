@@ -1,5 +1,6 @@
 import { DividerWithAddButton } from './ui/DividerWithAddButton';
 import Lawsuit from './Lawsuit';
+import { usePNCInfoStore } from '../store/pncInfoStore';
 
 interface LawsuitListProps {
   lawsuitIds: string[];
@@ -7,8 +8,6 @@ interface LawsuitListProps {
   isAllCollapsed: boolean;
   onAddLawsuit: (index: number) => void;
   onRemoveLawsuit: (id: string) => void;
-  name: string;
-  ldwDate: string;
 }
 
 export function LawsuitList({
@@ -17,8 +16,9 @@ export function LawsuitList({
   isAllCollapsed,
   onAddLawsuit,
   onRemoveLawsuit,
-  ldwDate,
 }: LawsuitListProps) {
+  const { pncInfo } = usePNCInfoStore();
+
   return (
     <div className="pb-8">
       <div className="flex flex-col items-center">
@@ -27,7 +27,7 @@ export function LawsuitList({
             <DividerWithAddButton onAdd={onAddLawsuit} index={index} />
             <Lawsuit
               id={id}
-              ldwDate={ldwDate}
+              ldwDate={pncInfo.ldwDate}
               onRemove={onRemoveLawsuit}
               isCollapsed={expandedLawsuitId === id ? false : (isAllCollapsed || (expandedLawsuitId !== null && expandedLawsuitId !== id))}
             />
