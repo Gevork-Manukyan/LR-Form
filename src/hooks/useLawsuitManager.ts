@@ -1,24 +1,17 @@
 import { useState, useEffect } from 'react';
+import { usePNCInfoStore } from '../store/pncInfoStore';
 
 export function useLawsuitManager() {
   const [lawsuitIds, setLawsuitIds] = useState<string[]>([]);
   const [isAllCollapsed, setIsAllCollapsed] = useState(true);
   const [expandedLawsuitId, setExpandedLawsuitId] = useState<string | null>(null);
-  const [name, setName] = useState('');
-  const [ldwDate, setLdwDate] = useState('');
+  const { pncInfo, updatePNCInfo } = usePNCInfoStore();
 
   // Load existing lawsuits from localStorage on mount
   useEffect(() => {
     const savedLawsuits = localStorage.getItem('lawsuits');
     const savedOrder = localStorage.getItem('lawsuitOrder');
-    const savedPNCInfo = localStorage.getItem('pncInfo');
     
-    if (savedPNCInfo) {
-      const { name: savedName, ldwDate: savedLdwDate } = JSON.parse(savedPNCInfo);
-      setName(savedName);
-      setLdwDate(savedLdwDate);
-    }
-
     if (savedLawsuits && savedOrder) {
       const lawsuits = JSON.parse(savedLawsuits);
       const order = JSON.parse(savedOrder);
@@ -34,11 +27,6 @@ export function useLawsuitManager() {
       localStorage.setItem('lawsuitOrder', JSON.stringify(lawsuitIds));
     }
   }, [lawsuitIds]);
-
-  // Save PNC info whenever it changes
-  useEffect(() => {
-    localStorage.setItem('pncInfo', JSON.stringify({ name, ldwDate }));
-  }, [name, ldwDate]);
 
   const handleAddLawsuit = (index: number) => {
     const newId = crypto.randomUUID();
@@ -79,16 +67,15 @@ export function useLawsuitManager() {
   };
 
   const handlePNCInfoChange = (info: { name: string; ldwDate: string }) => {
-    setName(info.name);
-    setLdwDate(info.ldwDate);
+    updatePNCInfo(info);
   };
 
   return {
     lawsuitIds,
     expandedLawsuitId,
     isAllCollapsed,
-    name,
-    ldwDate,
+    name: pncInfo.name,
+    ldwDate: pncInfo.ldwDate,
     handleAddLawsuit,
     handleRemoveLawsuit,
     handleCollapseAll,
