@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { ConfirmationModal } from './ConfirmationModal';
+import { NotesModal } from './NotesModal';
 import { useState } from 'react';
 
 interface NavbarProps {
@@ -10,6 +11,7 @@ interface NavbarProps {
 
 export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarProps) {
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+  const [showNotesModal, setShowNotesModal] = useState(false);
 
   return (
     <>
@@ -21,6 +23,7 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarPro
             </div>
             <div className="flex items-center">
               <button
+                onClick={() => setShowNotesModal(true)}
                 className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100"
               >
                 <span>Show Entire Note</span>
@@ -65,6 +68,11 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarPro
         title="Delete All Lawsuits"
         message="Are you sure you want to delete all lawsuits? This action cannot be undone."
         confirmText="Delete All"
+      />
+
+      <NotesModal
+        isOpen={showNotesModal}
+        onClose={() => setShowNotesModal(false)}
       />
     </>
   );
