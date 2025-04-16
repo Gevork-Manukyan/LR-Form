@@ -58,6 +58,7 @@ export const useLawsuitStore = create<LawsuitState>((set, get) => ({
   },
 
   updateLawsuit: (id: string, formData: LawsuitFormData) => {
+    console.log("update lawsuit")
     set((state) => ({
       lawsuits: {
         ...state.lawsuits,
@@ -68,6 +69,7 @@ export const useLawsuitStore = create<LawsuitState>((set, get) => ({
 
   removeLawsuit: (id: string) => {
     set((state) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [id]: _, ...rest } = state.lawsuits;
       return { lawsuits: rest };
     });

@@ -1,5 +1,5 @@
 import { Form } from '../components/ui/form';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { FormFields } from '../components/form/FormFields';
 import { FormOutput } from '../components/form/FormOutput';
 import {
@@ -25,7 +25,7 @@ interface LawsuitProps {
 
 export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed, ldwDate }: LawsuitProps) {
   const { updateLawsuit, removeLawsuit, getLawsuit } = useLawsuitStore();
-  const formData = useMemo(() => getLawsuit(id), [getLawsuit, id]);
+  const formData = useLawsuitStore(state => state.lawsuits[id] || getLawsuit(id));
 
   const [showOutput, setShowOutput] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
