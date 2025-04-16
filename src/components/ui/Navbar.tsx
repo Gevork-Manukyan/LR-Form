@@ -19,6 +19,13 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarPro
             <div className="flex items-center">
               <h1 className="text-xl font-semibold">LR Form</h1>
             </div>
+            <div className="flex items-center">
+              <button
+                className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100"
+              >
+                <span>Show Entire Note</span>
+              </button>
+            </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={onCollapseAll}

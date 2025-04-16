@@ -42,7 +42,7 @@ export function PNCForm({ onPNCInfoChange, className = '', name, ldwDate }: PNCF
     <div className={`w-full max-w-2xl mx-auto bg-white rounded-lg shadow-sm mb-8 ${className}`}>
       <button
         onClick={toggleExpand}
-        className="w-full flex items-center justify-between p-6 hover:bg-gray-50 rounded-t-lg"
+        className="w-full flex items-center justify-between p-6 hover:bg-gray-100 rounded-t-lg"
       >
         <h2 className="text-xl font-semibold">PNC Information</h2>
         {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
