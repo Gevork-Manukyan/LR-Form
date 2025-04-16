@@ -255,12 +255,15 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
                 </div>
 
                 {showOutput && (
-                  <FormOutput
-                    formData={formData}
-                    isPartnerLawFirm={isPartnerLawFirm}
-                    isSpecialLawFirm={isSpecialLawFirm}
-                    ldwDate={ldwDate}
-                  />
+                  <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <h2 className="text-lg font-semibold mb-4">Formatted Output</h2>
+                    <FormOutput
+                      formData={formData}
+                      isPartnerLawFirm={isPartnerLawFirm}
+                      isSpecialLawFirm={isSpecialLawFirm}
+                      ldwDate={ldwDate}
+                    />
+                  </div>
                 )}
               </Form>
             </>
