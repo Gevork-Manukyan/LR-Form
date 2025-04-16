@@ -227,12 +227,12 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
             <ChevronRight className={`mr-2 w-5 h-5 transition-transform duration-300 ${!isMinimized ? 'rotate-90' : ''}`} />
             <h2 className="text-2xl font-bold">{formData.caseNumber || 'New Case'}</h2>
           </button>
-          <div className={`flex items-center gap-2 ${isMinimized ? 'px-3' : 'pr-6 pl-3'}`}>
+          <div className={`flex items-center`}>
             {/* Delete Button */}
             {onRemove && (
               <button
                 onClick={handleRemove}
-                className="p-1 hover:bg-gray-100 rounded text-red-500"
+                className="flex-1 p-7 hover:bg-gray-100 rounded text-red-500 flex items-center justify-center"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 6h18" />
@@ -244,7 +244,12 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
 
             {/* Sidebar Button */}
             {!isMinimized && (
-              <HamburgerMenu isOpen={isSidebarOpen} onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="flex-1 p-6 hover:bg-gray-100 rounded flex items-center justify-center"
+              >
+                <HamburgerMenu isOpen={isSidebarOpen} onClick={() => {}} />
+              </button>
             )}
           </div>
         </div>
