@@ -1,52 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { usePNCInfoStore } from '../store/pncInfoStore';
+import { useLawsuitStore } from '../store/lawsuitStore';
 
 export function useLawsuitManager() {
-  const [lawsuitIds, setLawsuitIds] = useState<string[]>([]);
   const [isAllCollapsed, setIsAllCollapsed] = useState(true);
   const [expandedLawsuitId, setExpandedLawsuitId] = useState<string | null>(null);
-  const { pncInfo, updatePNCInfo } = usePNCInfoStore();
-
-  // Load existing lawsuits from localStorage on mount
-  useEffect(() => {
-    const savedLawsuits = localStorage.getItem('lawsuits');
-    const savedOrder = localStorage.getItem('lawsuitOrder');
-    
-    if (savedLawsuits && savedOrder) {
-      const lawsuits = JSON.parse(savedLawsuits);
-      const order = JSON.parse(savedOrder);
-      // Only keep IDs that exist in the lawsuits object
-      const validOrder = order.filter((id: string) => id in lawsuits);
-      setLawsuitIds(validOrder);
-    }
-  }, []);
-
-  // Save lawsuit order whenever it changes
-  useEffect(() => {
-    if (lawsuitIds.length > 0) {
-      localStorage.setItem('lawsuitOrder', JSON.stringify(lawsuitIds));
-    }
-  }, [lawsuitIds]);
+  const { pncInfo } = usePNCInfoStore();
+  const { lawsuitOrder, addLawsuit, removeLawsuit, defaultFormData } = useLawsuitStore();
 
   const handleAddLawsuit = (index: number) => {
     const newId = crypto.randomUUID();
-    const previousTopId = lawsuitIds[index];
+    const previousTopId = lawsuitOrder[index];
     // First collapse the previous top lawsuit if it exists
     if (previousTopId && expandedLawsuitId === previousTopId) {
       setExpandedLawsuitId(null);
     }
-    // Insert the new lawsuit at the specified position
-    setLawsuitIds(prev => {
-      const newIds = [...prev];
-      newIds.splice(index, 0, newId);
-      return newIds;
-    });
+    // Add the new lawsuit at the specified position
+    addLawsuit(newId, defaultFormData, index);
     // Always expand the new lawsuit
     setExpandedLawsuitId(newId);
   };
 
   const handleRemoveLawsuit = (id: string) => {
-    setLawsuitIds(prev => prev.filter(lawsuitId => lawsuitId !== id));
+    removeLawsuit(id);
     if (expandedLawsuitId === id) {
       setExpandedLawsuitId(null);
     }
@@ -60,18 +36,12 @@ export function useLawsuitManager() {
   };
 
   const handleDeleteAll = () => {
-    setLawsuitIds([]);
+    lawsuitOrder.forEach(id => removeLawsuit(id));
     setExpandedLawsuitId(null);
-    localStorage.removeItem('lawsuits');
-    localStorage.removeItem('lawsuitOrder');
-  };
-
-  const handlePNCInfoChange = (info: { name: string; ldwDate: string }) => {
-    updatePNCInfo(info);
   };
 
   return {
-    lawsuitIds,
+    lawsuitIds: lawsuitOrder,
     expandedLawsuitId,
     isAllCollapsed,
     name: pncInfo.name,
@@ -80,6 +50,5 @@ export function useLawsuitManager() {
     handleRemoveLawsuit,
     handleCollapseAll,
     handleDeleteAll,
-    handlePNCInfoChange,
   };
 } 

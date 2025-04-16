@@ -32,6 +32,7 @@ function LawsuitEntry({ lawsuit, ldwDate }: LawsuitEntryProps) {
 
 export function NotesModal({ isOpen, onClose }: NotesModalProps) {
   const lawsuits = useLawsuitStore(state => state.lawsuits);
+  const lawsuitOrder = useLawsuitStore(state => state.lawsuitOrder);
   const { pncInfo } = usePNCInfoStore();
 
   return (
@@ -39,11 +40,11 @@ export function NotesModal({ isOpen, onClose }: NotesModalProps) {
       <div className="mt-4">
         <div className="p-4 bg-gray-50 rounded-lg">
           <div className="font-mono text-sm whitespace-pre-wrap">
-            {Object.entries(lawsuits).length === 0 ? (
+            {lawsuitOrder.length === 0 ? (
               <p className="text-gray-500">No notes available</p>
             ) : (
-              Object.entries(lawsuits).map(([id, lawsuit]) => (
-                <LawsuitEntry key={id} lawsuit={lawsuit} ldwDate={pncInfo.ldwDate} />
+              lawsuitOrder.map((id) => (
+                <LawsuitEntry key={id} lawsuit={lawsuits[id]} ldwDate={pncInfo.ldwDate} />
               ))
             )}
           </div>

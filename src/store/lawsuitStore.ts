@@ -3,13 +3,16 @@ import { LawsuitFormData } from '../types/form';
 
 interface LawsuitState {
   lawsuits: Record<string, LawsuitFormData>;
-  addLawsuit: (id: string, formData: LawsuitFormData) => void;
+  lawsuitOrder: string[];
+  defaultFormData: LawsuitFormData;
+  addLawsuit: (id: string, formData: LawsuitFormData, index: number) => void;
   updateLawsuit: (id: string, formData: LawsuitFormData) => void;
   removeLawsuit: (id: string) => void;
   getLawsuit: (id: string) => LawsuitFormData;
+  getLawsuitOrder: () => string[];
 }
 
-const defaultFormData: LawsuitFormData = {
+export const defaultFormData: LawsuitFormData = {
   status: 'Pending',
   caseNumber: '',
   timeFrame: '12 months',
@@ -45,36 +48,70 @@ const defaultFormData: LawsuitFormData = {
   noLawFirm: false,
 };
 
-export const useLawsuitStore = create<LawsuitState>((set, get) => ({
-  lawsuits: {},
-  
-  addLawsuit: (id: string, formData: LawsuitFormData) => {
-    set((state) => ({
-      lawsuits: {
-        ...state.lawsuits,
-        [id]: formData,
-      },
-    }));
-  },
+export const useLawsuitStore = create<LawsuitState>((set, get) => {
+  // Load from localStorage on store creation
+  const savedLawsuits = localStorage.getItem('lawsuits');
+  const savedOrder = localStorage.getItem('lawsuitOrder');
+  const initialLawsuits = savedLawsuits ? JSON.parse(savedLawsuits) : {};
+  const initialOrder = savedOrder ? JSON.parse(savedOrder) : [];
 
-  updateLawsuit: (id: string, formData: LawsuitFormData) => {
-    set((state) => ({
-      lawsuits: {
-        ...state.lawsuits,
-        [id]: formData,
-      },
-    }));
-  },
+  return {
+    lawsuits: initialLawsuits,
+    lawsuitOrder: initialOrder,
+    defaultFormData,
+    
+    addLawsuit: (id: string, formData: LawsuitFormData, index: number) => {
+      set((state) => {
+        const newOrder = [...state.lawsuitOrder];
+        newOrder.splice(index, 0, id);
+        const newState = {
+          lawsuits: {
+            ...state.lawsuits,
+            [id]: formData,
+          },
+          lawsuitOrder: newOrder,
+        };
+        localStorage.setItem('lawsuits', JSON.stringify(newState.lawsuits));
+        localStorage.setItem('lawsuitOrder', JSON.stringify(newState.lawsuitOrder));
+        return newState;
+      });
+    },
 
-  removeLawsuit: (id: string) => {
-    set((state) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [id]: _, ...rest } = state.lawsuits;
-      return { lawsuits: rest };
-    });
-  },
+    updateLawsuit: (id: string, formData: LawsuitFormData) => {
+      set((state) => {
+        const newState = {
+          ...state,
+          lawsuits: {
+            ...state.lawsuits,
+            [id]: formData,
+          },
+        };
+        localStorage.setItem('lawsuits', JSON.stringify(newState.lawsuits));
+        return newState;
+      });
+    },
 
-  getLawsuit: (id: string) => {
-    return get().lawsuits[id] || defaultFormData;
-  },
-})); 
+    removeLawsuit: (id: string) => {
+      set((state) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [id]: _, ...rest } = state.lawsuits;
+        const newOrder = state.lawsuitOrder.filter(lawsuitId => lawsuitId !== id);
+        const newState = {
+          lawsuits: rest,
+          lawsuitOrder: newOrder,
+        };
+        localStorage.setItem('lawsuits', JSON.stringify(newState.lawsuits));
+        localStorage.setItem('lawsuitOrder', JSON.stringify(newState.lawsuitOrder));
+        return newState;
+      });
+    },
+
+    getLawsuit: (id: string) => {
+      return get().lawsuits[id] || defaultFormData;
+    },
+
+    getLawsuitOrder: () => {
+      return get().lawsuitOrder;
+    },
+  };
+}); 
