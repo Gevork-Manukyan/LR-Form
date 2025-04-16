@@ -25,11 +25,6 @@ export function useLawsuitManager() {
       // Only keep IDs that exist in the lawsuits object
       const validOrder = order.filter((id: string) => id in lawsuits);
       setLawsuitIds(validOrder);
-    } else {
-      // Only create a new lawsuit if there are no saved lawsuits
-      const newId = crypto.randomUUID();
-      setLawsuitIds([newId]);
-      setExpandedLawsuitId(newId);
     }
   }, []);
 

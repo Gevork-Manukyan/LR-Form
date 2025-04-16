@@ -58,7 +58,6 @@ export const useLawsuitStore = create<LawsuitState>((set, get) => ({
   },
 
   updateLawsuit: (id: string, formData: LawsuitFormData) => {
-    console.log("update lawsuit")
     set((state) => ({
       lawsuits: {
         ...state.lawsuits,

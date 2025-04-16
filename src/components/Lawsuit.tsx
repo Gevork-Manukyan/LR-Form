@@ -8,13 +8,13 @@ import {
   getLabelClassName,
   validateForm,
 } from '../components/form/FormValidation';
-import { PARTNER_LAWFIRMS, SPECIAL_LAWFIRMS } from '../lib/constants';
 import { Sidebar } from '../components/ui/Sidebar';
 import { HamburgerMenu } from '../components/ui/HamburgerMenu';
 import { SidebarToggle } from '../components/ui/SidebarToggle';
 import { ChevronRight } from 'lucide-react';
 import { ConfirmationModal } from '../components/ui/ConfirmationModal';
 import { useLawsuitStore } from '../store/lawsuitStore';
+import { useLawFirmType } from '../../src/hooks/useLawFirmType';
 
 interface LawsuitProps {
   id: string;
@@ -26,6 +26,7 @@ interface LawsuitProps {
 export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed, ldwDate }: LawsuitProps) {
   const { updateLawsuit, removeLawsuit, getLawsuit } = useLawsuitStore();
   const formData = useLawsuitStore(state => state.lawsuits[id] || getLawsuit(id));
+  const { isPartnerLawFirm, isSpecialLawFirm } = useLawFirmType(formData);
 
   const [showOutput, setShowOutput] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -40,14 +41,6 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
       setIsMinimized(externalIsCollapsed);
     }
   }, [externalIsCollapsed]);
-
-  // Add these near the top of the component
-  const isPartnerLawFirm = PARTNER_LAWFIRMS.some(partnerFirm =>
-    formData.lawFirm.some(firm => firm.trim().toLowerCase().includes(partnerFirm.toLowerCase()))
-  );
-  const isSpecialLawFirm = SPECIAL_LAWFIRMS.some(specialFirm =>
-    formData.lawFirm.some(firm => firm.trim().toLowerCase().includes(specialFirm.toLowerCase()))
-  );
 
   // Hide output when form data changes
   useEffect(() => {
@@ -213,12 +206,12 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
 
             {/* Sidebar Button */}
             {!isMinimized && (
-              <button
+              <div
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="flex-1 p-6 hover:bg-gray-100 rounded flex items-center justify-center"
+                className="flex-1 p-6 hover:bg-gray-100 rounded flex items-center justify-center cursor-pointer"
               >
                 <HamburgerMenu isOpen={isSidebarOpen} onClick={() => {}} />
-              </button>
+              </div>
             )}
           </div>
         </div>
