@@ -24,7 +24,7 @@ interface LawsuitProps {
 }
 
 export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed, ldwDate }: LawsuitProps) {
-  const { updateLawsuit, removeLawsuit, getLawsuit } = useLawsuitStore();
+  const { updateLawsuit, removeLawsuit, getLawsuit, defaultFormData } = useLawsuitStore();
   const formData = useLawsuitStore(state => state.lawsuits[id] || getLawsuit(id));
   const { isPartnerLawFirm, isSpecialLawFirm } = useLawFirmType(formData);
 
@@ -34,6 +34,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isClearConfirming, setIsClearConfirming] = useState(false);
 
   // Update isMinimized when externalIsCollapsed changes
   useEffect(() => {
@@ -107,6 +108,16 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
     }
   }, [formData.status, formData.notFiledDate, id, formData, updateLawsuit]);
 
+  // Reset clear confirmation after 3 seconds if not clicked
+  useEffect(() => {
+    if (isClearConfirming) {
+      const timer = setTimeout(() => {
+        setIsClearConfirming(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isClearConfirming]);
+
   const handleSubmit = () => {
     setShowValidation(true);
 
@@ -116,40 +127,12 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
   };
 
   const handleClear = () => {
-    updateLawsuit(id, {
-      ...formData,
-      caseNumber: '',
-      timeFrame: '12 months',
-      date: '',
-      lawFirm: [], // Ensure empty array
-      definitionMatch: 'Matches definition',
-      description: '',
-      hasMultipleDefendants: false,
-      defendantNames: [],
-      paDate: '',
-      faDate: '',
-      noPADate: false,
-      noFADate: false,
-      classType: 'Class',
-      periodEndDate: '',
-      ldwDate: '',
-      liabilityCalc: '',
-      hasDescription: false,
-      scheduledMPA: false,
-      scheduledMFA: false,
-      noPeriodEndDate: false,
-      definitionMismatchReason: '',
-      pncJobTitle: '',
-      notFiledDate: '',
-      attorney: [],
-      customPA: false,
-      customFA: false,
-      customPAText: '',
-      customFAText: '',
-      noPNC: false,
-      limitedClaims: false,
-      noLawFirm: false,
-    });
+    if (!isClearConfirming) {
+      setIsClearConfirming(true);
+      return;
+    }
+    
+    updateLawsuit(id, defaultFormData);
     const savedLawsuits = localStorage.getItem('lawsuits');
     if (savedLawsuits) {
       const lawsuits = JSON.parse(savedLawsuits);
@@ -158,6 +141,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
     }
     setShowOutput(false);
     setShowValidation(false);
+    setIsClearConfirming(false);
   };
 
   const handleRemove = () => {
@@ -241,9 +225,9 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
                   <button
                     type="button"
                     onClick={handleClear}
-                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2"
+                    className={`inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2 ${isClearConfirming ? 'animate-pulse' : ''}`}
                   >
-                    Clear
+                    {isClearConfirming ? 'Confirm?' : 'Clear'}
                   </button>
                 </div>
 
