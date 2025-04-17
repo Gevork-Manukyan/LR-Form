@@ -5,6 +5,7 @@ import { NotesModal } from './NotesModal';
 import { useLawsuitStore } from '../../store/lawsuitStore';
 import { usePNCInfoStore } from '../../store/pncInfoStore';
 import { validateForm } from '../form/FormValidation';
+import { Toast } from './Toast';
 
 interface NavbarProps {
   onCollapseAll: () => void;
@@ -15,6 +16,7 @@ interface NavbarProps {
 export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarProps) {
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
   const [showNotesModal, setShowNotesModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const lawsuits = useLawsuitStore(state => state.lawsuits);
   const lawsuitOrder = useLawsuitStore(state => state.lawsuitOrder);
   const { pncInfo } = usePNCInfoStore();
@@ -23,6 +25,8 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarPro
     const allValid = lawsuitOrder.every(id => validateForm(lawsuits[id], pncInfo.ldwDate));
     if (allValid) {
       setShowNotesModal(true);
+    } else {
+      setShowToast(true);
     }
   };
 
@@ -87,6 +91,8 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarPro
         isOpen={showNotesModal}
         onClose={() => setShowNotesModal(false)}
       />
+
+      {showToast && <Toast message="Missing Lawsuit Information" onClose={() => setShowToast(false)} />}
     </>
   );
 } 
