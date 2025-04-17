@@ -8,7 +8,7 @@ interface PNCFormProps {
 }
 
 export function PNCForm({ className = '', shouldShowValidation = false }: PNCFormProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { pncInfo, updatePNCInfo } = usePNCInfoStore();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
