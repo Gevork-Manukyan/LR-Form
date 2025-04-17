@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { usePNCInfoStore } from '../store/pncInfoStore';
 import { useLawsuitStore } from '../store/lawsuitStore';
-
+ 
 export function useLawsuitManager() {
   const [isAllCollapsed, setIsAllCollapsed] = useState(true);
   const [expandedLawsuitId, setExpandedLawsuitId] = useState<string | null>(null);
