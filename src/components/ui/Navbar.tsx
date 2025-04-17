@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Trash2, FileText } from 'lucide-react';
 import { ConfirmationModal } from './ConfirmationModal';
 import { useState } from 'react';
 import { NotesModal } from './NotesModal';
@@ -34,19 +34,20 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarPro
     <>
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
+          <div className="flex justify-between h-16 w-full">
+            <div className="flex items-center w-1/4">
               <h1 className="text-xl font-semibold">LR Form</h1>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center justify-center flex-1">
               <button
                 onClick={handleShowNotes}
                 className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100"
               >
+                <FileText className="w-5 h-5" />
                 <span>Show Entire Note</span>
               </button>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="w-1/4 flex items-center gap-2">
               <button
                 onClick={onCollapseAll}
                 className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100"

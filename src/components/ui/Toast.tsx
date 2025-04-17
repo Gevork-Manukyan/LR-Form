@@ -36,10 +36,10 @@ export function Toast({ message, duration = 3000, onClose }: ToastProps) {
 
   return (
     <div 
-      className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${
-        isEntering ? 'opacity-0 translate-y-2' : 
-        isExiting ? 'opacity-0 translate-y-2' : 
-        'opacity-100 translate-y-0'
+      className={`fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-md shadow-lg z-50 transition-all duration-300 ease-in-out ${
+        isEntering ? 'opacity-0 translate-x-2' : 
+        isExiting ? 'opacity-0 translate-x-2' : 
+        'opacity-100 translate-x-0'
       }`}
     >
       {message}
