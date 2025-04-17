@@ -1,4 +1,5 @@
 import { LawsuitFormData } from '../../types/form';
+import { usePNCInfoStore } from '../../store/pncInfoStore';
 
 function formatArrayWithConjunction(items: string[]): string {
   if (items.length === 0) return '';
@@ -17,6 +18,8 @@ interface FormOutputProps {
 }
 
 export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDate }: FormOutputProps) {
+  const { pncInfo } = usePNCInfoStore();
+
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
     const date = new Date(dateString + 'T00:00:00');
@@ -61,7 +64,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDa
       if (!formData.noPeriodEndDate) {
         lines.push(`Period End Date: ${formData.periodEndDate}`);
       }
-      if (!formData.noPNC) {
+      if (!pncInfo.noPNC) {
         lines.push(`LDW Date: ${ldwDate}`);
       }
     }
@@ -69,7 +72,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDa
   }
 
   // PNC-related fields
-  if (!formData.noPNC) {
+  if (!pncInfo.noPNC) {
     lines.push(`Definition Match: ${formData.definitionMatch}`);
     if (formData.definitionMatch === 'Does NOT match definition') {
       lines.push(`Definition Mismatch Reason: ${formData.definitionMismatchReason}`);
@@ -105,7 +108,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDa
               formatArrayWithConjunction(formData.lawFirm)
             )}
             .
-            {!formData.noPNC &&
+            {!pncInfo.noPNC &&
               (formData.definitionMatch === 'Matches definition' ? (
                 ' PNC matches the definition.'
               ) : (
@@ -159,7 +162,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDa
                 ? `${formData.customFAText}. `
                 : `${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}. `
               : `No FA scheduled. `}
-            {!formData.noPNC &&
+            {!pncInfo.noPNC &&
               (formData.definitionMatch === 'Matches definition' ? (
                 'PNC matches the definition.'
               ) : (
@@ -171,7 +174,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDa
           </li>
           <li className="!list-none">
             <ul className="list-disc pl-4">
-              {(formData.definitionMatch === 'Matches definition' || formData.noPNC) &&
+              {(formData.definitionMatch === 'Matches definition' || pncInfo.noPNC) &&
                 formData.periodEndDate &&
                 (() => {
                   const periodEnd = new Date(formData.periodEndDate);
@@ -180,7 +183,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDa
                   const today = new Date();
                   const hasPassed = today >= elevenMonthsLater;
 
-                  if (formData.noPNC) {
+                  if (pncInfo.noPNC) {
                     return (
                       <li>
                         {formData.classType} period end date {formatDate(formData.periodEndDate)}.

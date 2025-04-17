@@ -43,7 +43,6 @@ export const defaultFormData: LawsuitFormData = {
   customFA: false,
   customPAText: '',
   customFAText: '',
-  noPNC: false,
   limitedClaims: false,
   noLawFirm: false,
 };

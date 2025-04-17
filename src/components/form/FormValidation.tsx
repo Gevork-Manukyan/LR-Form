@@ -1,6 +1,6 @@
 import { LawsuitFormData } from '../../types/form';
 
-export function isFieldRequired(field: keyof LawsuitFormData, formData: LawsuitFormData, ldwDate?: string): boolean {
+export function isFieldRequired(field: keyof LawsuitFormData, formData: LawsuitFormData, ldwDate?: string, noPNC?: boolean): boolean {
   // Always required fields
   if (field === 'caseNumber' || field === 'date') {
     return true;
@@ -32,14 +32,14 @@ export function isFieldRequired(field: keyof LawsuitFormData, formData: LawsuitF
 
   // Handle definition match - required for settled cases unless noPNC is true
   if (field === 'definitionMatch') {
-    return formData.status === 'Settled' && !formData.noPNC;
+    return formData.status === 'Settled' && !noPNC;
   }
 
   // Handle definition mismatch reason - required if definition match is "Does NOT match definition"
   if (field === 'definitionMismatchReason' || field === 'pncJobTitle') {
     return (
       formData.status === 'Settled' &&
-      !formData.noPNC &&
+      !noPNC &&
       formData.definitionMatch === 'Does NOT match definition'
     );
   }
@@ -51,7 +51,7 @@ export function isFieldRequired(field: keyof LawsuitFormData, formData: LawsuitF
 
   // Handle LDW date - required for settled cases unless noPNC is true
   if (field === 'ldwDate') {
-    return formData.status === 'Settled' && !formData.noPNC;
+    return formData.status === 'Settled' && !noPNC;
   }
 
   // Handle liability calc - required for settled cases with specific conditions
@@ -123,7 +123,7 @@ export function getLabelClassName(
   return baseClasses;
 }
 
-export function validateForm(formData: LawsuitFormData, ldwDate: string): boolean {
+export function validateForm(formData: LawsuitFormData, ldwDate: string, noPNC: boolean): boolean {
   let requiredFields: (keyof LawsuitFormData)[] = [];
 
   // LWDA cases
@@ -141,7 +141,7 @@ export function validateForm(formData: LawsuitFormData, ldwDate: string): boolea
     } else {
       requiredFields.push('attorney');
     }
-    if (!formData.noPNC) {
+    if (!noPNC) {
       requiredFields.push('definitionMatch');
     }
 
@@ -164,11 +164,11 @@ export function validateForm(formData: LawsuitFormData, ldwDate: string): boolea
         }
       }
       if (!formData.noPeriodEndDate) requiredFields.push('periodEndDate');
-      if (!formData.noPNC && ldwDate) requiredFields.push('ldwDate');
+      if (!noPNC && ldwDate) requiredFields.push('ldwDate');
     }
 
     // Add definition mismatch fields as required when "Does not match" is selected
-    if (!formData.noPNC && formData.definitionMatch === 'Does NOT match definition') {
+    if (!noPNC && formData.definitionMatch === 'Does NOT match definition') {
       requiredFields.push('definitionMismatchReason', 'pncJobTitle');
     }
 

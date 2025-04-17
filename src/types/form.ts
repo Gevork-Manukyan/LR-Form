@@ -35,7 +35,6 @@ export interface LawsuitFormData {
   customFA: boolean;
   customPAText: string;
   customFAText: string;
-  noPNC: boolean;
   limitedClaims: boolean;
   noLawFirm: boolean;
 }

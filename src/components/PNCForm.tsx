@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { usePNCInfoStore } from '../store/pncInfoStore';
+import { SidebarToggle } from './ui/SidebarToggle';
 
 interface PNCFormProps {
   className?: string;
@@ -34,31 +35,39 @@ export function PNCForm({ className = '', shouldShowValidation = false }: PNCFor
       </button>
       {isExpanded && (
         <div className="p-6 pt-0">
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={pncInfo.name}
-                onChange={handleNameChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter PNC name"
-              />
-            </div>
-            <div className="flex-1">
-              <label htmlFor="ldwDate" className="block text-sm font-medium text-gray-700 mb-1">
-                LDW Date
-              </label>
-              <input
-                type="date"
-                id="ldwDate"
-                value={pncInfo.ldwDate}
-                onChange={handleLdwDateChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+          <div className="space-y-4">
+            <SidebarToggle
+              id="noPNC"
+              label="No PNC"
+              checked={pncInfo.noPNC}
+              onCheckedChange={checked => updatePNCInfo({ ...pncInfo, noPNC: checked })}
+            />
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={pncInfo.name}
+                  onChange={handleNameChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter PNC name"
+                />
+              </div>
+              <div className="flex-1">
+                <label htmlFor="ldwDate" className="block text-sm font-medium text-gray-700 mb-1">
+                  LDW Date
+                </label>
+                <input
+                  type="date"
+                  id="ldwDate"
+                  value={pncInfo.ldwDate}
+                  onChange={handleLdwDateChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
           </div>
         </div>

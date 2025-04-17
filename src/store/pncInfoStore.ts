@@ -3,6 +3,7 @@ import { create } from 'zustand';
 interface PNCInfo {
   name: string;
   ldwDate: string;
+  noPNC: boolean;
 }
 
 interface PNCInfoState {
@@ -14,6 +15,7 @@ interface PNCInfoState {
 const defaultPNCInfo: PNCInfo = {
   name: '',
   ldwDate: '',
+  noPNC: false,
 };
 
 export const usePNCInfoStore = create<PNCInfoState>((set) => {

@@ -3,6 +3,7 @@ import { LawFirmField } from './LawFirmField';
 import { AttorneyField } from './AttorneyField';
 import { SPECIAL_ATTORNEY } from '../../../lib/constants';
 import { DefinitionMatchField } from './DefinitionMatchField'
+import { usePNCInfoStore } from '../../../store/pncInfoStore';
 
 interface PendingFieldsProps {
   formData: LawsuitFormData;
@@ -25,6 +26,8 @@ export function PendingFields({
   isPartnerLawFirm,
   isSpecialLawFirm,
 }: PendingFieldsProps) {
+  const { pncInfo } = usePNCInfoStore();
+
   if (formData.status !== 'Pending') return null;
 
   return (
@@ -131,9 +134,8 @@ export function PendingFields({
       </div>
 
       {/* Definition Match Row */}
-      {!formData.noPNC && (
+      {!pncInfo.noPNC && (
         <div className="grid grid-cols-2 gap-4">
-
             <DefinitionMatchField
               value={formData.definitionMatch}
               onChange={(value) => setFormData({ ...formData, definitionMatch: value })}
@@ -143,7 +145,7 @@ export function PendingFields({
       )}
 
       {/* Definition Mismatch Details */}
-      {!formData.noPNC && formData.definitionMatch === 'Does NOT match definition' && (
+      {!pncInfo.noPNC && formData.definitionMatch === 'Does NOT match definition' && (
         <div className="space-y-4">
           <div className="space-y-2">
             <label

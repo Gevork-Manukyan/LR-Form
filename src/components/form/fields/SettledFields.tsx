@@ -8,6 +8,7 @@ import { cn } from '../../../lib/utils';
 import { LawFirmField } from './LawFirmField';
 import { AttorneyField } from './AttorneyField';
 import { DefinitionMatchField } from './DefinitionMatchField';
+import { usePNCInfoStore } from '../../../store/pncInfoStore';
 
 interface SettledFieldsProps {
   formData: LawsuitFormData;
@@ -28,6 +29,7 @@ export function SettledFields({
   getLabelClassName,
   ldwDate,
 }: SettledFieldsProps) {
+  const { pncInfo } = usePNCInfoStore();
   const [showPAOptions, setShowPAOptions] = useState(false);
   const [showFAOptions, setShowFAOptions] = useState(false);
 
@@ -367,10 +369,10 @@ export function SettledFields({
 
       {/* Definition Match, Period End Date, and LDW Date Row */}
       <div
-        className={`grid ${formData.noPNC ? 'grid-cols-1' : 'grid-cols-2'} gap-4 border-b border-gray-200 pb-4`}
+        className={`grid ${pncInfo.noPNC ? 'grid-cols-1' : 'grid-cols-2'} gap-4 border-b border-gray-200 pb-4`}
       >
         {/* Definition Match */}
-        {!formData.noPNC && (
+        {!pncInfo.noPNC && (
           <DefinitionMatchField
             value={formData.definitionMatch}
             onChange={(value: DefinitionMatch) => setFormData({ ...formData, definitionMatch: value })}
@@ -416,7 +418,7 @@ export function SettledFields({
       </div>
 
       {/* Definition Mismatch Details */}
-      {!formData.noPNC && formData.definitionMatch === 'Does NOT match definition' && (
+      {!pncInfo.noPNC && formData.definitionMatch === 'Does NOT match definition' && (
         <div className="space-y-4">
           <div className="space-y-2">
             <label

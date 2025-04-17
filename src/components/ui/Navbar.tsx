@@ -29,7 +29,7 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll, onShowValid
       return;
     }
 
-    const allValid = lawsuitOrder.every(id => validateForm(lawsuits[id], pncInfo.ldwDate));
+    const allValid = lawsuitOrder.every(id => validateForm(lawsuits[id], pncInfo.ldwDate, pncInfo.noPNC));
     if (allValid) {
       setShowNotesModal(true);
       onShowValidation(false);

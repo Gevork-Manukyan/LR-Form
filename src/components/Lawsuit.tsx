@@ -15,6 +15,7 @@ import { ChevronRight } from 'lucide-react';
 import { ConfirmationModal } from '../components/ui/ConfirmationModal';
 import { useLawsuitStore } from '../store/lawsuitStore';
 import { useLawFirmType } from '../../src/hooks/useLawFirmType';
+import { usePNCInfoStore } from '../store/pncInfoStore';
 
 interface LawsuitProps {
   id: string;
@@ -26,6 +27,7 @@ interface LawsuitProps {
 
 export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed, ldwDate, shouldShowValidation = false }: LawsuitProps) {
   const { updateLawsuit, removeLawsuit, getLawsuit, defaultFormData } = useLawsuitStore();
+  const { pncInfo } = usePNCInfoStore();
   const formData = useLawsuitStore(state => state.lawsuits[id] || getLawsuit(id));
   const { isPartnerLawFirm, isSpecialLawFirm } = useLawFirmType(formData);
 
@@ -87,15 +89,15 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
 
   // Update showValidation when shouldShowValidation changes
   useEffect(() => {
-    if (shouldShowValidation && !validateForm(formData, ldwDate)) {
+    if (shouldShowValidation && !validateForm(formData, ldwDate, pncInfo.noPNC)) {
       setShowValidation(true);
     }
-  }, [shouldShowValidation, formData, ldwDate]);
+  }, [shouldShowValidation, formData, ldwDate, pncInfo.noPNC]);
 
   const handleSubmit = () => {
     setShowValidation(true);
 
-    if (validateForm(formData, ldwDate)) {
+    if (validateForm(formData, ldwDate, pncInfo.noPNC)) {
       setShowOutput(!showOutput);
     }
   };
@@ -125,7 +127,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
   };
 
   return (
-    <div className={`max-w-3xl w-[1000px] relative ${shouldShowValidation && !validateForm(formData, ldwDate) ? 'border-2 border-red-500 rounded-lg' : ''}`}>
+    <div className={`max-w-3xl w-[1000px] relative ${shouldShowValidation && !validateForm(formData, ldwDate, pncInfo.noPNC) ? 'border-2 border-red-500 rounded-lg' : ''}`}>
       <div className="bg-white rounded-lg shadow relative z-10">
         <div className="flex justify-between items-center">
           <button
@@ -223,12 +225,6 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Settings</h2>
           <div className="space-y-4">
-            <SidebarToggle
-              id="noPNC"
-              label="No PNC"
-              checked={formData.noPNC}
-              onCheckedChange={checked => updateLawsuit(id, { ...formData, noPNC: checked })}
-            />
             <SidebarToggle
               id="limitedClaims"
               label="Limited Claims"
