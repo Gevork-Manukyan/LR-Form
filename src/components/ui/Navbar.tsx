@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Trash2, FileText } from 'lucide-react';
+import { Maximize2, Minimize2, Trash2, FileText } from 'lucide-react';
 import { ConfirmationModal } from './ConfirmationModal';
 import { useState } from 'react';
 import { NotesModal } from './NotesModal';
@@ -63,12 +63,12 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll, onShowValid
               >
                 {isAllCollapsed ? (
                   <>
-                    <ChevronDown className="w-5 h-5" />
+                    <Maximize2 className="w-5 h-5" />
                     <span>Expand All</span>
                   </>
                 ) : (
                   <>
-                    <ChevronUp className="w-5 h-5" />
+                    <Minimize2 className="w-5 h-5" />
                     <span>Collapse All</span>
                   </>
                 )}
