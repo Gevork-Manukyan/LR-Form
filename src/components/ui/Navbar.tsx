@@ -11,9 +11,10 @@ interface NavbarProps {
   onCollapseAll: () => void;
   isAllCollapsed: boolean;
   onDeleteAll: () => void;
+  onShowValidation: (show: boolean) => void;
 }
 
-export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarProps) {
+export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll, onShowValidation }: NavbarProps) {
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -25,8 +26,10 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarPro
     const allValid = lawsuitOrder.every(id => validateForm(lawsuits[id], pncInfo.ldwDate));
     if (allValid) {
       setShowNotesModal(true);
+      onShowValidation(false);
     } else {
       setShowToast(true);
+      onShowValidation(true);
     }
   };
 
@@ -90,7 +93,10 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarPro
 
       <NotesModal
         isOpen={showNotesModal}
-        onClose={() => setShowNotesModal(false)}
+        onClose={() => {
+          setShowNotesModal(false);
+          onShowValidation(false);
+        }}
       />
 
       {showToast && <Toast message="Missing Lawsuit Information" onClose={() => setShowToast(false)} />}

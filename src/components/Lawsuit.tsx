@@ -21,9 +21,10 @@ interface LawsuitProps {
   onRemove?: (id: string) => void;
   isCollapsed?: boolean;
   ldwDate: string;
+  shouldShowValidation?: boolean;
 }
 
-export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed, ldwDate }: LawsuitProps) {
+export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed, ldwDate, shouldShowValidation = false }: LawsuitProps) {
   const { updateLawsuit, removeLawsuit, getLawsuit, defaultFormData } = useLawsuitStore();
   const formData = useLawsuitStore(state => state.lawsuits[id] || getLawsuit(id));
   const { isPartnerLawFirm, isSpecialLawFirm } = useLawFirmType(formData);
@@ -60,44 +61,10 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
     }
   }, [formData.periodEndDate, formData.ldwDate, id, formData, updateLawsuit]);
 
-  // Load form data from localStorage on component mount
+  // Set initial load to false after mount
   useEffect(() => {
-    const savedLawsuits = localStorage.getItem('lawsuits');
-    if (savedLawsuits) {
-      try {
-        const lawsuits = JSON.parse(savedLawsuits);
-        const savedFormData = lawsuits[id];
-        if (savedFormData) {
-          // Ensure lawFirm is an array
-          if (!Array.isArray(savedFormData.lawFirm)) {
-            savedFormData.lawFirm = savedFormData.lawFirm ? [savedFormData.lawFirm] : [];
-          }
-          // Ensure attorney is an array
-          if (!Array.isArray(savedFormData.attorney)) {
-            savedFormData.attorney = savedFormData.attorney ? [savedFormData.attorney] : [];
-          }
-          updateLawsuit(id, savedFormData);
-        }
-      } catch (error) {
-        console.error('Error loading form data:', error);
-      }
-    }
     setIsInitialLoad(false);
-  }, [id, updateLawsuit]);
-
-  // Save form data to localStorage whenever it changes
-  useEffect(() => {
-    if (!isInitialLoad) {
-      try {
-        const savedLawsuits = localStorage.getItem('lawsuits');
-        const lawsuits = savedLawsuits ? JSON.parse(savedLawsuits) : {};
-        lawsuits[id] = formData;
-        localStorage.setItem('lawsuits', JSON.stringify(lawsuits));
-      } catch (error) {
-        console.error('Error saving form data:', error);
-      }
-    }
-  }, [formData, isInitialLoad, id]);
+  }, []);
 
   // Add this after the handleLiabilityCalcChange function
   useEffect(() => {
@@ -133,12 +100,6 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
     }
     
     updateLawsuit(id, defaultFormData);
-    const savedLawsuits = localStorage.getItem('lawsuits');
-    if (savedLawsuits) {
-      const lawsuits = JSON.parse(savedLawsuits);
-      delete lawsuits[id];
-      localStorage.setItem('lawsuits', JSON.stringify(lawsuits));
-    }
     setShowOutput(false);
     setShowValidation(false);
     setIsClearConfirming(false);
@@ -150,12 +111,6 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
 
   const handleConfirmDelete = () => {
     if (onRemove) {
-      const savedLawsuits = localStorage.getItem('lawsuits');
-      if (savedLawsuits) {
-        const lawsuits = JSON.parse(savedLawsuits);
-        delete lawsuits[id];
-        localStorage.setItem('lawsuits', JSON.stringify(lawsuits));
-      }
       removeLawsuit(id);
       onRemove(id);
     }
@@ -163,12 +118,12 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
   };
 
   return (
-    <div className="max-w-3xl w-[1000px] relative">
+    <div className={`max-w-3xl w-[1000px] relative ${shouldShowValidation && !validateForm(formData) ? 'border-2 border-red-500 rounded-lg' : ''}`}>
       <div className="bg-white rounded-lg shadow relative z-10">
         <div className="flex justify-between items-center">
           <button
             onClick={() => setIsMinimized(!isMinimized)}
-            className="flex flex-row items-center flex-1 p-6 hover:bg-gray-100 rounded transition-transform duration-300"
+            className="flex flex-row items-center flex-1 p-6 hover:bg-gray-100 rounded-lg transition-transform duration-300"
           >
             <ChevronRight className={`mr-2 w-5 h-5 transition-transform duration-300 ${!isMinimized ? 'rotate-90' : ''}`} />
             <h2 className="text-2xl font-bold">{formData.caseNumber || 'New Case'}</h2>

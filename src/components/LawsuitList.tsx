@@ -8,6 +8,7 @@ interface LawsuitListProps {
   isAllCollapsed: boolean;
   onAddLawsuit: (index: number) => void;
   onRemoveLawsuit: (id: string) => void;
+  shouldShowValidation?: boolean;
 }
 
 export function LawsuitList({
@@ -16,6 +17,7 @@ export function LawsuitList({
   isAllCollapsed,
   onAddLawsuit,
   onRemoveLawsuit,
+  shouldShowValidation = false,
 }: LawsuitListProps) {
   const { pncInfo } = usePNCInfoStore();
 
@@ -30,6 +32,7 @@ export function LawsuitList({
               ldwDate={pncInfo.ldwDate}
               onRemove={onRemoveLawsuit}
               isCollapsed={expandedLawsuitId === id ? false : (isAllCollapsed || (expandedLawsuitId !== null && expandedLawsuitId !== id))}
+              shouldShowValidation={shouldShowValidation}
             />
           </div>
         ))}

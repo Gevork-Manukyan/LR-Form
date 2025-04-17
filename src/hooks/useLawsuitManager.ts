@@ -5,6 +5,7 @@ import { useLawsuitStore } from '../store/lawsuitStore';
 export function useLawsuitManager() {
   const [isAllCollapsed, setIsAllCollapsed] = useState(true);
   const [expandedLawsuitId, setExpandedLawsuitId] = useState<string | null>(null);
+  const [showValidation, setShowValidation] = useState(false);
   const { pncInfo } = usePNCInfoStore();
   const { lawsuitOrder, addLawsuit, removeLawsuit, defaultFormData } = useLawsuitStore();
 
@@ -46,6 +47,8 @@ export function useLawsuitManager() {
     isAllCollapsed,
     name: pncInfo.name,
     ldwDate: pncInfo.ldwDate,
+    showValidation,
+    setShowValidation,
     handleAddLawsuit,
     handleRemoveLawsuit,
     handleCollapseAll,
