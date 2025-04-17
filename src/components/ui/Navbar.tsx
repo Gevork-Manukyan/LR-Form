@@ -1,7 +1,10 @@
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { ConfirmationModal } from './ConfirmationModal';
-import { NotesModal } from './NotesModal';
 import { useState } from 'react';
+import { NotesModal } from './NotesModal';
+import { useLawsuitStore } from '../../store/lawsuitStore';
+import { usePNCInfoStore } from '../../store/pncInfoStore';
+import { validateForm } from '../form/FormValidation';
 
 interface NavbarProps {
   onCollapseAll: () => void;
@@ -12,6 +15,16 @@ interface NavbarProps {
 export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarProps) {
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
   const [showNotesModal, setShowNotesModal] = useState(false);
+  const lawsuits = useLawsuitStore(state => state.lawsuits);
+  const lawsuitOrder = useLawsuitStore(state => state.lawsuitOrder);
+  const { pncInfo } = usePNCInfoStore();
+
+  const handleShowNotes = () => {
+    const allValid = lawsuitOrder.every(id => validateForm(lawsuits[id], pncInfo.ldwDate));
+    if (allValid) {
+      setShowNotesModal(true);
+    }
+  };
 
   return (
     <>
@@ -23,7 +36,7 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll }: NavbarPro
             </div>
             <div className="flex items-center">
               <button
-                onClick={() => setShowNotesModal(true)}
+                onClick={handleShowNotes}
                 className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100"
               >
                 <span>Show Entire Note</span>
