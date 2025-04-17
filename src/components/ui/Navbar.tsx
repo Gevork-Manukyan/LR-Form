@@ -23,7 +23,7 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll, onShowValid
   const { pncInfo } = usePNCInfoStore();
 
   const handleShowNotes = () => {
-    if (!pncInfo.name || !pncInfo.ldwDate) {
+    if (!pncInfo.noPNC && (!pncInfo.name || !pncInfo.ldwDate)) {
       setShowToast(true);
       onShowValidation(true);
       return;

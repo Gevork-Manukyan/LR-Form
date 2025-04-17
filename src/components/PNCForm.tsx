@@ -21,7 +21,7 @@ export function PNCForm({ className = '', shouldShowValidation = false }: PNCFor
     updatePNCInfo({ ...pncInfo, ldwDate: newDate });
   };
 
-  const isInvalid = shouldShowValidation && (!pncInfo.name || !pncInfo.ldwDate);
+  const isInvalid = shouldShowValidation && !pncInfo.noPNC && (!pncInfo.name || !pncInfo.ldwDate);
 
   return (
     <div className="flex flex-row justify-center mx-auto relative">
@@ -70,11 +70,12 @@ export function PNCForm({ className = '', shouldShowValidation = false }: PNCFor
       </div>
       <button
         onClick={() => updatePNCInfo({ ...pncInfo, noPNC: !pncInfo.noPNC })}
-        className={`w-16 h-[72px] flex flex-col items-center justify-center gap-1 bg-white rounded-lg shadow-sm mb-8 transition-all duration-300 ${
+        className={`w-16 h-[72px] flex flex-col items-center justify-center gap-1 bg-white rounded-lg shadow-sm mb-8 transition-all duration-300 select-none ${
           pncInfo.noPNC 
             ? 'hover:bg-red-50' 
             : 'hover:bg-gray-100 opacity-50'
-        } ${isExpanded ? '-translate-x-16' : ''}`}
+        } ${isExpanded ? '-translate-x-12' : ''}`}
+        style={{ pointerEvents: isExpanded ? 'none' : 'auto' }}
       >
         <XCircle 
           className={`w-6 h-6 transition-all duration-300 ${
