@@ -23,11 +23,13 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll, onShowValid
   const { pncInfo } = usePNCInfoStore();
 
   const handleShowNotes = () => {
-    const allValid = lawsuitOrder.every(id => {
-      const isValid = validateForm(lawsuits[id], pncInfo.ldwDate)
-      // if (!isValid) console.log(pncInfo);
-      return isValid;
-    });
+    if (!pncInfo.name || !pncInfo.ldwDate) {
+      setShowToast(true);
+      onShowValidation(true);
+      return;
+    }
+
+    const allValid = lawsuitOrder.every(id => validateForm(lawsuits[id], pncInfo.ldwDate));
     if (allValid) {
       setShowNotesModal(true);
       onShowValidation(false);

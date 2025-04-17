@@ -4,9 +4,10 @@ import { usePNCInfoStore } from '../store/pncInfoStore';
 
 interface PNCFormProps {
   className?: string;
+  shouldShowValidation?: boolean;
 }
 
-export function PNCForm({ className = '' }: PNCFormProps) {
+export function PNCForm({ className = '', shouldShowValidation = false }: PNCFormProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const { pncInfo, updatePNCInfo } = usePNCInfoStore();
 
@@ -20,8 +21,10 @@ export function PNCForm({ className = '' }: PNCFormProps) {
     updatePNCInfo({ ...pncInfo, ldwDate: newDate });
   };
 
+  const isInvalid = shouldShowValidation && (!pncInfo.name || !pncInfo.ldwDate);
+
   return (
-    <div className={`w-full max-w-2xl mx-auto bg-white rounded-lg shadow-sm mb-8 ${className}`}>
+    <div className={`w-full max-w-2xl mx-auto bg-white rounded-lg shadow-sm mb-8 ${isInvalid ? 'border-2 border-red-500' : ''} ${className}`}>
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between p-6 hover:bg-gray-100 rounded-t-lg"

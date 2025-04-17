@@ -89,8 +89,6 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
   useEffect(() => {
     if (shouldShowValidation && !validateForm(formData, ldwDate)) {
       setShowValidation(true);
-    } else {
-      setShowValidation(false);
     }
   }, [shouldShowValidation, formData, ldwDate]);
 
