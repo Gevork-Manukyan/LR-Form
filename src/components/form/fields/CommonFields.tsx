@@ -64,7 +64,7 @@ export function CommonFields({ formData, setFormData }: CommonFieldsProps) {
               htmlFor="hasMultipleDefendants"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              More than searched defendant?
+              List Defendants?
             </label>
           </div>
 
