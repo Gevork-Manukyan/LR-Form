@@ -123,15 +123,18 @@ export function getLabelClassName(
   return baseClasses;
 }
 
-export function validateForm(formData: LawsuitFormData, ldwDate?: string): boolean {
+export function validateForm(formData: LawsuitFormData, ldwDate: string): boolean {
   let requiredFields: (keyof LawsuitFormData)[] = [];
 
+  // LWDA cases
   if (formData.status === 'LWDA') {
     requiredFields = ['caseNumber', 'date', 'attorney', 'notFiledDate'];
     if (!formData.noLawFirm) {
       requiredFields.push('lawFirm');
     }
-  } else {
+  } 
+  // Settled cases and Pending cases
+  else {
     requiredFields = ['caseNumber', 'date'];
     if (!formData.noLawFirm) {
       requiredFields.push('lawFirm');
@@ -142,6 +145,7 @@ export function validateForm(formData: LawsuitFormData, ldwDate?: string): boole
       requiredFields.push('definitionMatch');
     }
 
+    // Settled cases
     if (formData.status === 'Settled') {
       if (formData.classType === 'Class' && !formData.noPADate) {
         // Require either paDate or customPAText if customPA is checked
@@ -189,6 +193,10 @@ export function validateForm(formData: LawsuitFormData, ldwDate?: string): boole
 
   // Check if all required fields have values
   return requiredFields.every(field => {
+    if (field === 'ldwDate') {
+      return ldwDate !== undefined && ldwDate !== null && ldwDate !== '';
+    }
+
     const value = formData[field];
     if (Array.isArray(value)) {
       return value.length > 0;

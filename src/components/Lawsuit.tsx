@@ -85,10 +85,19 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
     }
   }, [isClearConfirming]);
 
+  // Update showValidation when shouldShowValidation changes
+  useEffect(() => {
+    if (shouldShowValidation && !validateForm(formData, ldwDate)) {
+      setShowValidation(true);
+    } else {
+      setShowValidation(false);
+    }
+  }, [shouldShowValidation, formData, ldwDate]);
+
   const handleSubmit = () => {
     setShowValidation(true);
 
-    if (validateForm(formData)) {
+    if (validateForm(formData, ldwDate)) {
       setShowOutput(!showOutput);
     }
   };
@@ -118,7 +127,7 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
   };
 
   return (
-    <div className={`max-w-3xl w-[1000px] relative ${shouldShowValidation && !validateForm(formData) ? 'border-2 border-red-500 rounded-lg' : ''}`}>
+    <div className={`max-w-3xl w-[1000px] relative ${shouldShowValidation && !validateForm(formData, ldwDate) ? 'border-2 border-red-500 rounded-lg' : ''}`}>
       <div className="bg-white rounded-lg shadow relative z-10">
         <div className="flex justify-between items-center">
           <button
