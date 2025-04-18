@@ -474,7 +474,7 @@ export function SettledFields({
               <div className="space-y-2">
                 <label htmlFor="liabilityCalc" className={getLabelClassName('liabilityCalc')}>
                   Liability Calc{' '}
-                  {isFieldRequired('liabilityCalc') && <span className="text-red-500">*</span>}
+                  <span className="text-red-500">*</span>
                 </label>
                 <div className="flex items-center">
                   <span className="mr-2">$</span>
@@ -482,7 +482,7 @@ export function SettledFields({
                     type="text"
                     name="liabilityCalc"
                     id="liabilityCalc"
-                    className={getInputClassName('liabilityCalc')}
+                    className={`${getInputClassName('liabilityCalc')} ${showValidation && isFieldRequired('liabilityCalc') && !formData.liabilityCalc ? 'border-red-500' : ''}`}
                     value={formData.liabilityCalc}
                     onChange={handleLiabilityCalcChange}
                     placeholder="0.00"

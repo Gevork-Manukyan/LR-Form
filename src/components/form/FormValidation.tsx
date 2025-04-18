@@ -1,6 +1,6 @@
 import { LawsuitFormData } from '../../types/form';
 
-export function isFieldRequired(field: keyof LawsuitFormData, formData: LawsuitFormData, ldwDate?: string, noPNC?: boolean): boolean {
+export function isFieldRequired(field: keyof LawsuitFormData, formData: LawsuitFormData, ldwDate: string, noPNC?: boolean): boolean {
   // Always required fields
   if (field === 'caseNumber' || field === 'date') {
     return true;
@@ -82,7 +82,8 @@ export function isFieldRequired(field: keyof LawsuitFormData, formData: LawsuitF
 export function getInputClassName(
   field: keyof LawsuitFormData,
   showValidation: boolean,
-  formData: LawsuitFormData
+  formData: LawsuitFormData,
+  ldwDate: string
 ): string {
   const baseClasses =
     'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
@@ -95,16 +96,18 @@ export function getInputClassName(
     return baseClasses;
   }
 
-  if (showValidation && isFieldRequired(field, formData) && isEmpty) {
+  if (showValidation && isFieldRequired(field, formData, ldwDate) && isEmpty) {
     return `${baseClasses} border-red-500 focus-visible:ring-red-500`;
   }
+
   return baseClasses;
 }
 
 export function getLabelClassName(
   field: keyof LawsuitFormData,
   showValidation: boolean,
-  formData: LawsuitFormData
+  formData: LawsuitFormData,
+  ldwDate: string
 ): string {
   const baseClasses =
     'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70';
@@ -117,7 +120,7 @@ export function getLabelClassName(
     return baseClasses;
   }
 
-  if (showValidation && isFieldRequired(field, formData) && isEmpty) {
+  if (showValidation && isFieldRequired(field, formData, ldwDate) && isEmpty) {
     return `${baseClasses} text-red-500`;
   }
   return baseClasses;
