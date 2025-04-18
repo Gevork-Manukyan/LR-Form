@@ -171,9 +171,9 @@ export default function Lawsuit({ id, onRemove, isCollapsed: externalIsCollapsed
                   formData={formData}
                   setFormData={(newData) => updateLawsuit(id, newData)}
                   showValidation={showValidation}
-                  isFieldRequired={field => isFieldRequired(field, formData)}
-                  getInputClassName={field => getInputClassName(field, showValidation, formData)}
-                  getLabelClassName={field => getLabelClassName(field, showValidation, formData)}
+                  isFieldRequired={field => isFieldRequired(field, formData, ldwDate)}
+                  getInputClassName={field => getInputClassName(field, showValidation, formData, ldwDate)}
+                  getLabelClassName={field => getLabelClassName(field, showValidation, formData, ldwDate)}
                   isPartnerLawFirm={isPartnerLawFirm}
                   isSpecialLawFirm={isSpecialLawFirm}
                   ldwDate={ldwDate}
