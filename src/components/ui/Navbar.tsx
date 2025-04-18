@@ -90,6 +90,7 @@ export function Navbar({ onCollapseAll, isAllCollapsed, onDeleteAll, onShowValid
         onClose={() => setShowDeleteAllModal(false)}
         onConfirm={() => {
           onDeleteAll();
+          onShowValidation(false);
           setShowDeleteAllModal(false);
         }}
         title="Delete All Lawsuits"
