@@ -160,7 +160,7 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDa
             {!formData.noFADate
               ? formData.customFA
                 ? `${formData.customFAText}. `
-                : `${formData.scheduledMFA ? 'MFA scheduled on' : 'FA on'} ${formatDate(formData.faDate)}. `
+                : `${formData.scheduledMFA ? 'MFA scheduled on' : formData.classType === 'PAGA' ? 'PAGA approval on' : 'FA on'} ${formatDate(formData.faDate)}. `
               : `No FA scheduled. `}
             {!pncInfo.noPNC &&
               (formData.definitionMatch === 'Matches definition' ? (

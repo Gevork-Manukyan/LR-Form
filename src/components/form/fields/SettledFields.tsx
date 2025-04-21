@@ -246,7 +246,7 @@ export function SettledFields({
               htmlFor="faDate"
               className={getLabelClassName(formData.customFA ? 'customFAText' : 'faDate')}
             >
-              FA Date{' '}
+              {formData.classType === 'PAGA' ? 'PAGA Approval Date' : 'FA Date'}{' '}
               {isFieldRequired(formData.customFA ? 'customFAText' : 'faDate') && (
                 <span className="text-red-500">*</span>
               )}
