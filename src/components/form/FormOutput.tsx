@@ -91,13 +91,21 @@ export function FormOutput({ formData, isPartnerLawFirm, isSpecialLawFirm, ldwDa
               if (!formData.date) return '';
               const filedDate = new Date(formData.date);
               const today = new Date();
-              const monthsDiff =
-                (today.getFullYear() - filedDate.getFullYear()) * 12 +
-                (today.getMonth() - filedDate.getMonth());
+              
+              // Use exact date difference for edge case handling
+              const fullThreeYearsAgo = new Date(today);
+              fullThreeYearsAgo.setFullYear(today.getFullYear() - 3);
 
-              if (monthsDiff > 36) return 'over 36 months ago';
-              if (monthsDiff > 12) return 'within 12-36 months';
-              return 'within 12 months';
+              const fullOneYearAgo = new Date(today);
+              fullOneYearAgo.setFullYear(today.getFullYear() - 1);
+
+              if (filedDate <= fullThreeYearsAgo) {
+                return 'over 36 months ago';
+              } else if (filedDate <= fullOneYearAgo) {
+                return 'within 12-36 months';
+              } else {
+                return 'within 12 months';
+              }
             })()}{' '}
             on {formatDate(formData.date)} with{' '}
             {formData.noLawFirm ? (
