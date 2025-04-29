@@ -45,6 +45,10 @@ export const defaultFormData: LawsuitFormData = {
   customFAText: '',
   limitedClaims: false,
   noLawFirm: false,
+  plaintiffLDW: '',
+  lwdaNoticeDate: '',
+  noPlaintiffLDW: false,
+  noLWDANotice: false,
 };
 
 export const useLawsuitStore = create<LawsuitState>((set, get) => {
