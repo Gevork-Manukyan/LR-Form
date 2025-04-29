@@ -54,6 +54,14 @@ export function isFieldRequired(field: keyof LawsuitFormData, formData: LawsuitF
     return formData.status === 'Settled' && !noPNC;
   }
 
+  // Handle plaintiffLDW and lwdaNoticeDate - required for pending cases unless their respective checkboxes are checked
+  if (field === 'plaintiffLDW') {
+    return formData.status === 'Pending' && !formData.noPlaintiffLDW;
+  }
+  if (field === 'lwdaNoticeDate') {
+    return formData.status === 'Pending' && !formData.noLWDANotice;
+  }
+
   // Handle liability calc - required for settled cases with specific conditions
   if (field === 'liabilityCalc') {
     if (formData.status !== 'Settled') return false;

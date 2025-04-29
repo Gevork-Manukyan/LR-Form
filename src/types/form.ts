@@ -37,4 +37,8 @@ export interface LawsuitFormData {
   customFAText: string;
   limitedClaims: boolean;
   noLawFirm: boolean;
+  plaintiffLDW: string;
+  lwdaNoticeDate: string;
+  noPlaintiffLDW: boolean;
+  noLWDANotice: boolean;
 }
