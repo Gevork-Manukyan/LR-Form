@@ -234,6 +234,9 @@ export function PendingFields({
                   const noticeDate = new Date(formData.lwdaNoticeDate + 'T12:00:00');
                   let inWaitingPeriod = false;
                   const today = new Date();
+                  // Calculate the end of the waiting period (notice date + 65 days)
+                  const waitingPeriodEnd = new Date(noticeDate);
+                  waitingPeriodEnd.setDate(noticeDate.getDate() + 65);
 
                   const solPeriod = new Date(ldwDate);
 
@@ -244,17 +247,13 @@ export function PendingFields({
                   if (!formData.noLWDANotice) {
                     solPeriod.setDate(solPeriod.getDate() + 65);
                     
-                    // Calculate the end of the waiting period (notice date + 65 days)
-                    const waitingPeriodEnd = new Date(noticeDate);
-                    waitingPeriodEnd.setDate(noticeDate.getDate() + 65);
-                    
                     // Check if today is within the waiting period (between notice date and waiting period end)
                     inWaitingPeriod = today >= noticeDate && today <= waitingPeriodEnd;
                   }
 
                   // if the sol period is after the today's date, then return green
                   if (solPeriod >= today) {
-                    return <div className="text-green-600">CAN Maintain PAGA{inWaitingPeriod ? " (In Waiting Period)" : ""}</div>;
+                    return <div className="text-green-600">CAN Maintain PAGA{inWaitingPeriod ? ` (In Waiting Period until ${waitingPeriodEnd.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })})` : ""}</div>;
                   }
 
                   // otherwise return red
