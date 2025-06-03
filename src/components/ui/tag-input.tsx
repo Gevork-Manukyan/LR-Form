@@ -53,6 +53,7 @@ export function TagInput({
         onKeyDown={handleKeyDown}
         placeholder={tags.length === 0 ? placeholder : ''}
         className="flex-1 min-w-[100px] bg-transparent outline-none py-1"
+        autoComplete='on'
       />
     </div>
   );

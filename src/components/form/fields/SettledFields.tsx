@@ -437,6 +437,7 @@ export function SettledFields({
               className={getInputClassName('definitionMismatchReason')}
               value={formData.definitionMismatchReason}
               onChange={e => setFormData({ ...formData, definitionMismatchReason: e.target.value })}
+              autoComplete='off'
             />
           </div>
           <div className="space-y-2">
@@ -451,6 +452,7 @@ export function SettledFields({
               className={getInputClassName('pncJobTitle')}
               value={formData.pncJobTitle}
               onChange={e => setFormData({ ...formData, pncJobTitle: e.target.value })}
+              autoComplete="off"
             />
           </div>
         </div>
